@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+
+# prisma generated file
+schema.graphql
+yarn-error.log
+package-lock.json
+yarn.lock
+.DS_Store
+
+src/generated
