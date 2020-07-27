@@ -1,0 +1,6 @@
+# Prisma Migrate lockfile v1
+
+20200725232910-init-database
+20200725233129-add-user-model
+20200726011007-set-db-schema-1-1
+20200726093231-minor-changes
