@@ -9,6 +9,12 @@ export const Shop = objectType({
     t.model.images();
     t.model.products();
     t.model.wishers();
+    t.model.coordinate();
+    t.model.address();
+    t.model.tags();
+    t.model.createdAt();
+    t.model.updatedAt();
+    t.model.city();
   },
 });
 
@@ -20,6 +26,8 @@ export const ShopImage = objectType({
     t.model.order();
     t.model.Shop();
     t.model.shopId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -31,5 +39,7 @@ export const ShopName = objectType({
     t.model.word();
     t.model.Shop();
     t.model.shopId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });

@@ -8,6 +8,9 @@ export const Tag = objectType({
     t.model.Category();
     t.model.categoryId();
     t.model.products();
+    t.model.shops();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -19,5 +22,7 @@ export const TagName = objectType({
     t.model.word();
     t.model.Tag();
     t.model.tagId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });

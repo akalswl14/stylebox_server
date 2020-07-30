@@ -7,5 +7,7 @@ export const User = objectType({
     t.model.wishProducts();
     t.model.wishShops();
     t.model.wishEvents();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });

@@ -5,3 +5,4 @@ export * from "./Product";
 export * from "./Shop";
 export * from "./Tag";
 export * from "./AuthPayload";
+export * from "./inputObjectType";

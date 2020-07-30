@@ -4,14 +4,14 @@
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "tags",
-      "type": "Tag",
-      "arity": "List"
+      "field": "test2",
+      "type": "String",
+      "arity": "Optional"
     },
     {
       "tag": "DeleteField",
       "model": "Product",
-      "field": "Tags"
+      "field": "test"
     }
   ]
 }

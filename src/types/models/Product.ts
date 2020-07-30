@@ -10,6 +10,10 @@ export const Product = objectType({
     t.model.Shop();
     t.model.shopId();
     t.model.tags();
+    t.model.createdAt();
+    t.model.updatedAt();
+    t.model.description();
+    t.model.instaText();
   },
 });
 
@@ -21,6 +25,8 @@ export const ProductName = objectType({
     t.model.word();
     t.model.Product();
     t.model.productId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -32,5 +38,7 @@ export const ProductImage = objectType({
     t.model.order();
     t.model.Product();
     t.model.productId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });

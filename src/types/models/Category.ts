@@ -6,6 +6,8 @@ export const Category = objectType({
     t.model.id();
     t.model.tags();
     t.model.name();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -17,5 +19,7 @@ export const CategoryName = objectType({
     t.model.word();
     t.model.Category();
     t.model.categoryId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });

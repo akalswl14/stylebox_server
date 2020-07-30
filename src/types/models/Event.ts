@@ -8,6 +8,8 @@ export const Event = objectType({
     t.model.images();
     t.model.videos();
     t.model.wishers();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -19,6 +21,8 @@ export const EventImage = objectType({
     t.model.order();
     t.model.Event();
     t.model.eventId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 
@@ -30,5 +34,7 @@ export const EventVideo = objectType({
     t.model.order();
     t.model.Event();
     t.model.eventId();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
