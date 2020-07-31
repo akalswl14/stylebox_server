@@ -67,6 +67,7 @@ export interface NexusGenRootTypes {
     discription: string; // String!
     id: number; // Int!
     updatedAt: any; // DateTime!
+    wishersCnt?: number | null; // Int
   }
   EventImage: { // root type
     createdAt: any; // DateTime!
@@ -92,6 +93,7 @@ export interface NexusGenRootTypes {
     instaText?: string | null; // String
     shopId?: number | null; // Int
     updatedAt: any; // DateTime!
+    wishersCnt?: number | null; // Int
   }
   ProductImage: { // root type
     createdAt: any; // DateTime!
@@ -118,6 +120,7 @@ export interface NexusGenRootTypes {
     discription?: string | null; // String
     id: number; // Int!
     updatedAt: any; // DateTime!
+    wishersCnt?: number | null; // Int
   }
   ShopImage: { // root type
     createdAt: any; // DateTime!
@@ -199,6 +202,7 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     videos: NexusGenRootTypes['EventVideo'][]; // [EventVideo!]!
     wishers: NexusGenRootTypes['User'][]; // [User!]!
+    wishersCnt: number | null; // Int
   }
   EventImage: { // field return type
     createdAt: any; // DateTime!
@@ -238,6 +242,7 @@ export interface NexusGenFieldTypes {
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
     wishers: NexusGenRootTypes['User'][]; // [User!]!
+    wishersCnt: number | null; // Int
   }
   ProductImage: { // field return type
     createdAt: any; // DateTime!
@@ -276,6 +281,7 @@ export interface NexusGenFieldTypes {
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
     wishers: NexusGenRootTypes['User'][]; // [User!]!
+    wishersCnt: number | null; // Int
   }
   ShopImage: { // field return type
     createdAt: any; // DateTime!

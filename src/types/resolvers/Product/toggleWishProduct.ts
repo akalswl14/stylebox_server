@@ -14,6 +14,7 @@ export const toggleWishProduct = mutationField("toggleWishProduct", {
       let user,
         product,
         wishers,
+        wishersCnt = 0,
         userExists = false;
       try {
         user = await ctx.prisma.user.findOne({ where: { id: userId } });
@@ -34,6 +35,9 @@ export const toggleWishProduct = mutationField("toggleWishProduct", {
       }
       if (product) {
         wishers = product.wishers;
+        if (product.wishersCnt) {
+          wishersCnt = product.wishersCnt;
+        }
         wishers.forEach((eachUser: { id: number }) => {
           if (eachUser.id == userId) {
             userExists = true;
@@ -46,6 +50,7 @@ export const toggleWishProduct = mutationField("toggleWishProduct", {
               wishers: {
                 disconnect: [{ id: userId }],
               },
+              wishersCnt: wishersCnt - 1,
             },
           });
         } else {
@@ -55,6 +60,7 @@ export const toggleWishProduct = mutationField("toggleWishProduct", {
               wishers: {
                 connect: [{ id: userId }],
               },
+              wishersCnt: wishersCnt + 1,
             },
           });
         }
