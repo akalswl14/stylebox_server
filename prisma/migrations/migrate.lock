@@ -1,6 +1,4 @@
 # Prisma Migrate lockfile v1
 
-20200730173154-initial-migration
-20200730173231-test1
-20200730173303-test2
-20200730173341-back
+20200731144347-initial-migration
+20200731145035-add-wishers-cnt-in-product--event--shpo

@@ -21,6 +21,7 @@ model Product {
   name        ProductName[]
   image       ProductImage[]
   wishers     User[]
+  wishersCnt  Int?
   Shop        Shop?          @relation(fields: [shopId], references: [id])
   shopId      Int?
   tags        Tag[]
@@ -57,6 +58,7 @@ model Shop {
   images      ShopImage[]
   products    Product[]
   wishers     User[]
+  wishersCnt  Int?
   coordinate  String?
   address     String?
   tags        Tag[]
@@ -91,6 +93,7 @@ model Event {
   images      EventImage[]
   videos      EventVideo[]
   wishers     User[]
+  wishersCnt  Int?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
 }
