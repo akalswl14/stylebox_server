@@ -1,16 +1,17 @@
-import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
+import { intArg, stringArg, queryField } from "@nexus/schema";
 
-export const getAllProductbyTag = mutationField("getAllProductbyTag", {
+export const getAllProductbyTag = queryField("getAllProductbyTag", {
   type: "Product",
   args: {
     tags: intArg({ list: true, required: true }),
     filter: stringArg({ nullable: true }),
+    id: intArg({ nullable: true }),
   },
   nullable: true,
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { tags, filter = "NEW" } = args;
+      const { tags, filter = "NEW", id } = args;
       let products,
         tagList: { id: number }[] = [];
       try {
@@ -25,12 +26,22 @@ export const getAllProductbyTag = mutationField("getAllProductbyTag", {
           });
         } else {
           // filter == "NEW"
-          products = await ctx.prisma.product.findMany({
-            where: { tags: { some: { OR: tagList } } },
-            include: { tags: true },
-          });
+          if (id) {
+            products = await ctx.prisma.product.findMany({
+              where: { tags: { some: { OR: tagList } } },
+              orderBy: { createdAt: "desc" },
+              take: 4,
+              cursor: { id },
+              skip: 1,
+            });
+          } else {
+            products = await ctx.prisma.product.findMany({
+              where: { tags: { some: { OR: tagList } } },
+              orderBy: { createdAt: "desc" },
+              take: 4,
+            });
+          }
         }
-        console.log(products);
         return products;
       } catch (e) {
         console.log(e);
