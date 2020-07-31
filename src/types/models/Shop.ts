@@ -9,6 +9,7 @@ export const Shop = objectType({
     t.model.images();
     t.model.products();
     t.model.wishers();
+    t.model.wishersCnt();
     t.model.coordinate();
     t.model.address();
     t.model.tags();

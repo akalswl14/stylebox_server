@@ -8,6 +8,7 @@ export const Event = objectType({
     t.model.images();
     t.model.videos();
     t.model.wishers();
+    t.model.wishersCnt();
     t.model.createdAt();
     t.model.updatedAt();
   },

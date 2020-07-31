@@ -7,6 +7,7 @@ export const Product = objectType({
     t.model.name();
     t.model.image();
     t.model.wishers();
+    t.model.wishersCnt();
     t.model.Shop();
     t.model.shopId();
     t.model.tags();
