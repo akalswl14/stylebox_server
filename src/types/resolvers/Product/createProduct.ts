@@ -7,11 +7,20 @@ export const createProduct = mutationField("createProduct", {
     names: arg({ type: "productNameInputType", list: true, required: true }),
     images: arg({ type: "productImageInputType", list: true, required: true }),
     tags: intArg({ list: true, nullable: true }),
+    description: stringArg({ nullable: true }),
+    instaText: stringArg({ nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { names, images, shopId, tags = [] } = args;
+      const {
+        names,
+        images,
+        shopId,
+        tags = [],
+        description = "",
+        instaText = "",
+      } = args;
       let product,
         tagList: { id: number }[] = [];
       try {
@@ -24,6 +33,9 @@ export const createProduct = mutationField("createProduct", {
           data: {
             Shop: { connect: { id: shopId } },
             tags: { connect: tagList },
+            wishersCnt: 0,
+            description,
+            instaText,
           },
         });
       } catch (e) {

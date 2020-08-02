@@ -352,7 +352,9 @@ export interface NexusGenArgTypes {
   }
   Mutation: {
     createProduct: { // args
+      description?: string | null; // String
       images: NexusGenInputs['productImageInputType'][]; // [productImageInputType!]!
+      instaText?: string | null; // String
       names: NexusGenInputs['productNameInputType'][]; // [productNameInputType!]!
       shopId: number; // Int!
       tags?: number[] | null; // [Int!]
@@ -402,6 +404,7 @@ export interface NexusGenArgTypes {
     getAllProductbyTag: { // args
       filter?: string | null; // String
       id?: number | null; // Int
+      pageNum: number; // Int!
       tags: number[]; // [Int!]!
     }
     getProduct: { // args
