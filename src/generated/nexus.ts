@@ -229,6 +229,7 @@ export interface NexusGenFieldTypes {
     createTag: NexusGenRootTypes['Tag'] | null; // Tag
     deleteProduct: NexusGenRootTypes['Product'] | null; // Product
     toggleWishProduct: boolean; // Boolean!
+    toggleWishShop: boolean; // Boolean!
   }
   Product: { // field return type
     createdAt: any; // DateTime!
@@ -266,7 +267,11 @@ export interface NexusGenFieldTypes {
     getAllProduct: NexusGenRootTypes['Product'][] | null; // [Product!]
     getAllProductbyShop: NexusGenRootTypes['Product'][] | null; // [Product!]
     getAllProductbyTag: NexusGenRootTypes['Product'][] | null; // [Product!]
+    getAllShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getAllShopbyRank: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getProduct: NexusGenRootTypes['Product'] | null; // Product
+    getShop: NexusGenRootTypes['Shop'] | null; // Shop
   }
   Shop: { // field return type
     address: string | null; // String
@@ -378,6 +383,9 @@ export interface NexusGenArgTypes {
     toggleWishProduct: { // args
       id: number; // Int!
     }
+    toggleWishShop: { // args
+      id: number; // Int!
+    }
   }
   Product: {
     image: { // args
@@ -407,7 +415,23 @@ export interface NexusGenArgTypes {
       pageNum: number; // Int!
       tags: number[]; // [Int!]!
     }
+    getAllShop: { // args
+      id?: number | null; // Int
+    }
+    getAllShopbyRank: { // args
+      city?: string | null; // String
+      id?: number | null; // Int
+      pageNum: number; // Int!
+    }
+    getAllShopbyTag: { // args
+      id?: number | null; // Int
+      pageNum: number; // Int!
+      tags: number[]; // [Int!]!
+    }
     getProduct: { // args
+      id: number; // Int!
+    }
+    getShop: { // args
       id: number; // Int!
     }
   }

@@ -38,6 +38,7 @@ export const createShop = mutationField("createShop", {
           address,
           city,
           tags: { connect: tagList },
+          wishersCnt: 0,
         },
       });
       if (shop) {
