@@ -272,6 +272,9 @@ export interface NexusGenFieldTypes {
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
+    getWishEvent: NexusGenRootTypes['Event'][] | null; // [Event!]
+    getWishProduct: NexusGenRootTypes['Product'][] | null; // [Product!]
+    getWishShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
   }
   Shop: { // field return type
     address: string | null; // String
