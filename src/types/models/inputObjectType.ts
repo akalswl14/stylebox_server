@@ -39,3 +39,11 @@ export const tagNameInputType = inputObjectType({
     t.string("lang", { required: true });
   },
 });
+
+export const eventContentsInputType = inputObjectType({
+  name: "eventContentsInputType",
+  definition(t) {
+    t.string("url", { required: true });
+    t.int("order", { required: true });
+  },
+});

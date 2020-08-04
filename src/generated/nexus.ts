@@ -19,6 +19,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  eventContentsInputType: { // input type
+    order: number; // Int!
+    url: string; // String!
+  }
   productImageInputType: { // input type
     order: number; // Int!
     url: string; // String!
@@ -166,6 +170,7 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  eventContentsInputType: NexusGenInputs['eventContentsInputType'];
   productImageInputType: NexusGenInputs['productImageInputType'];
   productNameInputType: NexusGenInputs['productNameInputType'];
   shopImageInputType: NexusGenInputs['shopImageInputType'];
@@ -224,10 +229,13 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     confirmUser: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
+    createEvent: NexusGenRootTypes['Event'] | null; // Event
     createProduct: NexusGenRootTypes['Product'] | null; // Product
     createShop: NexusGenRootTypes['Shop'] | null; // Shop
     createTag: NexusGenRootTypes['Tag'] | null; // Tag
+    deleteEvent: NexusGenRootTypes['Event'] | null; // Event
     deleteProduct: NexusGenRootTypes['Product'] | null; // Product
+    toggleWishEvent: boolean; // Boolean!
     toggleWishProduct: boolean; // Boolean!
     toggleWishShop: boolean; // Boolean!
   }
@@ -264,12 +272,14 @@ export interface NexusGenFieldTypes {
     word: string; // String!
   }
   Query: { // field return type
+    getAllEvent: NexusGenRootTypes['Event'][] | null; // [Event!]
     getAllProduct: NexusGenRootTypes['Product'][] | null; // [Product!]
     getAllProductbyShop: NexusGenRootTypes['Product'][] | null; // [Product!]
     getAllProductbyTag: NexusGenRootTypes['Product'][] | null; // [Product!]
     getAllShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyRank: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getEvent: NexusGenRootTypes['Event'] | null; // Event
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
     getWishEvent: NexusGenRootTypes['Event'][] | null; // [Event!]
@@ -359,6 +369,11 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    createEvent: { // args
+      discription?: string | null; // String
+      images: NexusGenInputs['eventContentsInputType'][]; // [eventContentsInputType!]!
+      videos: NexusGenInputs['eventContentsInputType'][]; // [eventContentsInputType!]!
+    }
     createProduct: { // args
       description?: string | null; // String
       images: NexusGenInputs['productImageInputType'][]; // [productImageInputType!]!
@@ -380,7 +395,13 @@ export interface NexusGenArgTypes {
       categoryId?: number | null; // Int
       name: NexusGenInputs['tagNameInputType'][]; // [tagNameInputType!]!
     }
+    deleteEvent: { // args
+      id: number; // Int!
+    }
     deleteProduct: { // args
+      id: number; // Int!
+    }
+    toggleWishEvent: { // args
       id: number; // Int!
     }
     toggleWishProduct: { // args
@@ -405,6 +426,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getAllEvent: { // args
+      id?: number | null; // Int
+    }
     getAllProduct: { // args
       id?: number | null; // Int
     }
@@ -430,6 +454,9 @@ export interface NexusGenArgTypes {
       id?: number | null; // Int
       pageNum: number; // Int!
       tags: number[]; // [Int!]!
+    }
+    getEvent: { // args
+      id: number; // Int!
     }
     getProduct: { // args
       id: number; // Int!
@@ -486,7 +513,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "Category" | "CategoryName" | "Event" | "EventImage" | "EventVideo" | "Mutation" | "Product" | "ProductImage" | "ProductName" | "Query" | "Shop" | "ShopImage" | "ShopName" | "Tag" | "TagName" | "User";
 
-export type NexusGenInputNames = "productImageInputType" | "productNameInputType" | "shopImageInputType" | "shopNameInputType" | "tagNameInputType";
+export type NexusGenInputNames = "eventContentsInputType" | "productImageInputType" | "productNameInputType" | "shopImageInputType" | "shopNameInputType" | "tagNameInputType";
 
 export type NexusGenEnumNames = never;
 
