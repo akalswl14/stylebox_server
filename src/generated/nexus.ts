@@ -110,8 +110,7 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     description?: string | null; // String
     id: number; // Int!
-    instaText?: string | null; // String
-    shopId?: number | null; // Int
+    instaText: string[]; // [String!]!
     updatedAt: any; // DateTime!
     wishersCnt?: number | null; // Int
   }
@@ -133,7 +132,7 @@ export interface NexusGenRootTypes {
   }
   Query: {};
   Shop: { // root type
-    address?: string | null; // String
+    address: string[]; // [String!]!
     city?: string | null; // String
     coordinate?: string | null; // String
     createdAt: any; // DateTime!
@@ -252,7 +251,6 @@ export interface NexusGenFieldTypes {
     deleteEvent: NexusGenRootTypes['Event'] | null; // Event
     deleteProduct: NexusGenRootTypes['Product'] | null; // Product
     deleteShop: NexusGenRootTypes['Shop'] | null; // Shop
-    example: NexusGenRootTypes['Shop'] | null; // Shop
     toggleWishEvent: boolean; // Boolean!
     toggleWishProduct: boolean; // Boolean!
     toggleWishShop: boolean; // Boolean!
@@ -282,11 +280,10 @@ export interface NexusGenFieldTypes {
     description: string | null; // String
     id: number; // Int!
     image: NexusGenRootTypes['ProductImage'][]; // [ProductImage!]!
-    instaText: string | null; // String
+    instaText: string[]; // [String!]!
     name: NexusGenRootTypes['ProductName'][]; // [ProductName!]!
     Post: NexusGenRootTypes['Post'][]; // [Post!]!
-    Shop: NexusGenRootTypes['Shop'] | null; // Shop
-    shopId: number | null; // Int
+    shops: NexusGenRootTypes['Shop'][]; // [Shop!]!
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
     wishers: NexusGenRootTypes['User'][]; // [User!]!
@@ -318,15 +315,17 @@ export interface NexusGenFieldTypes {
     getAllShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyRank: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
     getWishEvent: NexusGenRootTypes['Event'][] | null; // [Event!]
     getWishProduct: NexusGenRootTypes['Product'][] | null; // [Product!]
     getWishShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    searchTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
   }
   Shop: { // field return type
-    address: string | null; // String
+    address: string[]; // [String!]!
     city: string | null; // String
     coordinate: string | null; // String
     createdAt: any; // DateTime!
@@ -423,7 +422,7 @@ export interface NexusGenArgTypes {
       tags?: number[] | null; // [Int!]
     }
     createShop: { // args
-      address?: string | null; // String
+      address?: string[] | null; // [String!]
       city?: string | null; // String
       coordinate?: string | null; // String
       discription: string; // String!
@@ -454,7 +453,7 @@ export interface NexusGenArgTypes {
       id: number; // Int!
     }
     updateShop: { // args
-      address?: string | null; // String
+      address?: string[] | null; // [String!]
       city?: string | null; // String
       coordinate?: string | null; // String
       discription?: string | null; // String
@@ -480,6 +479,9 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
     }
     Post: { // args
+      skip?: number | null; // Int
+    }
+    shops: { // args
       skip?: number | null; // Int
     }
     tags: { // args
@@ -519,6 +521,9 @@ export interface NexusGenArgTypes {
       pageNum: number; // Int!
       tags: number[]; // [Int!]!
     }
+    getAllTag: { // args
+      id?: number | null; // Int
+    }
     getEvent: { // args
       id: number; // Int!
     }
@@ -527,6 +532,10 @@ export interface NexusGenArgTypes {
     }
     getShop: { // args
       id: number; // Int!
+    }
+    searchTag: { // args
+      id?: number | null; // Int
+      word: string; // String!
     }
   }
   Shop: {

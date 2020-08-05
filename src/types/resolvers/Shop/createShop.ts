@@ -8,7 +8,7 @@ export const createShop = mutationField("createShop", {
     discription: stringArg({ required: true }),
     images: arg({ type: "shopImageInputType", required: true, list: true }),
     coordinate: stringArg({ nullable: true }),
-    address: stringArg({ nullable: true }),
+    address: stringArg({ nullable: true, list: true }),
     tags: intArg({ list: true, nullable: true }),
     city: stringArg({ nullable: true }),
   },
@@ -20,7 +20,7 @@ export const createShop = mutationField("createShop", {
         discription,
         images,
         coordinate = "",
-        address = "",
+        address = [],
         tags = [],
         city = "",
       } = args;
@@ -35,7 +35,7 @@ export const createShop = mutationField("createShop", {
         data: {
           discription,
           coordinate,
-          address,
+          address: { set: address },
           city,
           tags: { connect: tagList },
           wishersCnt: 0,

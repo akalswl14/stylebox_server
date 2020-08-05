@@ -6,7 +6,7 @@ export const updateShop = mutationField("updateShop", {
     id: intArg({ required: true }),
     discription: stringArg({ nullable: true }),
     coordinate: stringArg({ nullable: true }),
-    address: stringArg({ nullable: true }),
+    address: stringArg({ nullable: true, list: true }),
     city: stringArg({ nullable: true }),
     tags: intArg({ list: true, nullable: true }),
     name: arg({ type: "shopNameInputType", nullable: true, list: true }),
@@ -79,12 +79,7 @@ export const updateShop = mutationField("updateShop", {
           originalNameInfoList.forEach((eachName) => {
             originalNameList.push({ id: eachName.id });
           });
-          let example = await ctx.prisma.shop.update({
-            where: { id },
-            data: { name: { disconnect: [{ id: 10 }, { id: 11 }] } },
-            include: { name: true },
-          });
-          console.log(example);
+          console.log(originalNameList);
           await ctx.prisma.shop.update({
             where: { id },
             data: { name: { disconnect: originalNameList } },
@@ -99,10 +94,16 @@ export const updateShop = mutationField("updateShop", {
             });
           });
         }
+        if (address) {
+          shop = await ctx.prisma.shop.update({
+            where: { id },
+            data: { address: { set: address } },
+          });
+        }
         try {
           shop = await ctx.prisma.shop.update({
             where: { id },
-            data: { discription, coordinate, address, city },
+            data: { discription, coordinate, city },
           });
         } catch (e) {
           console.log(e);

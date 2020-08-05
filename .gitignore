@@ -109,7 +109,3 @@ yarn-error.log
 package-lock.json
 yarn.lock
 .DS_Store
-prisma/dev.db
-migrations
-
-src/generated
