@@ -1,32 +1,22 @@
 import { intArg, mutationField, stringArg, arg } from "@nexus/schema";
 
-export const updateShop = mutationField("updateShop", {
-  type: "Shop",
+export const updateProduct = mutationField("updateProduct", {
+  type: "Product",
   args: {
     id: intArg({ required: true }),
-    discription: stringArg({ nullable: true }),
-    coordinate: stringArg({ nullable: true }),
-    address: stringArg({ nullable: true, list: true }),
-    city: stringArg({ nullable: true }),
+    description: stringArg({ nullable: true }),
+    instaText: stringArg({ nullable: true }),
+    shops: intArg({ list: true, nullable: true }),
     tags: intArg({ list: true, nullable: true }),
-    name: arg({ type: "shopNameInputType", nullable: true, list: true }),
-    images: arg({ type: "shopImageInputType", nullable: true, list: true }),
+    name: arg({ type: "productNameInputType", nullable: true, list: true }),
+    images: arg({ type: "productImageInputType", nullable: true, list: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      let {
-        id,
-        discription,
-        coordinate,
-        address,
-        city,
-        tags,
-        name,
-        images,
-      } = args;
-      let shop,
-        originalShop,
+      let { id, description, instaText, shops, tags, name, images } = args;
+      let product,
+        originalproduct,
         tagList: { id: number }[] = [];
       if (tags) {
         tags.forEach((eachTag: number) => {
@@ -34,74 +24,74 @@ export const updateShop = mutationField("updateShop", {
         });
       }
       try {
-        originalShop = await ctx.prisma.shop.findOne({
+        originalproduct = await ctx.prisma.product.findOne({
           where: { id },
           include: { tags: true, name: true, images: true },
         });
       } catch (e) {
         console.log(e);
       }
-      if (originalShop) {
+      if (originalproduct) {
         if (tags) {
-          let originalTagInfoList = originalShop.tags;
+          let originalTagInfoList = originalproduct.tags;
           let originalTagList: { id: number }[] = [];
           originalTagInfoList.forEach((eachTag) => {
             originalTagList.push({ id: eachTag.id });
           });
-          await ctx.prisma.shop.update({
+          await ctx.prisma.product.update({
             where: { id },
             data: { tags: { connect: tagList, disconnect: originalTagList } },
           });
         }
         if (images) {
-          let originalImageInfoList = originalShop.images;
+          let originalImageInfoList = originalproduct.images;
           let originalImageList: { id: number }[] = [];
           originalImageInfoList.forEach((eachImage) => {
             originalImageList.push({ id: eachImage.id });
           });
-          await ctx.prisma.shop.update({
+          await ctx.prisma.product.update({
             where: { id },
             data: { images: { disconnect: originalImageList } },
           });
           images.forEach(async (eachImage: { url: string; order: number }) => {
-            await ctx.prisma.shopImage.create({
+            await ctx.prisma.productImage.create({
               data: {
                 url: eachImage.url,
                 order: eachImage.order,
-                Shop: { connect: { id } },
+                product: { connect: { id } },
               },
             });
           });
         }
         if (name) {
-          let originalNameInfoList = originalShop.name;
+          let originalNameInfoList = originalproduct.images;
           let originalNameList: { id: number }[] = [];
           originalNameInfoList.forEach((eachName) => {
             originalNameList.push({ id: eachName.id });
           });
           console.log(originalNameList);
-          await ctx.prisma.shop.update({
+          await ctx.prisma.product.update({
             where: { id },
             data: { name: { disconnect: originalNameList } },
           });
           name.forEach(async (eachName: { lang: string; word: string }) => {
-            await ctx.prisma.shopName.create({
+            await ctx.prisma.productName.create({
               data: {
                 lang: eachName.lang,
                 word: eachName.word,
-                Shop: { connect: { id } },
+                product: { connect: { id } },
               },
             });
           });
         }
         if (address) {
-          shop = await ctx.prisma.shop.update({
+          product = await ctx.prisma.product.update({
             where: { id },
             data: { address: { set: address } },
           });
         }
         try {
-          shop = await ctx.prisma.shop.update({
+          product = await ctx.prisma.product.update({
             where: { id },
             data: { discription, coordinate, city },
           });
@@ -109,8 +99,8 @@ export const updateShop = mutationField("updateShop", {
           console.log(e);
         }
       }
-      if (shop) {
-        return shop;
+      if (product) {
+        return product;
       } else {
         return null;
       }
