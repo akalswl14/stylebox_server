@@ -6,3 +6,4 @@ export * from "./Shop";
 export * from "./Tag";
 export * from "./AuthPayload";
 export * from "./inputObjectType";
+export * from "./Post";

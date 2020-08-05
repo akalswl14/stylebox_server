@@ -11,6 +11,7 @@ export const Tag = objectType({
     t.model.shops();
     t.model.createdAt();
     t.model.updatedAt();
+    t.model.Post();
   },
 });
 

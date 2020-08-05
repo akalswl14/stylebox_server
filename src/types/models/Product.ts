@@ -15,6 +15,7 @@ export const Product = objectType({
     t.model.updatedAt();
     t.model.description();
     t.model.instaText();
+    t.model.Post();
   },
 });
 

@@ -29,6 +29,7 @@ model Product {
   instaText   String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @default(now()) @updatedAt
+  Post        Post[]
 }
 
 model ProductName {
@@ -145,6 +146,7 @@ model Tag {
   shops      Shop[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
+  Post       Post[]
 }
 
 model TagName {
@@ -153,6 +155,28 @@ model TagName {
   word      String
   Tag       Tag?     @relation(fields: [tagId], references: [id])
   tagId     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Post {
+  id        Int         @id @default(autoincrement())
+  text      String?
+  title     String?
+  publisher String?
+  products  Product[]
+  tags      Tag[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  images    PostImage[]
+}
+
+model PostImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  order     Int
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
