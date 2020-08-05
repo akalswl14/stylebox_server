@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -22,8 +22,7 @@ model Product {
   image       ProductImage[]
   wishers     User[]
   wishersCnt  Int?
-  Shop        Shop?          @relation(fields: [shopId], references: [id])
-  shopId      Int?
+  Shop        Shop[]
   tags        Tag[]
   description String?
   instaText   String?
@@ -61,7 +60,7 @@ model Shop {
   wishers     User[]
   wishersCnt  Int?
   coordinate  String?
-  address     String?
+  address     String[]
   tags        Tag[]
   city        String?
   createdAt   DateTime    @default(now())
