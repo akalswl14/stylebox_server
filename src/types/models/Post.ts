@@ -11,7 +11,7 @@ export const Post = objectType({
     t.model.tags();
     t.model.createdAt();
     t.model.updatedAt();
-    t.model.images;
+    t.model.images();
   },
 });
 

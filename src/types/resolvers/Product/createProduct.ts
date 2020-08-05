@@ -4,8 +4,8 @@ export const createProduct = mutationField("createProduct", {
   type: "Product",
   args: {
     shops: intArg({ required: true, list: true }),
-    names: arg({ type: "productNameInputType", list: true, required: true }),
-    images: arg({ type: "productImageInputType", list: true, required: true }),
+    names: arg({ type: "NameInputType", list: true, required: true }),
+    images: arg({ type: "ImageInputType", list: true, required: true }),
     tags: intArg({ list: true, nullable: true }),
     description: stringArg({ nullable: true }),
     instaText: stringArg({ nullable: true, list: true }),

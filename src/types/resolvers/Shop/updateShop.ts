@@ -9,8 +9,8 @@ export const updateShop = mutationField("updateShop", {
     address: stringArg({ nullable: true, list: true }),
     city: stringArg({ nullable: true }),
     tags: intArg({ list: true, nullable: true }),
-    name: arg({ type: "shopNameInputType", nullable: true, list: true }),
-    images: arg({ type: "shopImageInputType", nullable: true, list: true }),
+    name: arg({ type: "NameInputType", nullable: true, list: true }),
+    images: arg({ type: "ImageInputType", nullable: true, list: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {

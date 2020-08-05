@@ -3,8 +3,8 @@ import { stringArg, mutationField, arg } from "@nexus/schema";
 export const createEvent = mutationField("createEvent", {
   type: "Event",
   args: {
-    images: arg({ type: "eventContentsInputType", list: true, required: true }),
-    videos: arg({ type: "eventContentsInputType", list: true, required: true }),
+    images: arg({ type: "ImageInputType", list: true, required: true }),
+    videos: arg({ type: "ImageInputType", list: true, required: true }),
     discription: stringArg({ required: true }),
   },
   nullable: true,

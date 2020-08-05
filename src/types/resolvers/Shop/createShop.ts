@@ -3,9 +3,9 @@ import { stringArg, mutationField, arg, intArg } from "@nexus/schema";
 export const createShop = mutationField("createShop", {
   type: "Shop",
   args: {
-    name: arg({ type: "shopNameInputType", required: true, list: true }),
+    name: arg({ type: "NameInputType", required: true, list: true }),
     discription: stringArg({ required: true }),
-    images: arg({ type: "shopImageInputType", required: true, list: true }),
+    images: arg({ type: "ImageInputType", required: true, list: true }),
     coordinate: stringArg({ nullable: true }),
     address: stringArg({ nullable: true, list: true }),
     tags: intArg({ list: true, nullable: true }),

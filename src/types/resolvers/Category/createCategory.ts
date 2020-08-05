@@ -3,7 +3,7 @@ import { mutationField, arg, intArg } from "@nexus/schema";
 export const createCategory = mutationField("createCategory", {
   type: "Category",
   args: {
-    name: arg({ type: "categoryNameInputType", list: true, required: true }),
+    name: arg({ type: "NameInputType", list: true, required: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {

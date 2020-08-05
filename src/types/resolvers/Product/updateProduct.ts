@@ -8,8 +8,8 @@ export const updateProduct = mutationField("updateProduct", {
     instaText: stringArg({ nullable: true, list: true }),
     shops: intArg({ list: true, nullable: true }),
     tags: intArg({ list: true, nullable: true }),
-    name: arg({ type: "productNameInputType", nullable: true, list: true }),
-    image: arg({ type: "productImageInputType", nullable: true, list: true }),
+    name: arg({ type: "NameInputType", nullable: true, list: true }),
+    image: arg({ type: "ImageInputType", nullable: true, list: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -69,7 +69,7 @@ export const updateProduct = mutationField("updateProduct", {
           });
         }
         if (name) {
-          let originalNameInfoList = originalproduct.image;
+          let originalNameInfoList = originalproduct.name;
           let originalNameList: { id: number }[] = [];
           originalNameInfoList.forEach((eachName) => {
             originalNameList.push({ id: eachName.id });

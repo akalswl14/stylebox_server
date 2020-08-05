@@ -4,3 +4,4 @@ export * from "./Shop";
 export * from "./Tag";
 export * from "./Event";
 export * from "./Category";
+export * from "./Post";
