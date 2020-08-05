@@ -5,3 +5,4 @@ export * from "./getAllProductbyShop";
 export * from "./getAllProduct";
 export * from "./getProduct";
 export * from "./toggleWishProduct";
+export * from "./updateProduct";

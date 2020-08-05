@@ -3,12 +3,12 @@ import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
 export const createProduct = mutationField("createProduct", {
   type: "Product",
   args: {
-    shopId: intArg({ required: true }),
+    shops: intArg({ required: true, list: true }),
     names: arg({ type: "productNameInputType", list: true, required: true }),
     images: arg({ type: "productImageInputType", list: true, required: true }),
     tags: intArg({ list: true, nullable: true }),
     description: stringArg({ nullable: true }),
-    instaText: stringArg({ nullable: true }),
+    instaText: stringArg({ nullable: true, list: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -16,26 +16,30 @@ export const createProduct = mutationField("createProduct", {
       const {
         names,
         images,
-        shopId,
+        shops,
         tags = [],
         description = "",
         instaText = "",
       } = args;
       let product,
-        tagList: { id: number }[] = [];
+        tagList: { id: number }[] = [],
+        shopList: { id: number }[] = [];
       try {
         if (tags) {
           tags.forEach((eachTag) => {
             tagList.push({ id: eachTag });
           });
         }
+        shops.forEach((eachShop: number) => {
+          shopList.push({ id: eachShop });
+        });
         product = await ctx.prisma.product.create({
           data: {
-            Shop: { connect: { id: shopId } },
+            shops: { connect: shopList },
             tags: { connect: tagList },
             wishersCnt: 0,
             description,
-            instaText,
+            instaText: { set: instaText },
           },
         });
       } catch (e) {

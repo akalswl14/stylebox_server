@@ -79,7 +79,6 @@ export const updateShop = mutationField("updateShop", {
           originalNameInfoList.forEach((eachName) => {
             originalNameList.push({ id: eachName.id });
           });
-          console.log(originalNameList);
           await ctx.prisma.shop.update({
             where: { id },
             data: { name: { disconnect: originalNameList } },

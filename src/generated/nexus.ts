@@ -254,6 +254,7 @@ export interface NexusGenFieldTypes {
     toggleWishEvent: boolean; // Boolean!
     toggleWishProduct: boolean; // Boolean!
     toggleWishShop: boolean; // Boolean!
+    updateProduct: NexusGenRootTypes['Product'] | null; // Product
     updateShop: NexusGenRootTypes['Shop'] | null; // Shop
   }
   Post: { // field return type
@@ -416,9 +417,9 @@ export interface NexusGenArgTypes {
     createProduct: { // args
       description?: string | null; // String
       images: NexusGenInputs['productImageInputType'][]; // [productImageInputType!]!
-      instaText?: string | null; // String
+      instaText?: string[] | null; // [String!]
       names: NexusGenInputs['productNameInputType'][]; // [productNameInputType!]!
-      shopId: number; // Int!
+      shops: number[]; // [Int!]!
       tags?: number[] | null; // [Int!]
     }
     createShop: { // args
@@ -451,6 +452,15 @@ export interface NexusGenArgTypes {
     }
     toggleWishShop: { // args
       id: number; // Int!
+    }
+    updateProduct: { // args
+      description?: string | null; // String
+      id: number; // Int!
+      image?: NexusGenInputs['productImageInputType'][] | null; // [productImageInputType!]
+      instaText?: string | null; // String
+      name?: NexusGenInputs['productNameInputType'][] | null; // [productNameInputType!]
+      shops?: number[] | null; // [Int!]
+      tags?: number[] | null; // [Int!]
     }
     updateShop: { // args
       address?: string[] | null; // [String!]
