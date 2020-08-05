@@ -47,3 +47,11 @@ export const eventContentsInputType = inputObjectType({
     t.int("order", { required: true });
   },
 });
+
+export const categoryNameInputType = inputObjectType({
+  name: "categoryNameInputType",
+  definition(t) {
+    t.string("word", { required: true });
+    t.string("lang", { required: true });
+  },
+});

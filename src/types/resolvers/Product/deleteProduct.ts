@@ -1,4 +1,4 @@
-import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
+import { intArg, mutationField } from "@nexus/schema";
 
 export const deleteProduct = mutationField("deleteProduct", {
   type: "Product",

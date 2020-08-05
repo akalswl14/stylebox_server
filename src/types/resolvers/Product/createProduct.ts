@@ -19,7 +19,7 @@ export const createProduct = mutationField("createProduct", {
         shops,
         tags = [],
         description = "",
-        instaText = "",
+        instaText = [],
       } = args;
       let product,
         tagList: { id: number }[] = [],

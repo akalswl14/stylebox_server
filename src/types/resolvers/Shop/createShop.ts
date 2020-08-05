@@ -1,5 +1,4 @@
 import { stringArg, mutationField, arg, intArg } from "@nexus/schema";
-import { connect } from "http2";
 
 export const createShop = mutationField("createShop", {
   type: "Shop",
@@ -27,7 +26,7 @@ export const createShop = mutationField("createShop", {
       let shop,
         tagList: { id: number }[] = [];
       if (tags) {
-        tags.forEach((eachTag) => {
+        tags.forEach((eachTag: number) => {
           tagList.push({ id: eachTag });
         });
       }
@@ -43,7 +42,7 @@ export const createShop = mutationField("createShop", {
       });
       if (shop) {
         const shopId = shop.id;
-        name.forEach(async (eachName) => {
+        name.forEach(async (eachName: { lang: string; word: string }) => {
           await ctx.prisma.shopName.create({
             data: {
               lang: eachName.lang,
@@ -52,7 +51,7 @@ export const createShop = mutationField("createShop", {
             },
           });
         });
-        images.forEach(async (eachImage) => {
+        images.forEach(async (eachImage: { url: string; order: number }) => {
           await ctx.prisma.shopImage.create({
             data: {
               url: eachImage.url,

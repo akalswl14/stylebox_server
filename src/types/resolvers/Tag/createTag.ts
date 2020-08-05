@@ -1,5 +1,4 @@
-import { stringArg, mutationField, arg, intArg } from "@nexus/schema";
-import { truncate } from "fs";
+import { mutationField, arg, intArg } from "@nexus/schema";
 
 export const createTag = mutationField("createTag", {
   type: "Tag",
@@ -12,9 +11,15 @@ export const createTag = mutationField("createTag", {
     try {
       const { name, categoryId } = args;
       let tag;
-      tag = await ctx.prisma.tag.create({
-        data: {},
-      });
+      if (categoryId) {
+        tag = await ctx.prisma.tag.create({
+          data: { Category: { connect: { id: categoryId } } },
+        });
+      } else {
+        tag = await ctx.prisma.tag.create({
+          data: {},
+        });
+      }
       if (tag) {
         const tagId = tag.id;
         name.forEach(async (eachName) => {

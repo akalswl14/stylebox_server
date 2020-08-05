@@ -5,7 +5,7 @@ export const createEvent = mutationField("createEvent", {
   args: {
     images: arg({ type: "eventContentsInputType", list: true, required: true }),
     videos: arg({ type: "eventContentsInputType", list: true, required: true }),
-    discription: stringArg({ nullable: true }),
+    discription: stringArg({ required: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {

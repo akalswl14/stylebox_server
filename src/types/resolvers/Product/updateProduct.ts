@@ -5,7 +5,7 @@ export const updateProduct = mutationField("updateProduct", {
   args: {
     id: intArg({ required: true }),
     description: stringArg({ nullable: true }),
-    instaText: stringArg({ nullable: true }),
+    instaText: stringArg({ nullable: true, list: true }),
     shops: intArg({ list: true, nullable: true }),
     tags: intArg({ list: true, nullable: true }),
     name: arg({ type: "productNameInputType", nullable: true, list: true }),
@@ -114,10 +114,16 @@ export const updateProduct = mutationField("updateProduct", {
             },
           });
         }
+        if (instaText && instaText.length > 0) {
+          product = await ctx.prisma.product.update({
+            where: { id },
+            data: { instaText: { set: instaText } },
+          });
+        }
         try {
           product = await ctx.prisma.product.update({
             where: { id },
-            data: { description, instaText },
+            data: { description },
           });
         } catch (e) {
           console.log(e);
