@@ -1,7 +1,7 @@
 import { intArg, mutationField } from "@nexus/schema";
 
-export const deleteEvent = mutationField("deleteEvent", {
-  type: "Event",
+export const deleteShop = mutationField("deleteShop", {
+  type: "Shop",
   args: {
     id: intArg({ required: true }),
   },
@@ -9,15 +9,15 @@ export const deleteEvent = mutationField("deleteEvent", {
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
-      let event;
+      let shop;
       try {
-        event = await ctx.prisma.event.delete({ where: { id } });
+        shop = await ctx.prisma.shop.delete({ where: { id } });
       } catch (e) {
         console.log(e);
       }
-      console.log(event);
-      if (event) {
-        return event;
+      console.log(shop);
+      if (shop) {
+        return shop;
       } else {
         return null;
       }
