@@ -1,11 +1,12 @@
-import { intArg, queryField } from "@nexus/schema";
+import { intArg, queryField, stringArg } from "@nexus/schema";
+import { ShopName, Shop } from "../../models";
 
 export const getAllShopbyTag = queryField("getAllShopbyTag", {
   type: "Shop",
   args: {
     tags: intArg({ list: true, required: true }),
     id: intArg({ nullable: true }),
-    pageNum: intArg({ required: true }),
+    lang: stringArg({ nullable: true }),
   },
   nullable: true,
   list: true,
@@ -13,57 +14,53 @@ export const getAllShopbyTag = queryField("getAllShopbyTag", {
     try {
       const skip = 1,
         take = 4;
-      const { tags, id, pageNum } = args;
+      const { tags, id, pageNum, lang = "ENG" } = args;
       let shops: any[] = [],
-        beforeNum,
-        noWishshops,
-        noWishNum = take,
+        shopNameList,
         tagList: {
           id: number;
         }[] = [];
-      beforeNum = (pageNum - 1) * take;
       if (tags) {
         tags.forEach((eachTag: any) => {
           tagList.push({ id: eachTag });
         });
       }
-      let WishWhere = {
-        tags: { some: { OR: tagList } },
-        wishersCnt: { gt: 0 },
-      };
-      let noWishWhere = {
-        tags: { some: { OR: tagList } },
-        wishersCnt: { equals: 0 },
-      };
-      let originalshopsNum = await ctx.prisma.shop.count({
-        where: { tags: { some: { OR: tagList } }, wishersCnt: { gt: 0 } },
-      });
       if (id) {
-        shops = await ctx.prisma.shop.findMany({where:{
-          tags:{some:{OR:tagList}},
-        }})
-        } else {
-          noWishshops = await ctx.prisma.shop.findMany({
-            where: noWishWhere,
-            orderBy: { createdAt: "desc" },
-            take: noWishNum,
-            skip: skip,
-            cursor: { id },
-          });
-        }
-      } else {
-        shops = await ctx.prisma.shop.findMany({
-          where: WishWhere,
-          orderBy: { wishersCnt: "desc" },
+        shopNameList = await ctx.prisma.shopName.findMany({
+          where: {
+            lang,
+            Shop: {
+              tags: { some: { OR: tagList } },
+            },
+          },
+          orderBy: { word: "asc" },
+          take: take,
+          skip: skip,
+          cursor: { id },
         });
-        noWishNum = take - shops.length;
-        noWishshops = await ctx.prisma.shop.findMany({
-          where: noWishWhere,
-          orderBy: { createdAt: "desc" },
-          take: noWishNum,
+      } else {
+        shopNameList = await ctx.prisma.shopName.findMany({
+          where: {
+            lang,
+            Shop: {
+              tags: { some: { OR: tagList } },
+            },
+          },
+          orderBy: { word: "asc" },
+          take: take,
+          skip: skip,
+          select: { shopId: true },
         });
       }
-      return [...shops, ...noWishshops];
+      if (shopNameList) {
+        for (const eachName of shopNameList) {
+          let rtn = await ctx.prisma.shop.findOne({
+            where: { id: eachName.shopId },
+          });
+          shops.push(rtn);
+        }
+      }
+      return shops;
     } catch (e) {
       console.log(e);
       return null;
