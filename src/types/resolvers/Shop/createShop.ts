@@ -10,6 +10,7 @@ export const createShop = mutationField("createShop", {
     address: stringArg({ nullable: true, list: true }),
     tags: intArg({ list: true, nullable: true }),
     city: stringArg({ nullable: true }),
+    logoUrl: stringArg({ nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -22,6 +23,7 @@ export const createShop = mutationField("createShop", {
         address = [],
         tags = [],
         city = "",
+        logoUrl,
       } = args;
       let shop,
         tagList: { id: number }[] = [];
@@ -40,6 +42,7 @@ export const createShop = mutationField("createShop", {
           wishersCnt: 0,
           name: { create: name },
           images: { create: images },
+          logoUrl,
         },
       });
       return shop;

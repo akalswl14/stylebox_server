@@ -1,5 +1,4 @@
 import { intArg, queryField, stringArg } from "@nexus/schema";
-import { ShopName, Shop } from "../../models";
 
 export const getAllShopbyTag = queryField("getAllShopbyTag", {
   type: "Shop",

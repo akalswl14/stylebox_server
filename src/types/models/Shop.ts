@@ -13,9 +13,10 @@ export const Shop = objectType({
     t.model.coordinate();
     t.model.address();
     t.model.tags();
+    t.model.logoUrl();
+    t.model.city();
     t.model.createdAt();
     t.model.updatedAt();
-    t.model.city();
   },
 });
 

@@ -10,11 +10,11 @@ export const Product = objectType({
     t.model.wishersCnt();
     t.model.shops();
     t.model.tags();
-    t.model.createdAt();
-    t.model.updatedAt();
     t.model.description();
     t.model.instaText();
-    t.model.Post();
+    t.model.posts();
+    t.model.createdAt();
+    t.model.updatedAt();
   },
 });
 

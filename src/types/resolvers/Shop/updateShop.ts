@@ -11,6 +11,7 @@ export const updateShop = mutationField("updateShop", {
     tags: intArg({ list: true, nullable: true }),
     name: arg({ type: "NameInputType", nullable: true, list: true }),
     images: arg({ type: "ImageInputType", nullable: true, list: true }),
+    logoUrl: stringArg({ nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -24,6 +25,7 @@ export const updateShop = mutationField("updateShop", {
         tags,
         name,
         images,
+        logoUrl,
       } = args;
       let shop,
         originalShop,
@@ -94,7 +96,7 @@ export const updateShop = mutationField("updateShop", {
         try {
           shop = await ctx.prisma.shop.update({
             where: { id },
-            data: { discription, coordinate, city },
+            data: { discription, coordinate, city, logoUrl },
           });
         } catch (e) {
           console.log(e);

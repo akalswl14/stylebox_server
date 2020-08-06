@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20200805154009-initial-migration
+20200806154257-change-field-names-and-add-shop-logo-url

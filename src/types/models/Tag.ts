@@ -9,9 +9,9 @@ export const Tag = objectType({
     t.model.categoryId();
     t.model.products();
     t.model.shops();
+    t.model.posts();
     t.model.createdAt();
     t.model.updatedAt();
-    t.model.Post();
   },
 });
 

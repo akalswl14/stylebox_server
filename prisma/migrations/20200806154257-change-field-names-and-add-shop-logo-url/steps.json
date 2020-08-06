@@ -1,0 +1,42 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "posts",
+      "type": "Post",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Product",
+      "field": "Post"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Product",
+      "field": "instaText",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "logoUrl",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "posts",
+      "type": "Post",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Tag",
+      "field": "Post"
+    }
+  ]
+}

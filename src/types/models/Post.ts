@@ -9,9 +9,9 @@ export const Post = objectType({
     t.model.publisher();
     t.model.products();
     t.model.tags();
+    t.model.images();
     t.model.createdAt();
     t.model.updatedAt();
-    t.model.images();
   },
 });
 
