@@ -15,7 +15,7 @@ export const getAllProductbyShop = queryField("getAllProductbyShop", {
       try {
         if (id) {
           products = await ctx.prisma.product.findMany({
-            where: { shopId },
+            where: { shops: { some: { id: shopId } } },
             orderBy: { createdAt: "desc" },
             take: 4,
             cursor: { id },
@@ -23,7 +23,7 @@ export const getAllProductbyShop = queryField("getAllProductbyShop", {
           });
         } else {
           products = await ctx.prisma.product.findMany({
-            where: { shopId },
+            where: { shops: { some: { id: shopId } } },
             orderBy: { createdAt: "desc" },
             take: 4,
           });
@@ -32,11 +32,7 @@ export const getAllProductbyShop = queryField("getAllProductbyShop", {
       } catch (e) {
         console.log(e);
       }
-      if (products) {
-        return products;
-      } else {
-        return null;
-      }
+      return products ? products : null;
     } catch (e) {
       console.log(e);
       return null;

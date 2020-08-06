@@ -29,11 +29,7 @@ export const getAllPost = queryField("getAllPost", {
       } catch (e) {
         console.log(e);
       }
-      if (posts) {
-        return posts;
-      } else {
-        return null;
-      }
+      return posts ? posts : null;
     } catch (e) {
       console.log(e);
       return null;

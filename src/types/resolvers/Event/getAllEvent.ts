@@ -29,11 +29,7 @@ export const getAllEvent = queryField("getAllEvent", {
       } catch (e) {
         console.log(e);
       }
-      if (events) {
-        return events;
-      } else {
-        return null;
-      }
+      return events ? events : null;
     } catch (e) {
       console.log(e);
       return null;

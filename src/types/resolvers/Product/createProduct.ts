@@ -8,7 +8,7 @@ export const createProduct = mutationField("createProduct", {
     images: arg({ type: "ImageInputType", list: true, required: true }),
     tags: intArg({ list: true, nullable: true }),
     description: stringArg({ nullable: true }),
-    instaText: stringArg({ nullable: true, list: true }),
+    instaText: stringArg({ nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -19,7 +19,7 @@ export const createProduct = mutationField("createProduct", {
         shops,
         tags = [],
         description = "",
-        instaText = [],
+        instaText = "",
       } = args;
       let product,
         tagList: { id: number }[] = [],
@@ -39,39 +39,15 @@ export const createProduct = mutationField("createProduct", {
             tags: { connect: tagList },
             wishersCnt: 0,
             description,
-            instaText: { set: instaText },
+            instaText,
+            image: { create: images },
+            name: { create: names },
           },
         });
       } catch (e) {
         console.log(e);
       }
-      if (product) {
-        const productId = product.id;
-        images.forEach(async (eachImage) => {
-          await ctx.prisma.productImage.create({
-            data: {
-              url: eachImage.url,
-              order: eachImage.order,
-              Product: { connect: { id: productId } },
-            },
-          });
-        });
-        names.forEach(async (eachName) => {
-          await ctx.prisma.productName.create({
-            data: {
-              lang: eachName.lang,
-              word: eachName.word,
-              Product: { connect: { id: productId } },
-            },
-          });
-        });
-        product = await ctx.prisma.product.findOne({
-          where: { id: productId },
-        });
-        return product;
-      } else {
-        return null;
-      }
+      return product ? product : null;
     } catch (e) {
       console.log(e);
       return null;

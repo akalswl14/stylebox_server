@@ -5,7 +5,7 @@ export const updateProduct = mutationField("updateProduct", {
   args: {
     id: intArg({ required: true }),
     description: stringArg({ nullable: true }),
-    instaText: stringArg({ nullable: true, list: true }),
+    instaText: stringArg({ nullable: true }),
     shops: intArg({ list: true, nullable: true }),
     tags: intArg({ list: true, nullable: true }),
     name: arg({ type: "NameInputType", nullable: true, list: true }),
@@ -54,18 +54,15 @@ export const updateProduct = mutationField("updateProduct", {
           originalImageInfoList.forEach((eachImage) => {
             originalImageList.push({ id: eachImage.id });
           });
+          if (originalImageList.length > 0) {
+            await ctx.prisma.product.update({
+              where: { id },
+              data: { image: { disconnect: originalImageList } },
+            });
+          }
           await ctx.prisma.product.update({
             where: { id },
-            data: { image: { disconnect: originalImageList } },
-          });
-          image.forEach(async (eachImage: { url: string; order: number }) => {
-            await ctx.prisma.productImage.create({
-              data: {
-                url: eachImage.url,
-                order: eachImage.order,
-                Product: { connect: { id } },
-              },
-            });
+            data: { image: { create: image } },
           });
         }
         if (name) {
@@ -80,14 +77,9 @@ export const updateProduct = mutationField("updateProduct", {
               data: { name: { disconnect: originalNameList } },
             });
           }
-          name.forEach(async (eachName: { lang: string; word: string }) => {
-            await ctx.prisma.productName.create({
-              data: {
-                lang: eachName.lang,
-                word: eachName.word,
-                Product: { connect: { id } },
-              },
-            });
+          await ctx.prisma.product.update({
+            where: { id },
+            data: { name: { create: name } },
           });
         }
         if (shops) {
@@ -114,26 +106,16 @@ export const updateProduct = mutationField("updateProduct", {
             },
           });
         }
-        if (instaText && instaText.length > 0) {
-          product = await ctx.prisma.product.update({
-            where: { id },
-            data: { instaText: { set: instaText } },
-          });
-        }
         try {
           product = await ctx.prisma.product.update({
             where: { id },
-            data: { description },
+            data: { description, instaText },
           });
         } catch (e) {
           console.log(e);
         }
       }
-      if (product) {
-        return product;
-      } else {
-        return null;
-      }
+      return product ? product : null;
     } catch (e) {
       console.log(e);
       return null;

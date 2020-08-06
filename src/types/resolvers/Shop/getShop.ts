@@ -13,11 +13,7 @@ export const getShop = queryField("getShop", {
       shop = await ctx.prisma.shop.findOne({
         where: { id },
       });
-      if (shop) {
-        return shop;
-      } else {
-        return null;
-      }
+      return shop ? shop : null;
     } catch (e) {
       console.log(e);
       return null;

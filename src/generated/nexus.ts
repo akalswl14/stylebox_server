@@ -94,7 +94,7 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     description?: string | null; // String
     id: number; // Int!
-    instaText: string[]; // [String!]!
+    instaText?: string | null; // String
     updatedAt: any; // DateTime!
     wishersCnt?: number | null; // Int
   }
@@ -266,7 +266,7 @@ export interface NexusGenFieldTypes {
     description: string | null; // String
     id: number; // Int!
     image: NexusGenRootTypes['ProductImage'][]; // [ProductImage!]!
-    instaText: string[]; // [String!]!
+    instaText: string | null; // String
     name: NexusGenRootTypes['ProductName'][]; // [ProductName!]!
     Post: NexusGenRootTypes['Post'][]; // [Post!]!
     shops: NexusGenRootTypes['Shop'][]; // [Shop!]!
@@ -417,7 +417,7 @@ export interface NexusGenArgTypes {
     createProduct: { // args
       description?: string | null; // String
       images: NexusGenInputs['ImageInputType'][]; // [ImageInputType!]!
-      instaText?: string[] | null; // [String!]
+      instaText?: string | null; // String
       names: NexusGenInputs['NameInputType'][]; // [NameInputType!]!
       shops: number[]; // [Int!]!
       tags?: number[] | null; // [Int!]
@@ -469,7 +469,7 @@ export interface NexusGenArgTypes {
       description?: string | null; // String
       id: number; // Int!
       image?: NexusGenInputs['ImageInputType'][] | null; // [ImageInputType!]
-      instaText?: string[] | null; // [String!]
+      instaText?: string | null; // String
       name?: NexusGenInputs['NameInputType'][] | null; // [NameInputType!]
       shops?: number[] | null; // [Int!]
       tags?: number[] | null; // [Int!]
@@ -553,7 +553,7 @@ export interface NexusGenArgTypes {
     }
     getAllShopbyTag: { // args
       id?: number | null; // Int
-      pageNum: number; // Int!
+      lang?: string | null; // String
       tags: number[]; // [Int!]!
     }
     getAllTag: { // args

@@ -25,7 +25,7 @@ model Product {
   shops       Shop[]
   tags        Tag[]
   description String?
-  instaText   String[]
+  instaText   String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @default(now()) @updatedAt
   Post        Post[]

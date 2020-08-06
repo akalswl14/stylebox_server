@@ -16,11 +16,7 @@ export const deleteShop = mutationField("deleteShop", {
         console.log(e);
       }
       console.log(shop);
-      if (shop) {
-        return shop;
-      } else {
-        return null;
-      }
+      return shop ? shop : null;
     } catch (e) {
       console.log(e);
       return null;

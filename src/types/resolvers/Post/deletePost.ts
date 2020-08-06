@@ -16,11 +16,7 @@ export const deletePost = mutationField("deletePost", {
         console.log(e);
       }
       console.log(post);
-      if (post) {
-        return post;
-      } else {
-        return null;
-      }
+      return post ? post : null;
     } catch (e) {
       console.log(e);
       return null;

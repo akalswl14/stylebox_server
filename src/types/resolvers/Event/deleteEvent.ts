@@ -16,11 +16,7 @@ export const deleteEvent = mutationField("deleteEvent", {
         console.log(e);
       }
       console.log(event);
-      if (event) {
-        return event;
-      } else {
-        return null;
-      }
+      return event ? event : null;
     } catch (e) {
       console.log(e);
       return null;

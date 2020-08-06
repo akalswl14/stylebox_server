@@ -32,11 +32,7 @@ export const searchTag = queryField("searchTag", {
       } catch (e) {
         console.log(e);
       }
-      if (tags) {
-        return tags;
-      } else {
-        return null;
-      }
+      return tags ? tags : null;
     } catch (e) {
       console.log(e);
       return null;

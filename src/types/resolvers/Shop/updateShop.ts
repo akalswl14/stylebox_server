@@ -28,11 +28,6 @@ export const updateShop = mutationField("updateShop", {
       let shop,
         originalShop,
         tagList: { id: number }[] = [];
-      if (tags) {
-        tags.forEach((eachTag: number) => {
-          tagList.push({ id: eachTag });
-        });
-      }
       try {
         originalShop = await ctx.prisma.shop.findOne({
           where: { id },
@@ -43,6 +38,9 @@ export const updateShop = mutationField("updateShop", {
       }
       if (originalShop) {
         if (tags) {
+          tags.forEach((eachTag: number) => {
+            tagList.push({ id: eachTag });
+          });
           let originalTagInfoList = originalShop.tags;
           let originalTagList: { id: number }[] = [];
           originalTagInfoList.forEach((eachTag) => {
@@ -59,18 +57,15 @@ export const updateShop = mutationField("updateShop", {
           originalImageInfoList.forEach((eachImage) => {
             originalImageList.push({ id: eachImage.id });
           });
+          if (originalImageList.length > 0) {
+            await ctx.prisma.shop.update({
+              where: { id },
+              data: { images: { disconnect: originalImageList } },
+            });
+          }
           await ctx.prisma.shop.update({
             where: { id },
-            data: { images: { disconnect: originalImageList } },
-          });
-          images.forEach(async (eachImage: { url: string; order: number }) => {
-            await ctx.prisma.shopImage.create({
-              data: {
-                url: eachImage.url,
-                order: eachImage.order,
-                Shop: { connect: { id } },
-              },
-            });
+            data: { images: { create: images } },
           });
         }
         if (name) {
@@ -79,18 +74,15 @@ export const updateShop = mutationField("updateShop", {
           originalNameInfoList.forEach((eachName) => {
             originalNameList.push({ id: eachName.id });
           });
+          if (originalNameList.length > 0) {
+            await ctx.prisma.shop.update({
+              where: { id },
+              data: { name: { disconnect: originalNameList } },
+            });
+          }
           await ctx.prisma.shop.update({
             where: { id },
-            data: { name: { disconnect: originalNameList } },
-          });
-          name.forEach(async (eachName: { lang: string; word: string }) => {
-            await ctx.prisma.shopName.create({
-              data: {
-                lang: eachName.lang,
-                word: eachName.word,
-                Shop: { connect: { id } },
-              },
-            });
+            data: { name: { create: name } },
           });
         }
         if (address) {
@@ -108,11 +100,7 @@ export const updateShop = mutationField("updateShop", {
           console.log(e);
         }
       }
-      if (shop) {
-        return shop;
-      } else {
-        return null;
-      }
+      return shop ? shop : null;
     } catch (e) {
       console.log(e);
       return null;

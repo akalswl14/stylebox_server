@@ -29,11 +29,7 @@ export const getAllProduct = queryField("getAllProduct", {
       } catch (e) {
         console.log(e);
       }
-      if (products) {
-        return products;
-      } else {
-        return null;
-      }
+      return products ? products : null;
     } catch (e) {
       console.log(e);
       return null;

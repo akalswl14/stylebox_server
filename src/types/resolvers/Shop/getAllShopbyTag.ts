@@ -39,22 +39,9 @@ export const getAllShopbyTag = queryField("getAllShopbyTag", {
         where: { tags: { some: { OR: tagList } }, wishersCnt: { gt: 0 } },
       });
       if (id) {
-        if (beforeNum <= originalshopsNum) {
-          shops = await ctx.prisma.shop.findMany({
-            where: WishWhere,
-            orderBy: { wishersCnt: "desc" },
-            take: take,
-            skip: skip,
-            cursor: { id },
-          });
-          if (beforeNum < originalshopsNum) {
-            noWishNum = take - shops.length;
-          }
-          noWishshops = await ctx.prisma.shop.findMany({
-            where: noWishWhere,
-            orderBy: { createdAt: "desc" },
-            take: noWishNum,
-          });
+        shops = await ctx.prisma.shop.findMany({where:{
+          tags:{some:{OR:tagList}},
+        }})
         } else {
           noWishshops = await ctx.prisma.shop.findMany({
             where: noWishWhere,
@@ -76,7 +63,6 @@ export const getAllShopbyTag = queryField("getAllShopbyTag", {
           take: noWishNum,
         });
       }
-      console.log([...shops, ...noWishshops]);
       return [...shops, ...noWishshops];
     } catch (e) {
       console.log(e);

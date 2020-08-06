@@ -19,11 +19,7 @@ export const getPost = queryField("getPost", {
       } catch (e) {
         console.log(e);
       }
-      if (post) {
-        return post;
-      } else {
-        return null;
-      }
+      return post ? post : null;
     } catch (e) {
       console.log(e);
       return null;

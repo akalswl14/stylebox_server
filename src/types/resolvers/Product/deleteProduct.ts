@@ -15,12 +15,7 @@ export const deleteProduct = mutationField("deleteProduct", {
       } catch (e) {
         console.log(e);
       }
-      console.log(product);
-      if (product) {
-        return product;
-      } else {
-        return null;
-      }
+      return product ? product : null;
     } catch (e) {
       console.log(e);
       return null;

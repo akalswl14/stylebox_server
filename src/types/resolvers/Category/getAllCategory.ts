@@ -33,11 +33,7 @@ export const getAllCategory = queryField("getAllCategory", {
       } catch (e) {
         console.log(e);
       }
-      if (categories) {
-        return categories;
-      } else {
-        return null;
-      }
+      return categories ? categories : null;
     } catch (e) {
       console.log(e);
       return null;

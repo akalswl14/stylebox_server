@@ -19,11 +19,7 @@ export const getEvent = queryField("getEvent", {
       } catch (e) {
         console.log(e);
       }
-      if (event) {
-        return event;
-      } else {
-        return null;
-      }
+      return event ? event : null;
     } catch (e) {
       console.log(e);
       return null;
