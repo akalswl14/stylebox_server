@@ -1,5 +1,5 @@
 export * from "./User";
-export * from "./Category";
+export * from "./Class";
 export * from "./Event";
 export * from "./Product";
 export * from "./Shop";
@@ -7,3 +7,4 @@ export * from "./Tag";
 export * from "./AuthPayload";
 export * from "./inputObjectType";
 export * from "./Post";
+export * from "./Like";

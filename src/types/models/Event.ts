@@ -7,8 +7,9 @@ export const Event = objectType({
     t.model.discription();
     t.model.images();
     t.model.videos();
-    t.model.wishers();
-    t.model.wishersCnt();
+    t.model.preferrers();
+    t.model.preferrersCnt();
+    t.model.viewCnt();
     t.model.createdAt();
     t.model.updatedAt();
   },
@@ -18,10 +19,10 @@ export const EventImage = objectType({
   name: "EventImage",
   definition(t) {
     t.model.id();
+    t.model.eventId();
+    t.model.Event();
     t.model.url();
     t.model.order();
-    t.model.Event();
-    t.model.eventId();
     t.model.createdAt();
     t.model.updatedAt();
   },
@@ -31,10 +32,10 @@ export const EventVideo = objectType({
   name: "EventVideo",
   definition(t) {
     t.model.id();
+    t.model.eventId();
+    t.model.Event();
     t.model.url();
     t.model.order();
-    t.model.Event();
-    t.model.eventId();
     t.model.createdAt();
     t.model.updatedAt();
   },

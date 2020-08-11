@@ -4,14 +4,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
   id           Int           @id @default(autoincrement())
-  likeContents LikeContent[]
-  likeShops    LikeShop[]
-  likeEvents   LikeEvent[]
+  wishContents LikeContent[]
+  wishShops    LikeShop[]
+  wishEvents   LikeEvent[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
 }

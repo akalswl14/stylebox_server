@@ -1,4 +1,5 @@
 # Prisma Migrate lockfile v1
 
-20200805154009-initial-migration
-20200806154257-change-field-names-and-add-shop-logo-url
+20200811164031-add-some-fields--fix-category-to-class-and-add-category-enum
+20200811165534-add-shop-phone-number
+20200811173645-fix-field-name

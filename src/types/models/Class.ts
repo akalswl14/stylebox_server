@@ -1,11 +1,12 @@
 import { objectType } from "@nexus/schema";
 
-export const Category = objectType({
-  name: "Category",
+export const Class = objectType({
+  name: "Class",
   definition(t) {
     t.model.id();
-    t.model.tags();
     t.model.name();
+    t.model.tags();
+    t.model.category();
     t.model.createdAt();
     t.model.updatedAt();
   },
@@ -15,10 +16,10 @@ export const CategoryName = objectType({
   name: "CategoryName",
   definition(t) {
     t.model.id();
+    t.model.classId();
+    t.model.Class();
     t.model.lang();
     t.model.word();
-    t.model.Category();
-    t.model.categoryId();
     t.model.createdAt();
     t.model.updatedAt();
   },

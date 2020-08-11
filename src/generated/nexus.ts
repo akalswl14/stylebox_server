@@ -30,6 +30,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  Category: "Location" | "Price" | "ProductClass" | "Style"
 }
 
 export interface NexusGenRootTypes {
@@ -37,25 +38,27 @@ export interface NexusGenRootTypes {
     token?: string | null; // String
     user?: NexusGenRootTypes['User'] | null; // User
   }
-  Category: { // root type
-    createdAt: any; // DateTime!
-    id: number; // Int!
-    updatedAt: any; // DateTime!
-  }
   CategoryName: { // root type
-    categoryId?: number | null; // Int
+    classId: number; // Int!
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  Class: { // root type
+    category: NexusGenEnums['Category']; // Category!
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    updatedAt: any; // DateTime!
+  }
   Event: { // root type
     createdAt: any; // DateTime!
     discription: string; // String!
     id: number; // Int!
+    preferrersCnt?: number | null; // Int
     updatedAt: any; // DateTime!
-    wishersCnt?: number | null; // Int
+    viewCnt?: number | null; // Int
   }
   EventImage: { // root type
     createdAt: any; // DateTime!
@@ -73,14 +76,38 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  LikeContent: { // root type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    postId?: number | null; // Int
+    productId?: number | null; // Int
+    updatedAt: any; // DateTime!
+    userId: number; // Int!
+  }
+  LikeEvent: { // root type
+    createdAt: any; // DateTime!
+    eventId: number; // Int!
+    id: number; // Int!
+    updatedAt: any; // DateTime!
+    userId: number; // Int!
+  }
+  LikeShop: { // root type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    shopId: number; // Int!
+    updatedAt: any; // DateTime!
+    userId: number; // Int!
+  }
   Mutation: {};
   Post: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
+    preferrersCnt?: number | null; // Int
     publisher?: string | null; // String
     text?: string | null; // String
     title?: string | null; // String
     updatedAt: any; // DateTime!
+    viewCnt?: number | null; // Int
   }
   PostImage: { // root type
     createdAt: any; // DateTime!
@@ -95,14 +122,16 @@ export interface NexusGenRootTypes {
     description?: string | null; // String
     id: number; // Int!
     instaText?: string | null; // String
+    preferrersCnt?: number | null; // Int
+    price?: string | null; // String
     updatedAt: any; // DateTime!
-    wishersCnt?: number | null; // Int
+    viewCnt?: number | null; // Int
   }
   ProductImage: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
     order: number; // Int!
-    productId?: number | null; // Int
+    productId: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
   }
@@ -110,27 +139,29 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    productId?: number | null; // Int
+    productId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
   Query: {};
   Shop: { // root type
     address: string[]; // [String!]!
-    city?: string | null; // String
     coordinate?: string | null; // String
     createdAt: any; // DateTime!
     discription?: string | null; // String
     id: number; // Int!
     logoUrl?: string | null; // String
+    phoneNumber: string[]; // [String!]!
+    popularity?: number | null; // Int
+    preferrersCnt?: number | null; // Int
     updatedAt: any; // DateTime!
-    wishersCnt?: number | null; // Int
+    viewCnt?: number | null; // Int
   }
   ShopImage: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
     order: number; // Int!
-    shopId?: number | null; // Int
+    shopId: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
   }
@@ -138,12 +169,20 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    shopId?: number | null; // Int
+    shopId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  ShopVideo: { // root type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    order: number; // Int!
+    shopId: number; // Int!
+    updatedAt: any; // DateTime!
+    url: string; // String!
+  }
   Tag: { // root type
-    categoryId?: number | null; // Int
+    classId: number; // Int!
     createdAt: any; // DateTime!
     id: number; // Int!
     updatedAt: any; // DateTime!
@@ -152,7 +191,7 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    tagId?: number | null; // Int
+    tagId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
@@ -172,6 +211,7 @@ export interface NexusGenRootTypes {
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   ImageInputType: NexusGenInputs['ImageInputType'];
   NameInputType: NexusGenInputs['NameInputType'];
+  Category: NexusGenEnums['Category'];
 }
 
 export interface NexusGenFieldTypes {
@@ -179,31 +219,33 @@ export interface NexusGenFieldTypes {
     token: string | null; // String
     user: NexusGenRootTypes['User'] | null; // User
   }
-  Category: { // field return type
-    createdAt: any; // DateTime!
-    id: number; // Int!
-    name: NexusGenRootTypes['CategoryName'][]; // [CategoryName!]!
-    tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
-    updatedAt: any; // DateTime!
-  }
   CategoryName: { // field return type
-    Category: NexusGenRootTypes['Category'] | null; // Category
-    categoryId: number | null; // Int
+    Class: NexusGenRootTypes['Class']; // Class!
+    classId: number; // Int!
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  Class: { // field return type
+    category: NexusGenEnums['Category']; // Category!
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    name: NexusGenRootTypes['CategoryName'][]; // [CategoryName!]!
+    tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
+    updatedAt: any; // DateTime!
+  }
   Event: { // field return type
     createdAt: any; // DateTime!
     discription: string; // String!
     id: number; // Int!
     images: NexusGenRootTypes['EventImage'][]; // [EventImage!]!
+    preferrers: NexusGenRootTypes['LikeEvent'][]; // [LikeEvent!]!
+    preferrersCnt: number | null; // Int
     updatedAt: any; // DateTime!
     videos: NexusGenRootTypes['EventVideo'][]; // [EventVideo!]!
-    wishers: NexusGenRootTypes['User'][]; // [User!]!
-    wishersCnt: number | null; // Int
+    viewCnt: number | null; // Int
   }
   EventImage: { // field return type
     createdAt: any; // DateTime!
@@ -223,9 +265,38 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  LikeContent: { // field return type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    Post: NexusGenRootTypes['Post'] | null; // Post
+    postId: number | null; // Int
+    Product: NexusGenRootTypes['Product'] | null; // Product
+    productId: number | null; // Int
+    updatedAt: any; // DateTime!
+    User: NexusGenRootTypes['User']; // User!
+    userId: number; // Int!
+  }
+  LikeEvent: { // field return type
+    createdAt: any; // DateTime!
+    Event: NexusGenRootTypes['Event']; // Event!
+    eventId: number; // Int!
+    id: number; // Int!
+    updatedAt: any; // DateTime!
+    User: NexusGenRootTypes['User']; // User!
+    userId: number; // Int!
+  }
+  LikeShop: { // field return type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    Shop: NexusGenRootTypes['Shop']; // Shop!
+    shopId: number; // Int!
+    updatedAt: any; // DateTime!
+    User: NexusGenRootTypes['User']; // User!
+    userId: number; // Int!
+  }
   Mutation: { // field return type
     confirmUser: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
-    createCategory: NexusGenRootTypes['Category'] | null; // Category
+    createCategory: NexusGenEnums['Category'] | null; // Category
     createEvent: NexusGenRootTypes['Event'] | null; // Event
     createPost: NexusGenRootTypes['Post'] | null; // Post
     createProduct: NexusGenRootTypes['Product'] | null; // Product
@@ -246,12 +317,15 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     images: NexusGenRootTypes['PostImage'][]; // [PostImage!]!
+    preferrers: NexusGenRootTypes['LikeContent'][]; // [LikeContent!]!
+    preferrersCnt: number | null; // Int
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     publisher: string | null; // String
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     text: string | null; // String
     title: string | null; // String
     updatedAt: any; // DateTime!
+    viewCnt: number | null; // Int
   }
   PostImage: { // field return type
     createdAt: any; // DateTime!
@@ -270,18 +344,20 @@ export interface NexusGenFieldTypes {
     instaText: string | null; // String
     name: NexusGenRootTypes['ProductName'][]; // [ProductName!]!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
+    preferrers: NexusGenRootTypes['LikeContent'][]; // [LikeContent!]!
+    preferrersCnt: number | null; // Int
+    price: string | null; // String
     shops: NexusGenRootTypes['Shop'][]; // [Shop!]!
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
-    wishers: NexusGenRootTypes['User'][]; // [User!]!
-    wishersCnt: number | null; // Int
+    viewCnt: number | null; // Int
   }
   ProductImage: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
     order: number; // Int!
-    Product: NexusGenRootTypes['Product'] | null; // Product
-    productId: number | null; // Int
+    Product: NexusGenRootTypes['Product']; // Product!
+    productId: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
   }
@@ -289,13 +365,13 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    Product: NexusGenRootTypes['Product'] | null; // Product
-    productId: number | null; // Int
+    Product: NexusGenRootTypes['Product']; // Product!
+    productId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
   Query: { // field return type
-    getAllCategory: NexusGenRootTypes['Category'][] | null; // [Category!]
+    getAllCategory: NexusGenEnums['Category'][] | null; // [Category!]
     getAllEvent: NexusGenRootTypes['Event'][] | null; // [Event!]
     getAllPost: NexusGenRootTypes['Post'][] | null; // [Post!]
     getAllPostbyTag: NexusGenRootTypes['Post'][] | null; // [Post!]
@@ -317,7 +393,6 @@ export interface NexusGenFieldTypes {
   }
   Shop: { // field return type
     address: string[]; // [String!]!
-    city: string | null; // String
     coordinate: string | null; // String
     createdAt: any; // DateTime!
     discription: string | null; // String
@@ -325,18 +400,22 @@ export interface NexusGenFieldTypes {
     images: NexusGenRootTypes['ShopImage'][]; // [ShopImage!]!
     logoUrl: string | null; // String
     name: NexusGenRootTypes['ShopName'][]; // [ShopName!]!
+    phoneNumber: string[]; // [String!]!
+    popularity: number | null; // Int
+    preferrers: NexusGenRootTypes['LikeShop'][]; // [LikeShop!]!
+    preferrersCnt: number | null; // Int
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
-    wishers: NexusGenRootTypes['User'][]; // [User!]!
-    wishersCnt: number | null; // Int
+    videos: NexusGenRootTypes['ShopVideo'][]; // [ShopVideo!]!
+    viewCnt: number | null; // Int
   }
   ShopImage: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
     order: number; // Int!
-    Shop: NexusGenRootTypes['Shop'] | null; // Shop
-    shopId: number | null; // Int
+    Shop: NexusGenRootTypes['Shop']; // Shop!
+    shopId: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
   }
@@ -344,14 +423,23 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    Shop: NexusGenRootTypes['Shop'] | null; // Shop
-    shopId: number | null; // Int
+    Shop: NexusGenRootTypes['Shop']; // Shop!
+    shopId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  ShopVideo: { // field return type
+    createdAt: any; // DateTime!
+    id: number; // Int!
+    order: number; // Int!
+    Shop: NexusGenRootTypes['Shop']; // Shop!
+    shopId: number; // Int!
+    updatedAt: any; // DateTime!
+    url: string; // String!
+  }
   Tag: { // field return type
-    Category: NexusGenRootTypes['Category'] | null; // Category
-    categoryId: number | null; // Int
+    Class: NexusGenRootTypes['Class']; // Class!
+    classId: number; // Int!
     createdAt: any; // DateTime!
     id: number; // Int!
     name: NexusGenRootTypes['TagName'][]; // [TagName!]!
@@ -364,23 +452,22 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     lang: string; // String!
-    Tag: NexusGenRootTypes['Tag'] | null; // Tag
-    tagId: number | null; // Int
+    Tag: NexusGenRootTypes['Tag']; // Tag!
+    tagId: number; // Int!
     updatedAt: any; // DateTime!
     word: string; // String!
   }
   User: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
+    likeContents: NexusGenRootTypes['LikeContent'][]; // [LikeContent!]!
+    likeShops: NexusGenRootTypes['LikeShop'][]; // [LikeShop!]!
     updatedAt: any; // DateTime!
-    wishEvents: NexusGenRootTypes['Event'][]; // [Event!]!
-    wishProducts: NexusGenRootTypes['Product'][]; // [Product!]!
-    wishShops: NexusGenRootTypes['Shop'][]; // [Shop!]!
   }
 }
 
 export interface NexusGenArgTypes {
-  Category: {
+  Class: {
     name: { // args
       skip?: number | null; // Int
     }
@@ -392,10 +479,10 @@ export interface NexusGenArgTypes {
     images: { // args
       skip?: number | null; // Int
     }
-    videos: { // args
+    preferrers: { // args
       skip?: number | null; // Int
     }
-    wishers: { // args
+    videos: { // args
       skip?: number | null; // Int
     }
   }
@@ -493,6 +580,9 @@ export interface NexusGenArgTypes {
     images: { // args
       skip?: number | null; // Int
     }
+    preferrers: { // args
+      skip?: number | null; // Int
+    }
     products: { // args
       skip?: number | null; // Int
     }
@@ -510,13 +600,13 @@ export interface NexusGenArgTypes {
     posts: { // args
       skip?: number | null; // Int
     }
+    preferrers: { // args
+      skip?: number | null; // Int
+    }
     shops: { // args
       skip?: number | null; // Int
     }
     tags: { // args
-      skip?: number | null; // Int
-    }
-    wishers: { // args
       skip?: number | null; // Int
     }
   }
@@ -587,13 +677,16 @@ export interface NexusGenArgTypes {
     name: { // args
       skip?: number | null; // Int
     }
+    preferrers: { // args
+      skip?: number | null; // Int
+    }
     products: { // args
       skip?: number | null; // Int
     }
     tags: { // args
       skip?: number | null; // Int
     }
-    wishers: { // args
+    videos: { // args
       skip?: number | null; // Int
     }
   }
@@ -612,13 +705,10 @@ export interface NexusGenArgTypes {
     }
   }
   User: {
-    wishEvents: { // args
+    likeContents: { // args
       skip?: number | null; // Int
     }
-    wishProducts: { // args
-      skip?: number | null; // Int
-    }
-    wishShops: { // args
+    likeShops: { // args
       skip?: number | null; // Int
     }
   }
@@ -629,11 +719,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Category" | "CategoryName" | "Event" | "EventImage" | "EventVideo" | "Mutation" | "Post" | "PostImage" | "Product" | "ProductImage" | "ProductName" | "Query" | "Shop" | "ShopImage" | "ShopName" | "Tag" | "TagName" | "User";
+export type NexusGenObjectNames = "AuthPayload" | "CategoryName" | "Class" | "Event" | "EventImage" | "EventVideo" | "LikeContent" | "LikeEvent" | "LikeShop" | "Mutation" | "Post" | "PostImage" | "Product" | "ProductImage" | "ProductName" | "Query" | "Shop" | "ShopImage" | "ShopName" | "ShopVideo" | "Tag" | "TagName" | "User";
 
 export type NexusGenInputNames = "ImageInputType" | "NameInputType";
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = "Category";
 
 export type NexusGenInterfaceNames = never;
 
