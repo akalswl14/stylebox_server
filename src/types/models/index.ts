@@ -8,3 +8,5 @@ export * from "./AuthPayload";
 export * from "./inputObjectType";
 export * from "./Post";
 export * from "./Like";
+export * from "./Branch";
+export * from "./View";

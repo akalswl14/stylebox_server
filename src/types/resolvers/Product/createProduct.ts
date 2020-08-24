@@ -1,47 +1,56 @@
-import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
+import {
+  intArg,
+  stringArg,
+  mutationField,
+  arg,
+  booleanArg,
+} from "@nexus/schema";
 
 export const createProduct = mutationField("createProduct", {
   type: "Product",
   args: {
-    shops: intArg({ required: true, list: true }),
     names: arg({ type: "NameInputType", list: true, required: true }),
-    images: arg({ type: "ImageInputType", list: true, required: true }),
-    tags: intArg({ list: true, nullable: true }),
+    images: arg({ type: "ImageInputType", list: true, required: false }),
+    branches: arg({ type: "idDicInputType", list: true, required: false }),
+    tags: arg({ type: "idDicInputType", list: true, required: false }),
     description: stringArg({ nullable: true }),
     instaText: stringArg({ nullable: true }),
+    price: intArg({ nullable: true }),
+    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
+    videos: arg({ type: "VideoInputType", list: true, required: false }),
+    isOwnPost: booleanArg({ required: false }),
   },
   nullable: true,
+  description:
+    "names argument is for ProductName and images argument is for PostImage.",
   resolve: async (_, args, ctx) => {
     try {
       const {
         names,
-        images,
-        shops,
+        images = [],
+        branches = [],
         tags = [],
-        description = "",
-        instaText = "",
+        description,
+        instaText,
+        price = 0,
+        externalLinks = [],
+        videos = [],
+        isOwnPost = false,
       } = args;
-      let product,
-        tagList: { id: number }[] = [],
-        shopList: { id: number }[] = [];
+      let product;
       try {
-        if (tags) {
-          tags.forEach((eachTag) => {
-            tagList.push({ id: eachTag });
-          });
-        }
-        shops.forEach((eachShop: number) => {
-          shopList.push({ id: eachShop });
-        });
         product = await ctx.prisma.product.create({
           data: {
-            shops: { connect: shopList },
-            tags: { connect: tagList },
-            wishersCnt: 0,
+            names: { create: names },
+            images: { create: images },
+            branches: { connect: branches },
+            tags: { connect: tags },
             description,
             instaText,
-            image: { create: images },
-            name: { create: names },
+            price,
+            externalLinks: { create: externalLinks },
+            videos: { create: videos },
+            isOwnPost,
           },
         });
       } catch (e) {

@@ -4,20 +4,21 @@ export const Shop = objectType({
   name: "Shop",
   definition(t) {
     t.model.id();
-    t.model.name();
+    t.model.names();
+    t.model.branches();
+    t.model.externalLinks();
     t.model.logoUrl();
-    t.model.discription();
+    t.model.description();
     t.model.images();
     t.model.videos();
     t.model.phoneNumber();
-    t.model.products();
     t.model.preferrers();
-    t.model.preferrersCnt();
-    t.model.viewCnt();
-    t.model.coordinate();
-    t.model.address();
     t.model.tags();
-    t.model.popularity();
+    t.model.posts();
+    t.model.views();
+    t.model.weeklyRankScore();
+    t.model.monthlyRankScore();
+    t.model.lifeTimeRankScore();
     t.model.createdAt();
     t.model.updatedAt();
   },
@@ -57,6 +58,21 @@ export const ShopVideo = objectType({
     t.model.Shop();
     t.model.url();
     t.model.order();
+    t.model.isYoutube();
+    t.model.createdAt();
+    t.model.updatedAt();
+  },
+});
+
+export const ShopExternalLink = objectType({
+  name: "ShopExternalLink",
+  definition(t) {
+    t.model.id();
+    t.model.url();
+    t.model.order();
+    t.model.linkType();
+    t.model.shopId();
+    t.model.Shop();
     t.model.createdAt();
     t.model.updatedAt();
   },

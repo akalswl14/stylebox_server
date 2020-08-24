@@ -4,9 +4,8 @@ export const User = objectType({
   name: "User",
   definition(t) {
     t.model.id();
-    t.model.likeContents();
-    t.model.likeShops();
-    t.model.likeEvents;
+    t.model.views();
+    t.model.likes();
     t.model.createdAt();
     t.model.updatedAt();
   },

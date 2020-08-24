@@ -6,6 +6,7 @@ export const deletePost = mutationField("deletePost", {
     id: intArg({ required: true }),
   },
   nullable: true,
+  description: "id argument is for Post ID.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;

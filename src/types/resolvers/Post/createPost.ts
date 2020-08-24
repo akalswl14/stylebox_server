@@ -3,54 +3,90 @@ import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
 export const createPost = mutationField("createPost", {
   type: "Post",
   args: {
-    text: stringArg({ nullable: true }),
     title: stringArg({ nullable: true }),
+    text: stringArg({ nullable: true }),
+    images: arg({ type: "ImageInputType", list: true, nullable: true }),
     publisher: stringArg({ nullable: true }),
-    products: intArg({ required: true, list: true }),
-    images: arg({ type: "ImageInputType", list: true, required: true }),
-    tags: intArg({ list: true, nullable: true }),
+    products: intArg({ nullable: true, list: true }),
+    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
+    videos: arg({ type: "VideoInputType", list: true, nullable: true }),
+    mainProductId: intArg({ nullable: true }),
   },
   nullable: true,
+  description:
+    "images argument is for PostImage and videos argument is for PostVideo.",
   resolve: async (_, args, ctx) => {
     try {
       const {
-        text = "",
-        title = "",
-        publisher = "",
-        images,
-        products,
+        title,
+        text,
+        images = [],
+        publisher,
+        products = [],
         tags = [],
+        videos = [],
+        mainProductId,
       } = args;
+      const weeklyRankScore = 0.0,
+        lifeTimeRankScore = 0.0,
+        monthlyRankScore = 0.0;
       let post,
-        tagList: { id: number }[] = [],
-        productList: { id: number }[] = [];
-      try {
-        if (tags) {
-          tags.forEach((eachTag: number) => {
-            tagList.push({ id: eachTag });
+        shopresult,
+        shopId,
+        branches: { id: number }[] = [],
+        mainProduct,
+        mainProductPrice;
+      if (mainProductId) {
+        try {
+          mainProduct = await ctx.prisma.product.findOne({
+            where: { id: mainProductId },
+            include: { branches: true },
           });
+          mainProductPrice = mainProduct?.price;
+          branches = mainProduct ? mainProduct.branches : [];
+        } catch (e) {
+          console.log(e);
         }
-        products.forEach((eachProduct) => {
-          productList.push({ id: eachProduct });
-        });
-        post = await ctx.prisma.post.create({
+        try {
+          shopresult = await ctx.prisma.branch.findOne({
+            where: {
+              id: branches[0].id,
+            },
+            select: { shopId: true },
+          });
+          if (shopresult) {
+            shopId = shopresult.shopId ? shopresult.shopId : shopId;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      try {
+        await ctx.prisma.post.create({
           data: {
-            text,
             title,
-            publisher,
-            products: { connect: productList },
+            text,
             images: { create: images },
-            tags: { connect: tagList },
+            weeklyRankScore,
+            lifeTimeRankScore,
+            monthlyRankScore,
+            publisher,
+            products: { connect: products },
+            tags: { connect: tags },
+            videos: { create: videos },
+            mainProductId,
+            mainProductPrice,
+            Shop: {
+              connect: {
+                id: shopId,
+              },
+            },
           },
         });
       } catch (e) {
         console.log(e);
       }
-      if (post) {
-        return post;
-      } else {
-        return null;
-      }
+      return post ? post : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -1,39 +1,39 @@
 import { intArg, queryField } from "@nexus/schema";
 
-export const getAllCategory = queryField("getAllCategory", {
-  type: "Category",
+export const getAllClass = queryField("getAllClass", {
+  type: "Class",
   args: {
     id: intArg({ nullable: true }),
   },
   nullable: true,
   list: true,
+  description: "id argument is for cursor.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
       const take = 4;
       const skip = 1;
-      let categories;
+      let classesData;
       try {
         if (id) {
-          categories = await ctx.prisma.category.findMany({
+          classesData = await ctx.prisma.class.findMany({
             orderBy: { createdAt: "desc" },
             take: take,
             cursor: { id },
             skip: skip,
-            include: { name: true, tags: true },
+            include: { names: true, tags: true },
           });
         } else {
-          categories = await ctx.prisma.category.findMany({
+          classesData = await ctx.prisma.class.findMany({
             orderBy: { createdAt: "desc" },
             take: take,
-            include: { name: true, tags: true },
+            include: { names: true, tags: true },
           });
         }
-        return categories;
       } catch (e) {
         console.log(e);
       }
-      return categories ? categories : null;
+      return classesData ? classesData : null;
     } catch (e) {
       console.log(e);
       return null;

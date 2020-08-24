@@ -1,5 +1,4 @@
 # Prisma Migrate lockfile v1
 
-20200811164031-add-some-fields--fix-category-to-class-and-add-category-enum
-20200811165534-add-shop-phone-number
-20200811173645-fix-field-name
+20200824125502-inital-migration
+20200824132116-fix-event

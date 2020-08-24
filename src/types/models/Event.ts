@@ -4,12 +4,14 @@ export const Event = objectType({
   name: "Event",
   definition(t) {
     t.model.id();
-    t.model.discription();
     t.model.images();
     t.model.videos();
     t.model.preferrers();
-    t.model.preferrersCnt();
-    t.model.viewCnt();
+    t.model.url();
+    t.model.dueDate();
+    t.model.bannerImage();
+    t.model.tags();
+    t.model.views();
     t.model.createdAt();
     t.model.updatedAt();
   },

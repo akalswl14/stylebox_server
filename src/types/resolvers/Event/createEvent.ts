@@ -4,50 +4,34 @@ export const createEvent = mutationField("createEvent", {
   type: "Event",
   args: {
     images: arg({ type: "ImageInputType", list: true, required: true }),
-    videos: arg({ type: "ImageInputType", list: true, required: true }),
-    discription: stringArg({ required: true }),
+    videos: arg({ type: "VideoInputType", list: true, required: true }),
+    url: stringArg({ nullable: true }),
+    dueDate: arg({ type: "DateTime", required: true }),
+    bannerImage: stringArg({ required: true }),
+    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
   },
   nullable: true,
+  description:
+    "images argument is for EventImage, video argument is for EventVideo.",
   resolve: async (_, args, ctx) => {
     try {
-      const { images, videos, discription = "" } = args;
+      const { images, videos, url, dueDate, bannerImage, tags = [] } = args;
       let event;
       try {
         event = await ctx.prisma.event.create({
           data: {
-            discription,
+            images: { create: images },
+            videos: { create: videos },
+            url,
+            dueDate,
+            bannerImage,
+            tags: { connect: tags },
           },
         });
       } catch (e) {
         console.log(e);
       }
-      if (event) {
-        const eventId = event.id;
-        images.forEach(async (eachImage: { url: string; order: any }) => {
-          await ctx.prisma.eventImage.create({
-            data: {
-              url: eachImage.url,
-              order: eachImage.order,
-              Event: { connect: { id: eventId } },
-            },
-          });
-        });
-        videos.forEach(async (eachVideo: { url: string; order: any }) => {
-          await ctx.prisma.eventVideo.create({
-            data: {
-              url: eachVideo.url,
-              order: eachVideo.order,
-              Event: { connect: { id: eventId } },
-            },
-          });
-        });
-        event = await ctx.prisma.event.findOne({
-          where: { id: eventId },
-        });
-        return event;
-      } else {
-        return null;
-      }
+      return event ? event : null;
     } catch (e) {
       console.log(e);
       return null;

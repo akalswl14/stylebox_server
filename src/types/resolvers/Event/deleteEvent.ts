@@ -6,6 +6,7 @@ export const deleteEvent = mutationField("deleteEvent", {
     id: intArg({ required: true }),
   },
   nullable: true,
+  description: "id argument is for Event ID.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -15,7 +16,6 @@ export const deleteEvent = mutationField("deleteEvent", {
       } catch (e) {
         console.log(e);
       }
-      console.log(event);
       return event ? event : null;
     } catch (e) {
       console.log(e);

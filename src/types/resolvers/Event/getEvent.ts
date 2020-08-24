@@ -6,6 +6,7 @@ export const getEvent = queryField("getEvent", {
     id: intArg({ required: true }),
   },
   nullable: true,
+  description: "id argument is for Event ID.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;

@@ -8,7 +8,9 @@
         "Location",
         "ProductClass",
         "Style",
-        "Price"
+        "Price",
+        "Feature",
+        "ShopName"
       ]
     },
     {
@@ -83,22 +85,15 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "wishContents",
-      "type": "LikeContent",
+      "field": "views",
+      "type": "View",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "wishShops",
-      "type": "LikeShop",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
-      "field": "wishEvents",
-      "type": "LikeEvent",
+      "field": "likes",
+      "type": "Like",
       "arity": "List"
     },
     {
@@ -226,14 +221,14 @@
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "name",
+      "field": "names",
       "type": "ProductName",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "image",
+      "field": "images",
       "type": "ProductImage",
       "arity": "List"
     },
@@ -241,28 +236,14 @@
       "tag": "CreateField",
       "model": "Product",
       "field": "preferrers",
-      "type": "LikeContent",
+      "type": "Like",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "preferrersCnt",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Product",
-      "field": "viewCnt",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Product",
-      "field": "shops",
-      "type": "Shop",
+      "field": "branches",
+      "type": "Branch",
       "arity": "List"
     },
     {
@@ -297,8 +278,36 @@
       "tag": "CreateField",
       "model": "Product",
       "field": "price",
-      "type": "String",
+      "type": "Int",
       "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "externalLinks",
+      "type": "ProductExternalLink",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "videos",
+      "type": "ProductVideo",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "isOwnPost",
+      "type": "Boolean",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "views",
+      "type": "View",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -427,14 +436,14 @@
       "model": "ProductName",
       "field": "productId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "ProductName",
       "field": "Product",
       "type": "Product",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -616,14 +625,14 @@
       "model": "ProductImage",
       "field": "productId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "ProductImage",
       "field": "Product",
       "type": "Product",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -755,6 +764,398 @@
     },
     {
       "tag": "CreateModel",
+      "model": "ProductVideo"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "productId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "Product",
+      "type": "Product",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "Product"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[productId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "url",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "order",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "isYoutube",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductVideo",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductVideo",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "ProductExternalLink"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "url",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "order",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "linkType",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "productId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "Product",
+      "type": "Product",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "Product"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[productId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductExternalLink",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateModel",
       "model": "Shop"
     },
     {
@@ -803,8 +1204,22 @@
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "name",
+      "field": "names",
       "type": "ShopName",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "branches",
+      "type": "Branch",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "externalLinks",
+      "type": "ShopExternalLink",
       "arity": "List"
     },
     {
@@ -817,7 +1232,7 @@
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "discription",
+      "field": "description",
       "type": "String",
       "arity": "Optional"
     },
@@ -838,43 +1253,15 @@
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "products",
-      "type": "Product",
+      "field": "phoneNumber",
+      "type": "String",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "Shop",
       "field": "preferrers",
-      "type": "LikeShop",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Shop",
-      "field": "preferrersCnt",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Shop",
-      "field": "viewCnt",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Shop",
-      "field": "coordinate",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Shop",
-      "field": "address",
-      "type": "String",
+      "type": "Like",
       "arity": "List"
     },
     {
@@ -887,8 +1274,36 @@
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "popularity",
-      "type": "Int",
+      "field": "posts",
+      "type": "Post",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "views",
+      "type": "View",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "weeklyRankScore",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "monthlyRankScore",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "lifeTimeRankScore",
+      "type": "Float",
       "arity": "Optional"
     },
     {
@@ -1018,14 +1433,14 @@
       "model": "ShopName",
       "field": "shopId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "ShopName",
       "field": "Shop",
       "type": "Shop",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -1207,14 +1622,14 @@
       "model": "ShopImage",
       "field": "shopId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "ShopImage",
       "field": "Shop",
       "type": "Shop",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -1396,14 +1811,14 @@
       "model": "ShopVideo",
       "field": "shopId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "ShopVideo",
       "field": "Shop",
       "type": "Shop",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -1456,6 +1871,13 @@
       "model": "ShopVideo",
       "field": "order",
       "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopVideo",
+      "field": "isYoutube",
+      "type": "Boolean",
       "arity": "Required"
     },
     {
@@ -1535,6 +1957,615 @@
     },
     {
       "tag": "CreateModel",
+      "model": "ShopExternalLink"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "url",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "order",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "linkType",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "shopId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "Shop",
+      "type": "Shop",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[shopId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopExternalLink",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "Branch"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "shopId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "Shop",
+      "type": "Shop",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[shopId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "names",
+      "type": "BranchName",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "logoUrl",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "phoneNumbers",
+      "type": "String",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "products",
+      "type": "Product",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "address",
+      "type": "String",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "googleMapId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "tags",
+      "type": "Tag",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Branch",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "BranchName"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "branchId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "Branch",
+      "type": "Branch",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "Branch"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "Branch"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[branchId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "Branch"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "lang",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "word",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "updatedAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateModel",
       "model": "Event"
     },
     {
@@ -1583,13 +2614,6 @@
     {
       "tag": "CreateField",
       "model": "Event",
-      "field": "discription",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Event",
       "field": "images",
       "type": "EventImage",
       "arity": "List"
@@ -1605,15 +2629,8 @@
       "tag": "CreateField",
       "model": "Event",
       "field": "preferrers",
-      "type": "LikeEvent",
+      "type": "Like",
       "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Event",
-      "field": "preferrersCnt",
-      "type": "Int",
-      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -1621,6 +2638,41 @@
       "field": "viewCnt",
       "type": "Int",
       "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "url",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "dueDate",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "bannerImage",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "tags",
+      "type": "Tag",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "views",
+      "type": "View",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -2003,6 +3055,13 @@
     {
       "tag": "CreateField",
       "model": "EventVideo",
+      "field": "isYoutube",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "EventVideo",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -2125,8 +3184,8 @@
     {
       "tag": "CreateField",
       "model": "Class",
-      "field": "name",
-      "type": "CategoryName",
+      "field": "names",
+      "type": "ClassName",
       "arity": "List"
     },
     {
@@ -2220,11 +3279,11 @@
     },
     {
       "tag": "CreateModel",
-      "model": "CategoryName"
+      "model": "ClassName"
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "id",
       "type": "Int",
       "arity": "Required"
@@ -2234,7 +3293,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "id"
         },
         "directive": "id"
@@ -2245,7 +3304,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "id"
         },
         "directive": "default"
@@ -2257,7 +3316,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "id"
         },
         "directive": "default"
@@ -2267,24 +3326,24 @@
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "classId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "Class",
       "type": "Class",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "Class"
         },
         "directive": "relation"
@@ -2296,7 +3355,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "Class"
         },
         "directive": "relation"
@@ -2310,7 +3369,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "Class"
         },
         "directive": "relation"
@@ -2320,21 +3379,21 @@
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "lang",
       "type": "String",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "word",
       "type": "String",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -2344,7 +3403,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "createdAt"
         },
         "directive": "default"
@@ -2356,7 +3415,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "createdAt"
         },
         "directive": "default"
@@ -2366,7 +3425,7 @@
     },
     {
       "tag": "CreateField",
-      "model": "CategoryName",
+      "model": "ClassName",
       "field": "updatedAt",
       "type": "DateTime",
       "arity": "Required"
@@ -2376,7 +3435,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -2388,7 +3447,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -2401,7 +3460,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "CategoryName",
+          "model": "ClassName",
           "field": "updatedAt"
         },
         "directive": "updatedAt"
@@ -2510,15 +3569,8 @@
     {
       "tag": "CreateField",
       "model": "Tag",
-      "field": "name",
+      "field": "names",
       "type": "TagName",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Tag",
-      "field": "products",
-      "type": "Product",
       "arity": "List"
     },
     {
@@ -2531,9 +3583,51 @@
     {
       "tag": "CreateField",
       "model": "Tag",
+      "field": "branches",
+      "type": "Branch",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
       "field": "posts",
       "type": "Post",
       "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "products",
+      "type": "Product",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "events",
+      "type": "Event",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "category",
+      "type": "Category",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "orderInPopular",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "orderInRecommend",
+      "type": "Int",
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -2662,14 +3756,14 @@
       "model": "TagName",
       "field": "tagId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "TagName",
       "field": "Tag",
       "type": "Tag",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -2849,6 +3943,59 @@
     {
       "tag": "CreateField",
       "model": "Post",
+      "field": "shopId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "Shop",
+      "type": "Shop",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Post",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Post",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[shopId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Post",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
       "field": "title",
       "type": "String",
       "arity": "Optional"
@@ -2871,21 +4018,28 @@
       "tag": "CreateField",
       "model": "Post",
       "field": "preferrers",
-      "type": "LikeContent",
+      "type": "Like",
       "arity": "List"
     },
     {
       "tag": "CreateField",
       "model": "Post",
-      "field": "preferrersCnt",
-      "type": "Int",
+      "field": "weeklyRankScore",
+      "type": "Float",
       "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "Post",
-      "field": "viewCnt",
-      "type": "Int",
+      "field": "lifeTimeRankScore",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "monthlyRankScore",
+      "type": "Float",
       "arity": "Optional"
     },
     {
@@ -2907,6 +4061,34 @@
       "model": "Post",
       "field": "tags",
       "type": "Tag",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "videos",
+      "type": "PostVideo",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "mainProductId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "mainProductPrice",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "views",
+      "type": "View",
       "arity": "List"
     },
     {
@@ -3175,11 +4357,11 @@
     },
     {
       "tag": "CreateModel",
-      "model": "LikeContent"
+      "model": "PostVideo"
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
+      "model": "PostVideo",
       "field": "id",
       "type": "Int",
       "arity": "Required"
@@ -3189,7 +4371,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "id"
         },
         "directive": "id"
@@ -3200,7 +4382,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "id"
         },
         "directive": "default"
@@ -3212,7 +4394,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "id"
         },
         "directive": "default"
@@ -3222,28 +4404,14 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
+      "model": "PostVideo",
       "field": "postId",
       "type": "Int",
       "arity": "Optional"
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
-      "field": "productId",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeContent",
-      "field": "userId",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeContent",
+      "model": "PostVideo",
       "field": "Post",
       "type": "Post",
       "arity": "Optional"
@@ -3253,7 +4421,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "Post"
         },
         "directive": "relation"
@@ -3265,7 +4433,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "Post"
         },
         "directive": "relation"
@@ -3279,7 +4447,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "Post"
         },
         "directive": "relation"
@@ -3289,99 +4457,28 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
-      "field": "Product",
-      "type": "Product",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "Product"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "Product"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[productId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "Product"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeContent",
-      "field": "User",
-      "type": "User",
+      "model": "PostVideo",
+      "field": "url",
+      "type": "String",
       "arity": "Required"
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "User"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "User"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeContent",
-          "field": "User"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
+      "tag": "CreateField",
+      "model": "PostVideo",
+      "field": "order",
+      "type": "Int",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
+      "model": "PostVideo",
+      "field": "isYoutube",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "PostVideo",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3391,7 +4488,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3403,7 +4500,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3413,7 +4510,7 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeContent",
+      "model": "PostVideo",
       "field": "updatedAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3423,7 +4520,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -3435,7 +4532,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -3448,7 +4545,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeContent",
+          "model": "PostVideo",
           "field": "updatedAt"
         },
         "directive": "updatedAt"
@@ -3456,11 +4553,11 @@
     },
     {
       "tag": "CreateModel",
-      "model": "LikeShop"
+      "model": "View"
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
+      "model": "View",
       "field": "id",
       "type": "Int",
       "arity": "Required"
@@ -3470,7 +4567,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "id"
         },
         "directive": "id"
@@ -3481,7 +4578,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "id"
         },
         "directive": "default"
@@ -3493,7 +4590,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "id"
         },
         "directive": "default"
@@ -3503,31 +4600,52 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
+      "model": "View",
       "field": "userId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
+      "model": "View",
       "field": "shopId",
       "type": "Int",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
+      "model": "View",
+      "field": "postId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "View",
+      "field": "eventId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "View",
+      "field": "productId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "View",
       "field": "User",
       "type": "User",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "User"
         },
         "directive": "relation"
@@ -3539,7 +4657,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "User"
         },
         "directive": "relation"
@@ -3553,7 +4671,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "User"
         },
         "directive": "relation"
@@ -3563,17 +4681,17 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
+      "model": "View",
       "field": "Shop",
       "type": "Shop",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "Shop"
         },
         "directive": "relation"
@@ -3585,7 +4703,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "Shop"
         },
         "directive": "relation"
@@ -3599,7 +4717,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
+          "model": "View",
           "field": "Shop"
         },
         "directive": "relation"
@@ -3609,154 +4727,18 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeShop",
-      "field": "createdAt",
-      "type": "DateTime",
-      "arity": "Required"
+      "model": "View",
+      "field": "Post",
+      "type": "Post",
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeShop",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeShop",
-          "field": "createdAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeShop",
-      "field": "updatedAt",
-      "type": "DateTime",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeShop",
-          "field": "updatedAt"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeShop",
-          "field": "updatedAt"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "now()"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeShop",
-          "field": "updatedAt"
-        },
-        "directive": "updatedAt"
-      }
-    },
-    {
-      "tag": "CreateModel",
-      "model": "LikeEvent"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeEvent",
-      "field": "id",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeEvent",
-          "field": "id"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeEvent",
-          "field": "id"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "LikeEvent",
-          "field": "id"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "autoincrement()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeEvent",
-      "field": "userId",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeEvent",
-      "field": "eventId",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "LikeEvent",
-      "field": "User",
-      "type": "User",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "LikeEvent",
-          "field": "User"
+          "model": "View",
+          "field": "Post"
         },
         "directive": "relation"
       }
@@ -3767,13 +4749,13 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
-          "field": "User"
+          "model": "View",
+          "field": "Post"
         },
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[userId]"
+      "value": "[postId]"
     },
     {
       "tag": "CreateArgument",
@@ -3781,8 +4763,8 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
-          "field": "User"
+          "model": "View",
+          "field": "Post"
         },
         "directive": "relation"
       },
@@ -3791,17 +4773,17 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeEvent",
+      "model": "View",
       "field": "Event",
       "type": "Event",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "View",
           "field": "Event"
         },
         "directive": "relation"
@@ -3813,7 +4795,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "View",
           "field": "Event"
         },
         "directive": "relation"
@@ -3827,7 +4809,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "View",
           "field": "Event"
         },
         "directive": "relation"
@@ -3837,7 +4819,53 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeEvent",
+      "model": "View",
+      "field": "Product",
+      "type": "Product",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "View",
+          "field": "Product"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "View",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[productId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "View",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "View",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3847,7 +4875,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "View",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3859,7 +4887,351 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "View",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "now()"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "Like"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "postId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "productId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "userId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "eventId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "shopId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "Post",
+      "type": "Post",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Post"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Post"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[postId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Post"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "Product",
+      "type": "Product",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Product"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[productId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Product"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "User",
+      "type": "User",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "User"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "Event",
+      "type": "Event",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Event"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Event"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[eventId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Event"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "Shop",
+      "type": "Shop",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[shopId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "Shop"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Like",
+      "field": "createdAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Like",
+          "field": "createdAt"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Like",
           "field": "createdAt"
         },
         "directive": "default"
@@ -3869,7 +5241,7 @@
     },
     {
       "tag": "CreateField",
-      "model": "LikeEvent",
+      "model": "Like",
       "field": "updatedAt",
       "type": "DateTime",
       "arity": "Required"
@@ -3879,7 +5251,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "Like",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -3891,7 +5263,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "Like",
           "field": "updatedAt"
         },
         "directive": "default"
@@ -3904,7 +5276,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "LikeEvent",
+          "model": "Like",
           "field": "updatedAt"
         },
         "directive": "updatedAt"

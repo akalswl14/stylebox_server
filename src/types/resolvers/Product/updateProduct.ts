@@ -1,115 +1,146 @@
-import { intArg, mutationField, stringArg, arg } from "@nexus/schema";
+import {
+  intArg,
+  mutationField,
+  stringArg,
+  arg,
+  booleanArg,
+} from "@nexus/schema";
 
 export const updateProduct = mutationField("updateProduct", {
   type: "Product",
   args: {
     id: intArg({ required: true }),
+    names: arg({ type: "NameInputType", nullable: true, list: true }),
+    images: arg({ type: "ImageInputType", nullable: true, list: true }),
+    branches: arg({ type: "idDicInputType", nullable: true, list: true }),
+    tags: arg({ type: "idDicInputType", nullable: true, list: true }),
     description: stringArg({ nullable: true }),
     instaText: stringArg({ nullable: true }),
-    shops: intArg({ list: true, nullable: true }),
-    tags: intArg({ list: true, nullable: true }),
-    name: arg({ type: "NameInputType", nullable: true, list: true }),
-    image: arg({ type: "ImageInputType", nullable: true, list: true }),
+    price: intArg({ nullable: true }),
+    externalLinks: arg({ type: "LinkInputType", nullable: true, list: true }),
+    videos: arg({ type: "VideoInputType", nullable: true, list: true }),
+    isOwnPost: booleanArg({ nullable: true }),
   },
   nullable: true,
+  description: "id argument is for Product ID.",
   resolve: async (_, args, ctx) => {
     try {
-      let { id, description, instaText, shops, tags, name, image } = args;
-      let product,
-        originalproduct,
-        tagList: { id: number }[] = [],
-        shopList: { id: number }[] = [];
+      let {
+        id,
+        names,
+        images,
+        branches,
+        tags,
+        description,
+        instaText,
+        price,
+        externalLinks,
+        videos,
+        isOwnPost,
+      } = args;
+      let product, originalproduct;
       try {
         originalproduct = await ctx.prisma.product.findOne({
           where: { id },
-          include: { tags: true, name: true, image: true, shops: true },
+          select: {
+            tags: { select: { id: true } },
+            names: { select: { id: true } },
+            images: { select: { id: true } },
+            branches: { select: { id: true } },
+            videos: { select: { id: true } },
+            externalLinks: { select: { id: true } },
+          },
         });
       } catch (e) {
         console.log(e);
       }
       if (originalproduct) {
         if (tags) {
-          tags.forEach((eachTag: number) => {
-            tagList.push({ id: eachTag });
-          });
-          let originalTagInfoList = originalproduct.tags;
-          let originalTagList: { id: number }[] = [];
-          originalTagInfoList.forEach((eachTag) => {
-            originalTagList.push({ id: eachTag.id });
-          });
+          let originalTagList = originalproduct.tags;
           if (originalTagList.length > 0) {
             await ctx.prisma.product.update({
               where: { id },
               data: { tags: { disconnect: originalTagList } },
             });
           }
-          await ctx.prisma.product.update({
+          product = await ctx.prisma.product.update({
             where: { id },
-            data: { tags: { connect: tagList } },
+            data: { tags: { connect: tags } },
           });
         }
-        if (image) {
-          let originalImageInfoList = originalproduct.image;
-          let originalImageList: { id: number }[] = [];
-          originalImageInfoList.forEach((eachImage) => {
-            originalImageList.push({ id: eachImage.id });
-          });
+        if (images) {
+          let originalImageList = originalproduct.images;
           if (originalImageList.length > 0) {
             await ctx.prisma.product.update({
               where: { id },
-              data: { image: { disconnect: originalImageList } },
+              data: { images: { disconnect: originalImageList } },
             });
           }
-          await ctx.prisma.product.update({
+          product = await ctx.prisma.product.update({
             where: { id },
-            data: { image: { create: image } },
+            data: { images: { create: images } },
           });
         }
-        if (name) {
-          let originalNameInfoList = originalproduct.name;
-          let originalNameList: { id: number }[] = [];
-          originalNameInfoList.forEach((eachName) => {
-            originalNameList.push({ id: eachName.id });
+        if (videos) {
+          let originalVideoList = originalproduct.videos;
+          if (originalVideoList.length > 0) {
+            await ctx.prisma.product.update({
+              where: { id },
+              data: { videos: { disconnect: originalVideoList } },
+            });
+          }
+          product = await ctx.prisma.product.update({
+            where: { id },
+            data: { videos: { create: videos } },
           });
+        }
+        if (names) {
+          let originalNameList = originalproduct.names;
           if (originalNameList.length > 0) {
             await ctx.prisma.product.update({
               where: { id },
-              data: { name: { disconnect: originalNameList } },
+              data: { names: { disconnect: originalNameList } },
             });
           }
-          await ctx.prisma.product.update({
+          product = await ctx.prisma.product.update({
             where: { id },
-            data: { name: { create: name } },
+            data: { names: { create: names } },
           });
         }
-        if (shops) {
-          shops.forEach((eachShop: number) => {
-            shopList.push({ id: eachShop });
-          });
-          let originalShopInfoList = originalproduct.shops;
-          let originalShopList: { id: number }[] = [];
-          originalShopInfoList.forEach((eachShop) => {
-            originalShopList.push({ id: eachShop.id });
-          });
-          if (originalShopList.length > 0) {
+        if (branches) {
+          let originalBranchList = originalproduct.branches;
+          if (originalBranchList.length > 0) {
             await ctx.prisma.product.update({
               where: { id },
               data: {
-                shops: { disconnect: originalShopList },
+                branches: { disconnect: originalBranchList },
               },
             });
           }
-          await ctx.prisma.product.update({
+          product = await ctx.prisma.product.update({
             where: { id },
             data: {
-              shops: { connect: shopList },
+              branches: { connect: branches },
             },
+          });
+        }
+        if (externalLinks) {
+          let originalexternalLinks = originalproduct.externalLinks;
+          if (originalexternalLinks.length > 0) {
+            await ctx.prisma.product.update({
+              where: { id },
+              data: { externalLinks: { disconnect: originalexternalLinks } },
+            });
+          }
+          product = await ctx.prisma.product.update({
+            where: { id },
+            data: { externalLinks: { create: externalLinks } },
           });
         }
         try {
           product = await ctx.prisma.product.update({
             where: { id },
-            data: { description, instaText },
+            data: { description, instaText, price, isOwnPost },
           });
         } catch (e) {
           console.log(e);

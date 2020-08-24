@@ -4,85 +4,72 @@ export const updatePost = mutationField("updatePost", {
   type: "Post",
   args: {
     id: intArg({ required: true }),
-    text: stringArg({ nullable: true }),
     title: stringArg({ nullable: true }),
-    publisher: stringArg({ nullable: true }),
-    products: intArg({ nullable: true, list: true }),
+    text: stringArg({ nullable: true }),
     images: arg({ type: "ImageInputType", list: true, nullable: true }),
-    tags: intArg({ list: true, nullable: true }),
+    publisher: stringArg({ nullable: true }),
+    products: arg({ type: "idDicInputType", list: true, nullable: true }),
+    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
+    videos: arg({ type: "VideoInputType", list: true, nullable: true }),
+    mainProductId: intArg({ nullable: true }),
   },
   nullable: true,
+  description:
+    "id argument is for Post ID and images argument is for PostImage.",
   resolve: async (_, args, ctx) => {
     try {
       let { id, text, title, publisher, images, products, tags } = args;
-      let post,
-        originalpost,
-        tagList: { id: number }[] = [],
-        productList: { id: number }[] = [];
+      let post, originalpost;
       try {
         originalpost = await ctx.prisma.post.findOne({
           where: { id },
-          include: { tags: true, images: true, products: true },
+          include: {
+            tags: { select: { id: true } },
+            images: { select: { id: true } },
+            products: { select: { id: true } },
+          },
         });
       } catch (e) {
         console.log(e);
       }
       if (originalpost) {
         if (tags) {
-          tags.forEach((eachTag: number) => {
-            tagList.push({ id: eachTag });
-          });
-          let originalTagInfoList = originalpost.tags;
-          let originalTagList: { id: number }[] = [];
-          originalTagInfoList.forEach((eachTag) => {
-            originalTagList.push({ id: eachTag.id });
-          });
+          let originalTagList = originalpost.tags;
           if (originalTagList.length > 0) {
             await ctx.prisma.post.update({
               where: { id },
               data: { tags: { disconnect: originalTagList } },
             });
           }
-          await ctx.prisma.post.update({
+          post = await ctx.prisma.post.update({
             where: { id },
-            data: { tags: { connect: tagList } },
+            data: { tags: { connect: tags } },
           });
         }
         if (images) {
-          let originalImageInfoList = originalpost.images;
-          let originalImageList: { id: number }[] = [];
-          originalImageInfoList.forEach((eachImage) => {
-            originalImageList.push({ id: eachImage.id });
-          });
+          let originalImageList = originalpost.images;
           if (originalImageList.length > 0) {
             await ctx.prisma.post.update({
               where: { id },
               data: { images: { disconnect: originalImageList } },
             });
           }
-          await ctx.prisma.post.update({
+          post = await ctx.prisma.post.update({
             where: { id },
             data: { images: { create: images } },
           });
         }
         if (products) {
-          products.forEach((eachProduct: number) => {
-            productList.push({ id: eachProduct });
-          });
-          let originalProductInfoList = originalpost.products;
-          let originalProductList: { id: number }[] = [];
-          originalProductInfoList.forEach((eachProduct) => {
-            originalProductList.push({ id: eachProduct.id });
-          });
+          let originalProductList = originalpost.products;
           if (originalProductList.length > 0) {
             await ctx.prisma.post.update({
               where: { id },
               data: { products: { disconnect: originalProductList } },
             });
           }
-          await ctx.prisma.post.update({
+          post = await ctx.prisma.post.update({
             where: { id },
-            data: { products: { connect: productList } },
+            data: { products: { connect: products } },
           });
         }
         try {

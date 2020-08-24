@@ -7,6 +7,7 @@ export const getAllProduct = queryField("getAllProduct", {
   },
   nullable: true,
   list: true,
+  description: "id argument is for cursor.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;

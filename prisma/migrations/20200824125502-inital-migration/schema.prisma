@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -169,6 +169,7 @@ model Event {
   images      EventImage[]
   videos      EventVideo[]
   preferrers  Like[]
+  viewCnt     Int?
   url         String?
   dueDate     DateTime
   bannerImage String

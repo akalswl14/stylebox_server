@@ -6,10 +6,14 @@ export const Tag = objectType({
     t.model.id();
     t.model.classId();
     t.model.Class();
-    t.model.name();
-    t.model.products();
+    t.model.names();
     t.model.shops();
     t.model.posts();
+    t.model.products();
+    t.model.events();
+    t.model.category();
+    t.model.orderInPopular();
+    t.model.orderInRecommend();
     t.model.createdAt();
     t.model.updatedAt();
   },

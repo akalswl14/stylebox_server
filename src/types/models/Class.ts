@@ -4,7 +4,7 @@ export const Class = objectType({
   name: "Class",
   definition(t) {
     t.model.id();
-    t.model.name();
+    t.model.names();
     t.model.tags();
     t.model.category();
     t.model.createdAt();
@@ -12,8 +12,8 @@ export const Class = objectType({
   },
 });
 
-export const CategoryName = objectType({
-  name: "CategoryName",
+export const ClassName = objectType({
+  name: "ClassName",
   definition(t) {
     t.model.id();
     t.model.classId();
