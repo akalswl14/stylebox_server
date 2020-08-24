@@ -1,7 +1,7 @@
-export * from "./User";
-export * from "./Product";
-export * from "./Shop";
-export * from "./Tag";
+export * from "./Class";
 export * from "./Event";
-export * from "./Category";
 export * from "./Post";
+export * from "./Product";
+// export * from "./Shop";
+// export * from "./Tag";
+// export * from "./User";
