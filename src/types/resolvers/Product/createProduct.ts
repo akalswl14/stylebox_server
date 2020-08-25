@@ -4,6 +4,7 @@ import {
   mutationField,
   arg,
   booleanArg,
+  floatArg,
 } from "@nexus/schema";
 
 export const createProduct = mutationField("createProduct", {
@@ -19,6 +20,7 @@ export const createProduct = mutationField("createProduct", {
     externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
     videos: arg({ type: "VideoInputType", list: true, required: false }),
     isOwnPost: booleanArg({ required: false }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -36,6 +38,7 @@ export const createProduct = mutationField("createProduct", {
         externalLinks = [],
         videos = [],
         isOwnPost = false,
+        priority = 0.0,
       } = args;
       let product;
       try {
@@ -51,6 +54,7 @@ export const createProduct = mutationField("createProduct", {
             externalLinks: { create: externalLinks },
             videos: { create: videos },
             isOwnPost,
+            priority,
           },
         });
       } catch (e) {

@@ -1,4 +1,4 @@
-import { intArg, mutationField, stringArg, arg } from "@nexus/schema";
+import { intArg, mutationField, stringArg, arg, floatArg } from "@nexus/schema";
 
 export const updateShop = mutationField("updateShop", {
   type: "Shop",
@@ -12,6 +12,7 @@ export const updateShop = mutationField("updateShop", {
     videos: arg({ type: "VideoInputType", nullable: true, list: true }),
     phoneNumber: stringArg({ nullable: true, list: true }),
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -28,6 +29,7 @@ export const updateShop = mutationField("updateShop", {
         videos,
         phoneNumber,
         tags,
+        priority,
       } = args;
       let shop, originalShop;
       try {
@@ -123,7 +125,7 @@ export const updateShop = mutationField("updateShop", {
         try {
           shop = await ctx.prisma.shop.update({
             where: { id },
-            data: { logoUrl, description },
+            data: { logoUrl, description, priority },
           });
         } catch (e) {
           console.log(e);

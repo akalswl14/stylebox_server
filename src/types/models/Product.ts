@@ -18,6 +18,7 @@ export const Product = objectType({
     t.model.videos();
     t.model.isOwnPost();
     t.model.views();
+    t.model.priority();
     t.model.createdAt();
     t.model.updatedAt();
   },

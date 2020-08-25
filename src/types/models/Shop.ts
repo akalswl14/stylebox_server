@@ -19,6 +19,7 @@ export const Shop = objectType({
     t.model.weeklyRankScore();
     t.model.monthlyRankScore();
     t.model.lifeTimeRankScore();
+    t.model.priority();
     t.model.createdAt();
     t.model.updatedAt();
   },

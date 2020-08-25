@@ -1,4 +1,4 @@
-import { intArg, mutationField, stringArg, arg } from "@nexus/schema";
+import { intArg, mutationField, stringArg, arg, floatArg } from "@nexus/schema";
 
 export const updatePost = mutationField("updatePost", {
   type: "Post",
@@ -12,13 +12,23 @@ export const updatePost = mutationField("updatePost", {
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
     videos: arg({ type: "VideoInputType", list: true, nullable: true }),
     mainProductId: intArg({ nullable: true }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description:
     "id argument is for Post ID and images argument is for PostImage.",
   resolve: async (_, args, ctx) => {
     try {
-      let { id, text, title, publisher, images, products, tags } = args;
+      let {
+        id,
+        text,
+        title,
+        publisher,
+        images,
+        products,
+        tags,
+        priority,
+      } = args;
       let post, originalpost;
       try {
         originalpost = await ctx.prisma.post.findOne({
@@ -75,7 +85,7 @@ export const updatePost = mutationField("updatePost", {
         try {
           post = await ctx.prisma.post.update({
             where: { id },
-            data: { text, title, publisher },
+            data: { text, title, publisher, priority },
           });
         } catch (e) {
           console.log(e);

@@ -20,6 +20,7 @@ export const Post = objectType({
     t.model.mainProductId();
     t.model.mainProductPrice();
     t.model.views();
+    t.model.priority();
     t.model.createdAt();
     t.model.updatedAt();
   },

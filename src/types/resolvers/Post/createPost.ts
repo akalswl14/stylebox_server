@@ -1,4 +1,4 @@
-import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
+import { intArg, stringArg, mutationField, arg, floatArg } from "@nexus/schema";
 
 export const createPost = mutationField("createPost", {
   type: "Post",
@@ -11,6 +11,7 @@ export const createPost = mutationField("createPost", {
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
     videos: arg({ type: "VideoInputType", list: true, nullable: true }),
     mainProductId: intArg({ nullable: true }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -26,6 +27,7 @@ export const createPost = mutationField("createPost", {
         tags = [],
         videos = [],
         mainProductId,
+        priority = 0.0,
       } = args;
       const weeklyRankScore = 0.0,
         lifeTimeRankScore = 0.0,
@@ -81,6 +83,7 @@ export const createPost = mutationField("createPost", {
                 id: shopId,
               },
             },
+            priority,
           },
         });
       } catch (e) {

@@ -1,4 +1,4 @@
-import { stringArg, mutationField, arg, intArg } from "@nexus/schema";
+import { stringArg, mutationField, arg, intArg, floatArg } from "@nexus/schema";
 
 export const createShop = mutationField("createShop", {
   type: "Shop",
@@ -11,6 +11,7 @@ export const createShop = mutationField("createShop", {
     videos: arg({ type: "VideoInputType", nullable: true, list: true }),
     phoneNumber: stringArg({ nullable: true, list: true }),
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -26,6 +27,7 @@ export const createShop = mutationField("createShop", {
         videos = [],
         phoneNumber,
         tags = [],
+        priority = 0.0,
       } = args;
       let shop;
       try {
@@ -39,12 +41,13 @@ export const createShop = mutationField("createShop", {
             videos: { create: videos },
             phoneNumber: { set: phoneNumber },
             tags: { connect: tags },
+            priority,
           },
         });
       } catch (e) {
         console.log(e);
       }
-      return shop;
+      return shop ? shop : null;
     } catch (e) {
       console.log(e);
       return null;

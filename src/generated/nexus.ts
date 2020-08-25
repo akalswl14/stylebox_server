@@ -125,6 +125,7 @@ export interface NexusGenRootTypes {
     mainProductId?: number | null; // Int
     mainProductPrice?: number | null; // Int
     monthlyRankScore?: number | null; // Float
+    priority?: number | null; // Float
     publisher?: string | null; // String
     shopId?: number | null; // Int
     text?: string | null; // String
@@ -156,6 +157,7 @@ export interface NexusGenRootTypes {
     instaText?: string | null; // String
     isOwnPost?: boolean | null; // Boolean
     price?: number | null; // Int
+    priority?: number | null; // Float
     updatedAt: any; // DateTime!
   }
   ProductExternalLink: { // root type
@@ -201,6 +203,7 @@ export interface NexusGenRootTypes {
     logoUrl?: string | null; // String
     monthlyRankScore?: number | null; // Float
     phoneNumber: string[]; // [String!]!
+    priority?: number | null; // Float
     updatedAt: any; // DateTime!
     weeklyRankScore?: number | null; // Float
   }
@@ -406,6 +409,7 @@ export interface NexusGenFieldTypes {
     mainProductPrice: number | null; // Int
     monthlyRankScore: number | null; // Float
     preferrers: NexusGenRootTypes['Like'][]; // [Like!]!
+    priority: number | null; // Float
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     publisher: string | null; // String
     Shop: NexusGenRootTypes['Shop'] | null; // Shop
@@ -450,6 +454,7 @@ export interface NexusGenFieldTypes {
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
     preferrers: NexusGenRootTypes['Like'][]; // [Like!]!
     price: number | null; // Int
+    priority: number | null; // Float
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
     videos: NexusGenRootTypes['ProductVideo'][]; // [ProductVideo!]!
@@ -526,6 +531,7 @@ export interface NexusGenFieldTypes {
     phoneNumber: string[]; // [String!]!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
     preferrers: NexusGenRootTypes['Like'][]; // [Like!]!
+    priority: number | null; // Float
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     updatedAt: any; // DateTime!
     videos: NexusGenRootTypes['ShopVideo'][]; // [ShopVideo!]!
@@ -670,6 +676,7 @@ export interface NexusGenArgTypes {
     createPost: { // args
       images?: NexusGenInputs['ImageInputType'][] | null; // [ImageInputType!]
       mainProductId?: number | null; // Int
+      priority?: number | null; // Float
       products?: number[] | null; // [Int!]
       publisher?: string | null; // String
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
@@ -686,6 +693,7 @@ export interface NexusGenArgTypes {
       isOwnPost?: boolean | null; // Boolean
       names: NexusGenInputs['NameInputType'][]; // [NameInputType!]!
       price?: number | null; // Int
+      priority?: number | null; // Float
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       videos?: NexusGenInputs['VideoInputType'][] | null; // [VideoInputType!]
     }
@@ -696,6 +704,7 @@ export interface NexusGenArgTypes {
       logoUrl?: string | null; // String
       names?: NexusGenInputs['NameInputType'][] | null; // [NameInputType!]
       phoneNumber?: string[] | null; // [String!]
+      priority?: number | null; // Float
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       videos?: NexusGenInputs['VideoInputType'][] | null; // [VideoInputType!]
     }
@@ -734,6 +743,7 @@ export interface NexusGenArgTypes {
       id: number; // Int!
       images?: NexusGenInputs['ImageInputType'][] | null; // [ImageInputType!]
       mainProductId?: number | null; // Int
+      priority?: number | null; // Float
       products?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       publisher?: string | null; // String
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
@@ -751,6 +761,7 @@ export interface NexusGenArgTypes {
       isOwnPost?: boolean | null; // Boolean
       names?: NexusGenInputs['NameInputType'][] | null; // [NameInputType!]
       price?: number | null; // Int
+      priority?: number | null; // Float
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       videos?: NexusGenInputs['VideoInputType'][] | null; // [VideoInputType!]
     }
@@ -762,6 +773,7 @@ export interface NexusGenArgTypes {
       logoUrl?: string | null; // String
       names?: NexusGenInputs['NameInputType'][] | null; // [NameInputType!]
       phoneNumber?: string[] | null; // [String!]
+      priority?: number | null; // Float
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       videos?: NexusGenInputs['VideoInputType'][] | null; // [VideoInputType!]
     }

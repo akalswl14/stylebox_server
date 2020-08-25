@@ -4,6 +4,7 @@ import {
   stringArg,
   arg,
   booleanArg,
+  floatArg,
 } from "@nexus/schema";
 
 export const updateProduct = mutationField("updateProduct", {
@@ -20,6 +21,7 @@ export const updateProduct = mutationField("updateProduct", {
     externalLinks: arg({ type: "LinkInputType", nullable: true, list: true }),
     videos: arg({ type: "VideoInputType", nullable: true, list: true }),
     isOwnPost: booleanArg({ nullable: true }),
+    priority: floatArg({ nullable: true }),
   },
   nullable: true,
   description: "id argument is for Product ID.",
@@ -37,6 +39,7 @@ export const updateProduct = mutationField("updateProduct", {
         externalLinks,
         videos,
         isOwnPost,
+        priority,
       } = args;
       let product, originalproduct;
       try {
@@ -140,7 +143,7 @@ export const updateProduct = mutationField("updateProduct", {
         try {
           product = await ctx.prisma.product.update({
             where: { id },
-            data: { description, instaText, price, isOwnPost },
+            data: { description, instaText, price, isOwnPost, priority },
           });
         } catch (e) {
           console.log(e);
