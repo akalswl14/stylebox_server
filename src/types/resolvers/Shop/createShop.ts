@@ -3,48 +3,47 @@ import { stringArg, mutationField, arg, intArg } from "@nexus/schema";
 export const createShop = mutationField("createShop", {
   type: "Shop",
   args: {
-    name: arg({ type: "NameInputType", required: true, list: true }),
-    discription: stringArg({ required: true }),
-    images: arg({ type: "ImageInputType", required: true, list: true }),
-    coordinate: stringArg({ nullable: true }),
-    address: stringArg({ nullable: true, list: true }),
-    tags: intArg({ list: true, nullable: true }),
-    city: stringArg({ nullable: true }),
+    names: arg({ type: "NameInputType", nullable: true, list: true }),
+    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
     logoUrl: stringArg({ nullable: true }),
+    description: stringArg({ nullable: true }),
+    images: arg({ type: "ImageInputType", nullable: true, list: true }),
+    videos: arg({ type: "VideoInputType", nullable: true, list: true }),
+    phoneNumber: stringArg({ nullable: true, list: true }),
+    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
   },
   nullable: true,
+  description:
+    "names argument is for ShopName, images argument is for ShopImage and videos argument is for ShopVideo.",
   resolve: async (_, args, ctx) => {
     try {
       const {
-        name,
-        discription,
-        images,
-        coordinate = "",
-        address = [],
-        tags = [],
-        city = "",
+        names = [],
+        externalLinks = [],
         logoUrl,
+        description,
+        images = [],
+        videos = [],
+        phoneNumber,
+        tags = [],
       } = args;
-      let shop,
-        tagList: { id: number }[] = [];
-      if (tags) {
-        tags.forEach((eachTag: number) => {
-          tagList.push({ id: eachTag });
+      let shop;
+      try {
+        shop = await ctx.prisma.shop.create({
+          data: {
+            names: { create: names },
+            externalLinks: { create: externalLinks },
+            logoUrl,
+            description,
+            images: { create: images },
+            videos: { create: videos },
+            phoneNumber: { set: phoneNumber },
+            tags: { connect: tags },
+          },
         });
+      } catch (e) {
+        console.log(e);
       }
-      shop = await ctx.prisma.shop.create({
-        data: {
-          discription,
-          coordinate,
-          address: { set: address },
-          city,
-          tags: { connect: tagList },
-          wishersCnt: 0,
-          name: { create: name },
-          images: { create: images },
-          logoUrl,
-        },
-      });
       return shop;
     } catch (e) {
       console.log(e);

@@ -6,6 +6,7 @@ export const deleteShop = mutationField("deleteShop", {
     id: intArg({ required: true }),
   },
   nullable: true,
+  description: "id argument is for Shop ID.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;

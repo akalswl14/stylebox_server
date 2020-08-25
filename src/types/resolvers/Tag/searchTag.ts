@@ -8,6 +8,7 @@ export const searchTag = queryField("searchTag", {
   },
   nullable: true,
   list: true,
+  description: "id argument is for cursor and word argument is for TagName.",
   resolve: async (_, args, ctx) => {
     try {
       const { id, word } = args;
@@ -15,7 +16,7 @@ export const searchTag = queryField("searchTag", {
       try {
         if (id) {
           tags = await ctx.prisma.tag.findMany({
-            where: { name: { some: { word: { contains: word } } } },
+            where: { names: { some: { word: { contains: word } } } },
             orderBy: { createdAt: "desc" },
             take: 4,
             cursor: { id },
@@ -23,12 +24,11 @@ export const searchTag = queryField("searchTag", {
           });
         } else {
           tags = await ctx.prisma.tag.findMany({
-            where: { name: { some: { word: { contains: word } } } },
+            where: { names: { some: { word: { contains: word } } } },
             orderBy: { createdAt: "desc" },
             take: 4,
           });
         }
-        return tags;
       } catch (e) {
         console.log(e);
       }

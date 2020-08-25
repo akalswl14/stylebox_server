@@ -1,4 +1,4 @@
-import { intArg, stringArg, mutationField } from "@nexus/schema";
+import { mutationField } from "@nexus/schema";
 import { sign } from "jsonwebtoken";
 import { APP_SECRET, getUserId } from "../../../utils";
 

@@ -1,4 +1,4 @@
 export * from "./confirmUser";
-export * from "./getWishProduct";
-export * from "./getWishShop";
-export * from "./getWishEvent";
+export * from "./getLikePosts";
+export * from "./getLikeShops";
+export * from "./getLikeEvents";

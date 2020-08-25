@@ -7,6 +7,7 @@ export const getAllTag = queryField("getAllTag", {
   },
   nullable: true,
   list: true,
+  description: "id argument is for cursor.",
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -20,16 +21,15 @@ export const getAllTag = queryField("getAllTag", {
             take: take,
             cursor: { id },
             skip: skip,
-            include: { name: true, Category: true },
+            include: { names: true, Class: true },
           });
         } else {
           tags = await ctx.prisma.tag.findMany({
             orderBy: { createdAt: "desc" },
             take: take,
-            include: { name: true, Category: true },
+            include: { names: true, Class: true },
           });
         }
-        return tags;
       } catch (e) {
         console.log(e);
       }
