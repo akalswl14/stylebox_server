@@ -45,7 +45,7 @@ export const getLikeShops = queryField("getLikeShops", {
       } catch (e) {
         console.log(e);
       }
-      return result;
+      return result ? result : null;
     } catch (e) {
       console.log(e);
       return null;
