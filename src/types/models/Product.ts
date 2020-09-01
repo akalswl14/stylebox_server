@@ -19,6 +19,7 @@ export const Product = objectType({
     t.model.isOwnPost();
     t.model.views();
     t.model.priority();
+    t.model.mainPostId();
     t.model.createdAt();
     t.model.updatedAt();
   },

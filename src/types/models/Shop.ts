@@ -20,6 +20,8 @@ export const Shop = objectType({
     t.model.monthlyRankScore();
     t.model.lifeTimeRankScore();
     t.model.priority();
+    t.model.onShopListTagId();
+    t.model.onDetailTagId();
     t.model.createdAt();
     t.model.updatedAt();
   },

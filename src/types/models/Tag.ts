@@ -12,8 +12,9 @@ export const Tag = objectType({
     t.model.products();
     t.model.events();
     t.model.category();
-    t.model.orderInPopular();
-    t.model.orderInRecommend();
+    t.model.tagImage();
+    t.model.isOnOption();
+    t.model.searchTagLogs();
     t.model.createdAt();
     t.model.updatedAt();
   },

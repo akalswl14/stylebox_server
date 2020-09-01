@@ -31,6 +31,25 @@ export const getAllShopbyTag = queryField("getAllShopbyTag", {
           cursor: { id },
         });
       } else {
+        // let tmp = await ctx.prisma.shop.findMany({
+        //   where:{
+        //     tags:{
+        //       some:{
+        //         AND:[
+        //           {id:1},{id:2},{category:"ProductClass",classId:0},{OR:[{id:3},{id:4}]}
+        //         ]
+        //       }
+        //     }
+        //   },
+        //   include:{
+        //    names:{
+        //      where:{
+        //        lang
+        //      }
+        //    }
+        //   }
+        // })
+
         shopNameList = await ctx.prisma.shopName.findMany({
           where: {
             lang,

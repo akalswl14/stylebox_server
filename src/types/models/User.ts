@@ -6,6 +6,7 @@ export const User = objectType({
     t.model.id();
     t.model.views();
     t.model.likes();
+    t.model.searchTagLogIds();
     t.model.createdAt();
     t.model.updatedAt();
   },

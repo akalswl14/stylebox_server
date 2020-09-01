@@ -21,6 +21,7 @@ export const Post = objectType({
     t.model.mainProductPrice();
     t.model.views();
     t.model.priority();
+    t.model.onDetailTagId();
     t.model.createdAt();
     t.model.updatedAt();
   },

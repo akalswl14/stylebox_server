@@ -12,6 +12,9 @@ export const Event = objectType({
     t.model.bannerImage();
     t.model.tags();
     t.model.views();
+    t.model.isOnList();
+    t.model.title();
+    t.model.bannerText();
     t.model.createdAt();
     t.model.updatedAt();
   },

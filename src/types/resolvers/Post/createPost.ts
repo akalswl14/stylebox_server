@@ -64,7 +64,7 @@ export const createPost = mutationField("createPost", {
         }
       }
       try {
-        await ctx.prisma.post.create({
+        post = await ctx.prisma.post.create({
           data: {
             title,
             text,
