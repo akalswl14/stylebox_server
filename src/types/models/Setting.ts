@@ -19,6 +19,7 @@ export const Setting = objectType({
     t.model.shopConstE();
     t.model.adminEmail();
     t.model.popularTagId();
+    t.model.mainEventBannerId();
     t.model.createdAt();
     t.model.updatedAt();
   },

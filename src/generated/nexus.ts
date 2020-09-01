@@ -250,6 +250,7 @@ export interface NexusGenRootTypes {
     id: number; // Int!
     loadingPostNum: number; // Int!
     mainBubbleTagId: number[]; // [Int!]!
+    mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
@@ -646,6 +647,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     loadingPostNum: number; // Int!
     mainBubbleTagId: number[]; // [Int!]!
+    mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
