@@ -45,3 +45,16 @@ export const EventVideo = objectType({
     t.model.updatedAt();
   },
 });
+
+export const EventContentsImage = objectType({
+  name: "EventContentsImage",
+  definition(t) {
+    t.model.id();
+    t.model.eventId();
+    t.model.Event();
+    t.model.url();
+    t.model.order();
+    t.model.createdAt();
+    t.model.updatedAt();
+  },
+});

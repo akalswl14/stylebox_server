@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -171,21 +171,21 @@ model BranchName {
 }
 
 model Event {
-  id             Int                  @id @default(autoincrement())
-  images         EventImage[]
-  videos         EventVideo[]
-  preferrers     Like[]
-  url            String?
-  dueDate        DateTime
-  bannerImage    String
-  tags           Tag[]
-  views          View[]
-  isOnList       Boolean
-  title          String
-  bannerText     String?
-  contentsImages EventContentsImage[]
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @default(now()) @updatedAt
+  id          Int          @id @default(autoincrement())
+  images      EventImage[]
+  videos      EventVideo[]
+  preferrers  Like[]
+  url         String?
+  dueDate     DateTime
+  bannerImage String
+  tags        Tag[]
+  views       View[]
+  isOnList    Boolean
+  title       String
+  bannerText  String?
+  mainImage   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model EventImage {
@@ -205,16 +205,6 @@ model EventVideo {
   url       String
   order     Int
   isYoutube Boolean
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-}
-
-model EventContentsImage {
-  id        Int      @id @default(autoincrement())
-  eventId   Int?
-  Event     Event?   @relation(fields: [eventId], references: [id])
-  url       String
-  order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

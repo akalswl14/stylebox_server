@@ -94,6 +94,14 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url?: string | null; // String
   }
+  EventContentsImage: { // root type
+    createdAt: any; // DateTime!
+    eventId?: number | null; // Int
+    id: number; // Int!
+    order: number; // Int!
+    updatedAt: any; // DateTime!
+    url: string; // String!
+  }
   EventImage: { // root type
     createdAt: any; // DateTime!
     eventId?: number | null; // Int
@@ -422,6 +430,15 @@ export interface NexusGenFieldTypes {
     url: string | null; // String
     videos: NexusGenRootTypes['EventVideo'][]; // [EventVideo!]!
     views: NexusGenRootTypes['View'][]; // [View!]!
+  }
+  EventContentsImage: { // field return type
+    createdAt: any; // DateTime!
+    Event: NexusGenRootTypes['Event'] | null; // Event
+    eventId: number | null; // Int
+    id: number; // Int!
+    order: number; // Int!
+    updatedAt: any; // DateTime!
+    url: string; // String!
   }
   EventImage: { // field return type
     createdAt: any; // DateTime!
@@ -1102,7 +1119,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "Event" | "EventImage" | "EventVideo" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductInPost" | "ProductName" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopExternalLink" | "ShopImage" | "ShopName" | "ShopVideo" | "Tag" | "TagName" | "User" | "View" | "idValueObject";
+export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "Event" | "EventContentsImage" | "EventImage" | "EventVideo" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductInPost" | "ProductName" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopExternalLink" | "ShopImage" | "ShopName" | "ShopVideo" | "Tag" | "TagName" | "User" | "View" | "idValueObject";
 
 export type NexusGenInputNames = "ImageInputType" | "LinkInputType" | "NameInputType" | "VideoInputType" | "idDicInputType";
 
