@@ -1,0 +1,40 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Setting",
+      "field": "SearchCategoryOption",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Setting",
+      "field": "SearchLocationOption",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Setting",
+      "field": "SearchStyleOption",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Setting",
+      "field": "SearchPriceOption",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Setting",
+      "field": "SearchFeatureOption",
+      "type": "String",
+      "arity": "Required"
+    }
+  ]
+}

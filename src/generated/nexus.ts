@@ -262,7 +262,12 @@ export interface NexusGenRootTypes {
     mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
     QuestionOption: string[]; // [String!]!
+    SearchCategoryOption: string; // String!
+    SearchFeatureOption: string; // String!
+    SearchLocationOption: string; // String!
     SearchPeriod: number; // Int!
+    SearchPriceOption: string; // String!
+    SearchStyleOption: string; // String!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
     shopConstB: number; // Float!
@@ -671,7 +676,12 @@ export interface NexusGenFieldTypes {
     mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
     QuestionOption: string[]; // [String!]!
+    SearchCategoryOption: string; // String!
+    SearchFeatureOption: string; // String!
+    SearchLocationOption: string; // String!
     SearchPeriod: number; // Int!
+    SearchPriceOption: string; // String!
+    SearchStyleOption: string; // String!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
     shopConstB: number; // Float!
