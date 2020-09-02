@@ -22,11 +22,6 @@ export const Setting = objectType({
     t.model.mainEventBannerId();
     t.model.QuestionOption();
     t.model.SearchPeriod();
-    t.model.SearchCategoryOption();
-    t.model.SearchLocationOption();
-    t.model.SearchStyleOption();
-    t.model.SearchPriceOption();
-    t.model.SearchFeatureOption();
     t.model.createdAt();
     t.model.updatedAt();
   },

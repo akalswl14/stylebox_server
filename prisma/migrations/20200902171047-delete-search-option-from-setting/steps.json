@@ -1,0 +1,30 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "SearchCategoryOption"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "SearchLocationOption"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "SearchStyleOption"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "SearchPriceOption"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "SearchFeatureOption"
+    }
+  ]
+}
