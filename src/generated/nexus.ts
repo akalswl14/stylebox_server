@@ -132,6 +132,7 @@ export interface NexusGenRootTypes {
   Post: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
+    isOnline: boolean; // Boolean!
     lifeTimeRankScore?: number | null; // Float
     mainProductId?: number | null; // Int
     mainProductPrice?: number | null; // Int
@@ -499,6 +500,7 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: number; // Int!
     images: NexusGenRootTypes['PostImage'][]; // [PostImage!]!
+    isOnline: boolean; // Boolean!
     lifeTimeRankScore: number | null; // Float
     mainProductId: number | null; // Int
     mainProductPrice: number | null; // Int

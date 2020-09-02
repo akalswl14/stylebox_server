@@ -22,6 +22,7 @@ export const Post = objectType({
     t.model.views();
     t.model.priority();
     t.model.onDetailTagId();
+    t.model.isOnline();
     t.model.createdAt();
     t.model.updatedAt();
   },
