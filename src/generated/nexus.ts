@@ -260,6 +260,7 @@ export interface NexusGenRootTypes {
     mainBubbleTagId: number[]; // [Int!]!
     mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
+    QuestionOption: string[]; // [String!]!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
     shopConstB: number; // Float!
@@ -666,6 +667,7 @@ export interface NexusGenFieldTypes {
     mainBubbleTagId: number[]; // [Int!]!
     mainEventBannerId: number[]; // [Int!]!
     popularTagId: number[]; // [Int!]!
+    QuestionOption: string[]; // [String!]!
     shopBubbleTagId: number[]; // [Int!]!
     shopConstA: number; // Float!
     shopConstB: number; // Float!

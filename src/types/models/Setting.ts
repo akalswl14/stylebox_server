@@ -20,6 +20,7 @@ export const Setting = objectType({
     t.model.adminEmail();
     t.model.popularTagId();
     t.model.mainEventBannerId();
+    t.model.QuestionOption();
     t.model.createdAt();
     t.model.updatedAt();
   },
