@@ -21,6 +21,7 @@ export const Setting = objectType({
     t.model.popularTagId();
     t.model.mainEventBannerId();
     t.model.QuestionOption();
+    t.model.SearchPeriod();
     t.model.createdAt();
     t.model.updatedAt();
   },
