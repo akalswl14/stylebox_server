@@ -83,6 +83,15 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  ClassTagDetail: { // root type
+    Category?: boolean | null; // Boolean
+    classId?: number | null; // Int
+    id: number; // Int!
+    isClass?: boolean | null; // Boolean
+    order: number; // Int!
+    tagImage?: string | null; // String
+    tagName: string; // String!
+  }
   Event: { // root type
     bannerImage: string; // String!
     bannerText?: string | null; // String
@@ -94,6 +103,11 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url?: string | null; // String
   }
+  EventBanner: { // root type
+    bannerImage: string; // String!
+    eventId: number; // Int!
+    order: number; // Int!
+  }
   EventContentsImage: { // root type
     createdAt: any; // DateTime!
     eventId?: number | null; // Int
@@ -101,6 +115,15 @@ export interface NexusGenRootTypes {
     order: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
+  }
+  EventDetail: { // root type
+    dueDate: any; // DateTime!
+    eventContentsImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    eventImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    eventTitle: string; // String!
+    eventVideos: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    locationTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+    url?: string | null; // String
   }
   EventImage: { // root type
     createdAt: any; // DateTime!
@@ -110,12 +133,28 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  EventList: { // root type
+    events: NexusGenRootTypes['EventThumbnail'][]; // [EventThumbnail!]!
+    totalEventNum: number; // Int!
+  }
+  EventThumbnail: { // root type
+    bannerImage: string; // String!
+    bannerText?: string | null; // String
+    Dday: number; // Int!
+    eventId: number; // Int!
+    isLikeEvent: boolean; // Boolean!
+  }
   EventVideo: { // root type
     createdAt: any; // DateTime!
     eventId?: number | null; // Int
     id: number; // Int!
     order: number; // Int!
     updatedAt: any; // DateTime!
+    url: string; // String!
+  }
+  ExternalLink: { // root type
+    id: number; // Int!
+    linkType: string; // String!
     url: string; // String!
   }
   Like: { // root type
@@ -147,19 +186,21 @@ export interface NexusGenRootTypes {
     weeklyRankScore?: number | null; // Float
   }
   PostDetail: { // root type
-    id: number; // Int!
-    likeNum?: number | null; // Int
-    likeStatus?: boolean | null; // Boolean
-    locationTag?: string[] | null; // [String!]
-    mainProduct?: NexusGenRootTypes['ProductInPost'] | null; // ProductInPost
-    mainProductDescription?: string[] | null; // [String!]
-    mainProductLinks?: NexusGenRootTypes['ProductExternalLink'][] | null; // [ProductExternalLink!]
-    postDate?: string | null; // String
-    postImages?: NexusGenRootTypes['PostImage'][] | null; // [PostImage!]
-    postVideos?: NexusGenRootTypes['PostVideo'][] | null; // [PostVideo!]
-    products?: NexusGenRootTypes['ProductInPost'][] | null; // [ProductInPost!]
-    shop?: NexusGenRootTypes['idValueObject'][] | null; // [idValueObject!]
-    styleTag?: NexusGenRootTypes['idValueObject'][] | null; // [idValueObject!]
+    description?: string | null; // String
+    isLikePost: boolean; // Boolean!
+    mainProductExternalLinks: NexusGenRootTypes['ExternalLink'][]; // [ExternalLink!]!
+    mainProductId: number; // Int!
+    mainProductName: string; // String!
+    PostDate?: any | null; // DateTime
+    postId: number; // Int!
+    postImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    price: number; // Int!
+    products: NexusGenRootTypes['ProductThumbnail'][]; // [ProductThumbnail!]!
+    shopId: number; // Int!
+    shopLogoUrl?: string | null; // String
+    shopName: string; // String!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    YoutubeVideoUrl?: string | null; // String
   }
   PostImage: { // root type
     createdAt: any; // DateTime!
@@ -170,17 +211,17 @@ export interface NexusGenRootTypes {
     url: string; // String!
   }
   PostList: { // root type
-    postNum: number; // Int!
     posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+    totalPostNum: number; // Int!
   }
   PostThumbnail: { // root type
-    likeStatus?: boolean | null; // Boolean
-    locationTag?: string[] | null; // [String!]
-    mainProductName?: string | null; // String
+    isLikePost: boolean; // Boolean!
+    locationTagName?: string | null; // String
     postId: number; // Int!
-    postImages?: NexusGenRootTypes['PostImage'][] | null; // [PostImage!]
-    price?: number | null; // Int
-    shopName?: string | null; // String
+    postImage?: string | null; // String
+    price: number; // Int!
+    productName: string; // String!
+    shopName: string; // String!
   }
   PostVideo: { // root type
     createdAt: any; // DateTime!
@@ -219,12 +260,6 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
-  ProductInPost: { // root type
-    id: number; // Int!
-    isOwnlPost: boolean; // Boolean!
-    name: string; // String!
-    price: string; // String!
-  }
   ProductName: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -232,6 +267,12 @@ export interface NexusGenRootTypes {
     productId?: number | null; // Int
     updatedAt: any; // DateTime!
     word: string; // String!
+  }
+  ProductThumbnail: { // root type
+    mainPostId?: number | null; // Int
+    price: string; // String!
+    productId: number; // Int!
+    productName: string; // String!
   }
   ProductVideo: { // root type
     createdAt: any; // DateTime!
@@ -284,6 +325,20 @@ export interface NexusGenRootTypes {
     priority?: number | null; // Float
     updatedAt: any; // DateTime!
   }
+  ShopDetail: { // root type
+    addressUrl?: string | null; // String
+    Branches: NexusGenRootTypes['branchThumbnail'][]; // [branchThumbnail!]!
+    description?: string | null; // String
+    ExternalLinks: NexusGenRootTypes['ExternalLink'][]; // [ExternalLink!]!
+    isLikeShop: boolean; // Boolean!
+    lastUpdateDate?: any | null; // DateTime
+    logoUrl?: string | null; // String
+    shopId: number; // Int!
+    shopImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    shopName: string; // String!
+    shopVideos: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+  }
   ShopExternalLink: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -301,6 +356,10 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  ShopList: { // root type
+    shops: NexusGenRootTypes['ShopThumbnail'][]; // [ShopThumbnail!]!
+    totalShopNum: number; // Int!
+  }
   ShopName: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -308,6 +367,14 @@ export interface NexusGenRootTypes {
     shopId?: number | null; // Int
     updatedAt: any; // DateTime!
     word: string; // String!
+  }
+  ShopThumbnail: { // root type
+    isLikeShop: boolean; // Boolean!
+    locationTagName?: string | null; // String
+    logoUrl?: string | null; // String
+    shopId: number; // Int!
+    shopName: string; // String!
+    styleTagName?: string | null; // String
   }
   ShopVideo: { // root type
     createdAt: any; // DateTime!
@@ -335,6 +402,10 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  TagThumbnail: { // root type
+    id: number; // Int!
+    tagName: string; // String!
+  }
   User: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -349,10 +420,29 @@ export interface NexusGenRootTypes {
     shopId?: number | null; // Int
     userId?: number | null; // Int
   }
-  idValueObject: { // root type
+  branchThumbnail: { // root type
+    address: string; // String!
+    googlemapId?: number | null; // Int
+  }
+  contentsThumbnail: { // root type
     id: number; // Int!
     order: number; // Int!
-    value: string; // String!
+    url: string; // String!
+  }
+  levelCategoryOption: { // root type
+    classId: number; // Int!
+    className: string; // String!
+    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+  }
+  priorityPostList: { // root type
+    lastPostPriority: number; // Int!
+    posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+  }
+  searchResultList: { // root type
+    lastPostDate: any; // DateTime!
+    posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    totalPostNum: number; // Int!
   }
   String: string;
   Int: number;
@@ -416,6 +506,15 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  ClassTagDetail: { // field return type
+    Category: boolean | null; // Boolean
+    classId: number | null; // Int
+    id: number; // Int!
+    isClass: boolean | null; // Boolean
+    order: number; // Int!
+    tagImage: string | null; // String
+    tagName: string; // String!
+  }
   Event: { // field return type
     bannerImage: string; // String!
     bannerText: string | null; // String
@@ -432,6 +531,11 @@ export interface NexusGenFieldTypes {
     videos: NexusGenRootTypes['EventVideo'][]; // [EventVideo!]!
     views: NexusGenRootTypes['View'][]; // [View!]!
   }
+  EventBanner: { // field return type
+    bannerImage: string; // String!
+    eventId: number; // Int!
+    order: number; // Int!
+  }
   EventContentsImage: { // field return type
     createdAt: any; // DateTime!
     Event: NexusGenRootTypes['Event'] | null; // Event
@@ -440,6 +544,15 @@ export interface NexusGenFieldTypes {
     order: number; // Int!
     updatedAt: any; // DateTime!
     url: string; // String!
+  }
+  EventDetail: { // field return type
+    dueDate: any; // DateTime!
+    eventContentsImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    eventImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    eventTitle: string; // String!
+    eventVideos: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    locationTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+    url: string | null; // String
   }
   EventImage: { // field return type
     createdAt: any; // DateTime!
@@ -450,6 +563,17 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  EventList: { // field return type
+    events: NexusGenRootTypes['EventThumbnail'][]; // [EventThumbnail!]!
+    totalEventNum: number; // Int!
+  }
+  EventThumbnail: { // field return type
+    bannerImage: string; // String!
+    bannerText: string | null; // String
+    Dday: number; // Int!
+    eventId: number; // Int!
+    isLikeEvent: boolean; // Boolean!
+  }
   EventVideo: { // field return type
     createdAt: any; // DateTime!
     Event: NexusGenRootTypes['Event'] | null; // Event
@@ -457,6 +581,11 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     order: number; // Int!
     updatedAt: any; // DateTime!
+    url: string; // String!
+  }
+  ExternalLink: { // field return type
+    id: number; // Int!
+    linkType: string; // String!
     url: string; // String!
   }
   Like: { // field return type
@@ -519,19 +648,21 @@ export interface NexusGenFieldTypes {
     weeklyRankScore: number | null; // Float
   }
   PostDetail: { // field return type
-    id: number; // Int!
-    likeNum: number | null; // Int
-    likeStatus: boolean | null; // Boolean
-    locationTag: string[] | null; // [String!]
-    mainProduct: NexusGenRootTypes['ProductInPost'] | null; // ProductInPost
-    mainProductDescription: string[] | null; // [String!]
-    mainProductLinks: NexusGenRootTypes['ProductExternalLink'][] | null; // [ProductExternalLink!]
-    postDate: string | null; // String
-    postImages: NexusGenRootTypes['PostImage'][] | null; // [PostImage!]
-    postVideos: NexusGenRootTypes['PostVideo'][] | null; // [PostVideo!]
-    products: NexusGenRootTypes['ProductInPost'][] | null; // [ProductInPost!]
-    shop: NexusGenRootTypes['idValueObject'][] | null; // [idValueObject!]
-    styleTag: NexusGenRootTypes['idValueObject'][] | null; // [idValueObject!]
+    description: string | null; // String
+    isLikePost: boolean; // Boolean!
+    mainProductExternalLinks: NexusGenRootTypes['ExternalLink'][]; // [ExternalLink!]!
+    mainProductId: number; // Int!
+    mainProductName: string; // String!
+    PostDate: any | null; // DateTime
+    postId: number; // Int!
+    postImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    price: number; // Int!
+    products: NexusGenRootTypes['ProductThumbnail'][]; // [ProductThumbnail!]!
+    shopId: number; // Int!
+    shopLogoUrl: string | null; // String
+    shopName: string; // String!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    YoutubeVideoUrl: string | null; // String
   }
   PostImage: { // field return type
     createdAt: any; // DateTime!
@@ -543,17 +674,17 @@ export interface NexusGenFieldTypes {
     url: string; // String!
   }
   PostList: { // field return type
-    postNum: number; // Int!
     posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+    totalPostNum: number; // Int!
   }
   PostThumbnail: { // field return type
-    likeStatus: boolean | null; // Boolean
-    locationTag: string[] | null; // [String!]
-    mainProductName: string | null; // String
+    isLikePost: boolean; // Boolean!
+    locationTagName: string | null; // String
     postId: number; // Int!
-    postImages: NexusGenRootTypes['PostImage'][] | null; // [PostImage!]
-    price: number | null; // Int
-    shopName: string | null; // String
+    postImage: string | null; // String
+    price: number; // Int!
+    productName: string; // String!
+    shopName: string; // String!
   }
   PostVideo: { // field return type
     createdAt: any; // DateTime!
@@ -604,12 +735,6 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
-  ProductInPost: { // field return type
-    id: number; // Int!
-    isOwnlPost: boolean; // Boolean!
-    name: string; // String!
-    price: string; // String!
-  }
   ProductName: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -618,6 +743,12 @@ export interface NexusGenFieldTypes {
     productId: number | null; // Int
     updatedAt: any; // DateTime!
     word: string; // String!
+  }
+  ProductThumbnail: { // field return type
+    mainPostId: number | null; // Int
+    price: string; // String!
+    productId: number; // Int!
+    productName: string; // String!
   }
   ProductVideo: { // field return type
     createdAt: any; // DateTime!
@@ -700,6 +831,20 @@ export interface NexusGenFieldTypes {
     videos: NexusGenRootTypes['ShopVideo'][]; // [ShopVideo!]!
     views: NexusGenRootTypes['View'][]; // [View!]!
   }
+  ShopDetail: { // field return type
+    addressUrl: string | null; // String
+    Branches: NexusGenRootTypes['branchThumbnail'][]; // [branchThumbnail!]!
+    description: string | null; // String
+    ExternalLinks: NexusGenRootTypes['ExternalLink'][]; // [ExternalLink!]!
+    isLikeShop: boolean; // Boolean!
+    lastUpdateDate: any | null; // DateTime
+    logoUrl: string | null; // String
+    shopId: number; // Int!
+    shopImages: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    shopName: string; // String!
+    shopVideos: NexusGenRootTypes['contentsThumbnail'][]; // [contentsThumbnail!]!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+  }
   ShopExternalLink: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -719,6 +864,10 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     url: string; // String!
   }
+  ShopList: { // field return type
+    shops: NexusGenRootTypes['ShopThumbnail'][]; // [ShopThumbnail!]!
+    totalShopNum: number; // Int!
+  }
   ShopName: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -727,6 +876,14 @@ export interface NexusGenFieldTypes {
     shopId: number | null; // Int
     updatedAt: any; // DateTime!
     word: string; // String!
+  }
+  ShopThumbnail: { // field return type
+    isLikeShop: boolean; // Boolean!
+    locationTagName: string | null; // String
+    logoUrl: string | null; // String
+    shopId: number; // Int!
+    shopName: string; // String!
+    styleTagName: string | null; // String
   }
   ShopVideo: { // field return type
     createdAt: any; // DateTime!
@@ -763,6 +920,10 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     word: string; // String!
   }
+  TagThumbnail: { // field return type
+    id: number; // Int!
+    tagName: string; // String!
+  }
   User: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -785,10 +946,29 @@ export interface NexusGenFieldTypes {
     User: NexusGenRootTypes['User'] | null; // User
     userId: number | null; // Int
   }
-  idValueObject: { // field return type
+  branchThumbnail: { // field return type
+    address: string; // String!
+    googlemapId: number | null; // Int
+  }
+  contentsThumbnail: { // field return type
     id: number; // Int!
     order: number; // Int!
-    value: string; // String!
+    url: string; // String!
+  }
+  levelCategoryOption: { // field return type
+    classId: number; // Int!
+    className: string; // String!
+    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+  }
+  priorityPostList: { // field return type
+    lastPostPriority: number; // Int!
+    posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+  }
+  searchResultList: { // field return type
+    lastPostDate: any; // DateTime!
+    posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
+    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    totalPostNum: number; // Int!
   }
 }
 
@@ -1121,7 +1301,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "Event" | "EventContentsImage" | "EventImage" | "EventVideo" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductInPost" | "ProductName" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopExternalLink" | "ShopImage" | "ShopName" | "ShopVideo" | "Tag" | "TagName" | "User" | "View" | "idValueObject";
+export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "ClassTagDetail" | "Event" | "EventBanner" | "EventContentsImage" | "EventDetail" | "EventImage" | "EventList" | "EventThumbnail" | "EventVideo" | "ExternalLink" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductName" | "ProductThumbnail" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopDetail" | "ShopExternalLink" | "ShopImage" | "ShopList" | "ShopName" | "ShopThumbnail" | "ShopVideo" | "Tag" | "TagName" | "TagThumbnail" | "User" | "View" | "branchThumbnail" | "contentsThumbnail" | "levelCategoryOption" | "priorityPostList" | "searchResultList";
 
 export type NexusGenInputNames = "ImageInputType" | "LinkInputType" | "NameInputType" | "VideoInputType" | "idDicInputType";
 
