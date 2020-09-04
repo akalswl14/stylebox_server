@@ -390,6 +390,7 @@ export interface NexusGenRootTypes {
     classId: number; // Int!
     createdAt: any; // DateTime!
     id: number; // Int!
+    isClass: boolean; // Boolean!
     isOnOption: boolean; // Boolean!
     tagImage?: string | null; // String
     updatedAt: any; // DateTime!
@@ -771,12 +772,14 @@ export interface NexusGenFieldTypes {
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
+    getEventBanners: NexusGenRootTypes['EventBanner'] | null; // EventBanner
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
     getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
+    getShops: NexusGenRootTypes['ShopList'] | null; // ShopList
     searchTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
   }
   SearchTagLog: { // field return type
@@ -902,6 +905,7 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     events: NexusGenRootTypes['Event'][]; // [Event!]!
     id: number; // Int!
+    isClass: boolean; // Boolean!
     isOnOption: boolean; // Boolean!
     names: NexusGenRootTypes['TagName'][]; // [TagName!]!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
@@ -1228,6 +1232,14 @@ export interface NexusGenArgTypes {
     }
     getShop: { // args
       id: number; // Int!
+    }
+    getShops: { // args
+      classId?: number | null; // Int
+      cursorId?: number | null; // Int
+      isClass: boolean; // Boolean!
+      lang?: string | null; // String
+      locationId?: number | null; // Int
+      tagId?: number | null; // Int
     }
     searchTag: { // args
       id?: number | null; // Int

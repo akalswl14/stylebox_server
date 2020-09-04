@@ -15,6 +15,7 @@ export const Tag = objectType({
     t.model.tagImage();
     t.model.isOnOption();
     t.model.searchTagLogs();
+    t.model.isClass();
     t.model.createdAt();
     t.model.updatedAt();
   },
