@@ -276,7 +276,6 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     description?: string | null; // String
     id: number; // Int!
-    lifeTimeRankScore?: number | null; // Float
     logoUrl?: string | null; // String
     monthlyRankScore?: number | null; // Float
     onDetailTagId: number[]; // [Int!]!
@@ -284,7 +283,6 @@ export interface NexusGenRootTypes {
     phoneNumber: string[]; // [String!]!
     priority?: number | null; // Float
     updatedAt: any; // DateTime!
-    weeklyRankScore?: number | null; // Float
   }
   ShopExternalLink: { // root type
     createdAt: any; // DateTime!
@@ -688,7 +686,6 @@ export interface NexusGenFieldTypes {
     externalLinks: NexusGenRootTypes['ShopExternalLink'][]; // [ShopExternalLink!]!
     id: number; // Int!
     images: NexusGenRootTypes['ShopImage'][]; // [ShopImage!]!
-    lifeTimeRankScore: number | null; // Float
     logoUrl: string | null; // String
     monthlyRankScore: number | null; // Float
     names: NexusGenRootTypes['ShopName'][]; // [ShopName!]!
@@ -702,7 +699,6 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
     videos: NexusGenRootTypes['ShopVideo'][]; // [ShopVideo!]!
     views: NexusGenRootTypes['View'][]; // [View!]!
-    weeklyRankScore: number | null; // Float
   }
   ShopExternalLink: { // field return type
     createdAt: any; // DateTime!

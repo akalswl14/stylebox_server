@@ -16,9 +16,7 @@ export const Shop = objectType({
     t.model.tags();
     t.model.posts();
     t.model.views();
-    t.model.weeklyRankScore();
     t.model.monthlyRankScore();
-    t.model.lifeTimeRankScore();
     t.model.priority();
     t.model.onShopListTagId();
     t.model.onDetailTagId();
