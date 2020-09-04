@@ -4,3 +4,4 @@ export * from "./getAllEvent";
 export * from "./getEvent";
 export * from "./toggleLikeEvent";
 export * from "./getEventBanners";
+export * from "./getEventDetail";
