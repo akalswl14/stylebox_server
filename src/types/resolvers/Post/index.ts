@@ -5,3 +5,4 @@ export * from "./getAllPost";
 export * from "./getPost";
 export * from "./toggleLikePost";
 export * from "./updatePost";
+export * from "./getPostsbyShop";

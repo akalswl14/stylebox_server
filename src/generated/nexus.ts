@@ -773,13 +773,16 @@ export interface NexusGenFieldTypes {
     getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getEventBanners: NexusGenRootTypes['EventBanner'] | null; // EventBanner
+    getEventDetail: NexusGenRootTypes['ShopDetail'] | null; // ShopDetail
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
     getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
+    getShopBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getShops: NexusGenRootTypes['ShopList'] | null; // ShopList
+    getStyleBubble: NexusGenRootTypes['ClassTagDetail'] | null; // ClassTagDetail
     searchTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
   }
   SearchTagLog: { // field return type
@@ -1215,6 +1218,10 @@ export interface NexusGenArgTypes {
     getEvent: { // args
       id: number; // Int!
     }
+    getEventDetail: { // args
+      eventId: number; // Int!
+      lang?: string | null; // String
+    }
     getLikeEvents: { // args
       id?: number | null; // Int
     }
@@ -1233,6 +1240,9 @@ export interface NexusGenArgTypes {
     getShop: { // args
       id: number; // Int!
     }
+    getShopBubbles: { // args
+      lang?: string | null; // String
+    }
     getShops: { // args
       classId?: number | null; // Int
       cursorId?: number | null; // Int
@@ -1240,6 +1250,9 @@ export interface NexusGenArgTypes {
       lang?: string | null; // String
       locationId?: number | null; // Int
       tagId?: number | null; // Int
+    }
+    getStyleBubble: { // args
+      lang: string; // String!
     }
     searchTag: { // args
       id?: number | null; // Int
