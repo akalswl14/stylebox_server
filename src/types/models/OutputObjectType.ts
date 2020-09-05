@@ -140,7 +140,7 @@ export const branchThumbnail = objectType({
   },
 });
 
-export const recommendTagThumbnail = objectType({
+export const TagThumbnail = objectType({
   name: "TagThumbnail",
   definition(t) {
     t.int("id");
