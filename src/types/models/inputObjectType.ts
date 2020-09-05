@@ -1,42 +1,42 @@
-import { inputObjectType } from "@nexus/schema";
+import { inputObjectType } from '@nexus/schema';
 
 export const NameInputType = inputObjectType({
-  name: "NameInputType",
+  name: 'NameInputType',
   definition(t) {
-    t.string("word", { required: true });
-    t.string("lang", { required: true });
+    t.string('word', { required: true });
+    t.string('lang', { required: true });
   },
 });
 
 export const ImageInputType = inputObjectType({
-  name: "ImageInputType",
+  name: 'ImageInputType',
   definition(t) {
-    t.string("url", { required: true });
-    t.int("order", { required: true });
+    t.string('url', { required: true });
+    t.int('order', { required: true });
   },
 });
 
 export const VideoInputType = inputObjectType({
-  name: "VideoInputType",
+  name: 'VideoInputType',
   definition(t) {
-    t.string("url", { required: true });
-    t.int("order", { required: true });
-    t.boolean("isYoutube", { required: true });
+    t.string('url', { required: true });
+    t.int('order', { required: true });
+    t.boolean('isYoutube', { required: true });
   },
 });
 
 export const idDicInputType = inputObjectType({
-  name: "idDicInputType",
+  name: 'idDicInputType',
   definition(t) {
-    t.int("id", { required: true });
+    t.int('id', { required: true });
   },
 });
 
 export const LinkInputType = inputObjectType({
-  name: "LinkInputType",
+  name: 'LinkInputType',
   definition(t) {
-    t.string("url", { required: true });
-    t.int("order", { required: true });
-    t.string("linkType", { required: true });
+    t.string('url', { required: true });
+    t.int('order', { required: true });
+    t.string('linkType', { required: true });
   },
 });
