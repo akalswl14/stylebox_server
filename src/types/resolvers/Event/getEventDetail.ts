@@ -1,7 +1,7 @@
-import { queryField, stringArg, booleanArg, intArg } from "@nexus/schema";
+import { queryField, stringArg, intArg } from "@nexus/schema";
 
 export const getEventDetail = queryField("getEventDetail", {
-  type: "ShopDetail",
+  type: "EventDetail",
   args: {
     eventId: intArg({ required: true }),
     lang: stringArg({ nullable: true }),
@@ -85,7 +85,7 @@ export const getEventDetail = queryField("getEventDetail", {
       } catch (e) {
         console.log(e);
       }
-      return rtn;
+      return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -136,7 +136,7 @@ export const branchThumbnail = objectType({
   name: "branchThumbnail",
   definition(t) {
     t.string("address");
-    t.int("googlemapId", { nullable: true });
+    t.int("googleMapId", { nullable: true });
   },
 });
 

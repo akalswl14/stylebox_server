@@ -52,7 +52,7 @@ export interface NexusGenRootTypes {
     user?: NexusGenRootTypes['User'] | null; // User
   }
   Branch: { // root type
-    address: string[]; // [String!]!
+    address: string; // String!
     createdAt: any; // DateTime!
     googleMapId?: number | null; // Int
     id: number; // Int!
@@ -316,6 +316,7 @@ export interface NexusGenRootTypes {
   Shop: { // root type
     createdAt: any; // DateTime!
     description?: string | null; // String
+    gotoshopLink?: string | null; // String
     id: number; // Int!
     logoUrl?: string | null; // String
     monthlyRankScore?: number | null; // Float
@@ -423,7 +424,7 @@ export interface NexusGenRootTypes {
   }
   branchThumbnail: { // root type
     address: string; // String!
-    googlemapId?: number | null; // Int
+    googleMapId?: number | null; // Int
   }
   contentsThumbnail: { // root type
     id: number; // Int!
@@ -468,7 +469,7 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User'] | null; // User
   }
   Branch: { // field return type
-    address: string[]; // [String!]!
+    address: string; // String!
     createdAt: any; // DateTime!
     googleMapId: number | null; // Int
     id: number; // Int!
@@ -773,11 +774,12 @@ export interface NexusGenFieldTypes {
     getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getEventBanners: NexusGenRootTypes['EventBanner'] | null; // EventBanner
-    getEventDetail: NexusGenRootTypes['ShopDetail'] | null; // ShopDetail
+    getEventDetail: NexusGenRootTypes['EventDetail'] | null; // EventDetail
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
     getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
+    getPostsbyShop: NexusGenRootTypes['PostList'] | null; // PostList
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
     getShopBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
@@ -821,6 +823,7 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     description: string | null; // String
     externalLinks: NexusGenRootTypes['ShopExternalLink'][]; // [ShopExternalLink!]!
+    gotoshopLink: string | null; // String
     id: number; // Int!
     images: NexusGenRootTypes['ShopImage'][]; // [ShopImage!]!
     logoUrl: string | null; // String
@@ -955,7 +958,7 @@ export interface NexusGenFieldTypes {
   }
   branchThumbnail: { // field return type
     address: string; // String!
-    googlemapId: number | null; // Int
+    googleMapId: number | null; // Int
   }
   contentsThumbnail: { // field return type
     id: number; // Int!
@@ -1233,6 +1236,12 @@ export interface NexusGenArgTypes {
     }
     getPost: { // args
       id: number; // Int!
+    }
+    getPostsbyShop: { // args
+      cursorId?: number | null; // Int
+      filter?: number | null; // Int
+      lang?: string | null; // String
+      shopId: number; // Int!
     }
     getProduct: { // args
       id: number; // Int!
