@@ -7,4 +7,4 @@ export * from "./getShop";
 export * from "./toggleLikeShop";
 export * from "./updateShop";
 export * from "./getShops";
-export * from "./getShopBubbles";
+export * from "./getShopDetail";

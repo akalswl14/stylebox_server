@@ -136,11 +136,11 @@ export const branchThumbnail = objectType({
   name: "branchThumbnail",
   definition(t) {
     t.string("address");
-    t.int("googlemapId", { nullable: true });
+    t.int("googleMapId", { nullable: true });
   },
 });
 
-export const recommendTagThumbnail = objectType({
+export const TagThumbnail = objectType({
   name: "TagThumbnail",
   definition(t) {
     t.int("id");

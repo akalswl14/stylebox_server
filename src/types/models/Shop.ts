@@ -20,6 +20,7 @@ export const Shop = objectType({
     t.model.priority();
     t.model.onShopListTagId();
     t.model.onDetailTagId();
+    t.model.gotoshopLink();
     t.model.createdAt();
     t.model.updatedAt();
   },

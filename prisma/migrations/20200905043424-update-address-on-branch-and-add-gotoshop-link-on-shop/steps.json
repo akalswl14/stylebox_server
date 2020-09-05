@@ -1,0 +1,18 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Shop",
+      "field": "gotoshopLink",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Branch",
+      "field": "address",
+      "arity": "Required"
+    }
+  ]
+}
