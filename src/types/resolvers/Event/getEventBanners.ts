@@ -1,8 +1,9 @@
-import { queryField } from "@nexus/schema";
+import { queryField } from '@nexus/schema';
 
-export const getEventBanners = queryField("getEventBanners", {
-  type: "EventBanner",
+export const getEventBanners = queryField('getEventBanners', {
+  type: 'EventBanner',
   nullable: true,
+  list: true,
   resolve: async (_, __, ctx) => {
     try {
       let prismaResult,

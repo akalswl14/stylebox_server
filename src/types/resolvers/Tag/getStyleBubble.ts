@@ -6,6 +6,7 @@ export const getStyleBubble = queryField('getStyleBubble', {
     lang: stringArg({ required: true }),
   },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { lang } = args;
