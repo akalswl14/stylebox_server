@@ -130,7 +130,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
       for (const item of similarPostPrismaResult) {
         productName = item.products.filter(
           (product) => product.mainPostId === item.id
-        )[0].names;
+        );
 
         isLikeBoolean = item.preferrers.filter(
           (preferrer) => preferrer.userId === userId
@@ -142,7 +142,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
           postId: item.id,
           postImage: item.images[0].url,
           shopName: item.Shop?.names[0].word,
-          productName,
+          productName: productName[0].names[0].word,
           price: item.mainProductPrice,
           isLikeBoolean,
         });
