@@ -5,3 +5,4 @@ export * from "./getStyleBubble";
 export * from "./getShopBubbles";
 export * from "./getSearchTagLogs";
 export * from "./createSearchTagLog";
+export * from "./getPopularTags";

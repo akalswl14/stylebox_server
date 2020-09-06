@@ -779,6 +779,7 @@ export interface NexusGenFieldTypes {
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
     getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getPopularTags: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getPostDetail: NexusGenRootTypes['PostDetail'] | null; // PostDetail
     getPostsbyShop: NexusGenRootTypes['PostList'] | null; // PostList
@@ -1241,6 +1242,9 @@ export interface NexusGenArgTypes {
     }
     getLikeShops: { // args
       id?: number | null; // Int
+    }
+    getPopularTags: { // args
+      lang?: string | null; // String
     }
     getPost: { // args
       id: number; // Int!
