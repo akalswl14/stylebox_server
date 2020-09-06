@@ -7,3 +7,4 @@ export * from "./getSearchTagLogs";
 export * from "./createSearchTagLog";
 export * from "./getPopularTags";
 export * from "./getRecommendShopTags";
+export * from "./getRecommendTags";
