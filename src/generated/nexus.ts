@@ -434,7 +434,7 @@ export interface NexusGenRootTypes {
   levelCategoryOption: { // root type
     classId: number; // Int!
     className: string; // String!
-    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+    subTags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
   }
   priorityPostList: { // root type
     lastPostPriority: number; // Int!
@@ -976,7 +976,7 @@ export interface NexusGenFieldTypes {
   levelCategoryOption: { // field return type
     classId: number; // Int!
     className: string; // String!
-    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
+    subTags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
   }
   priorityPostList: { // field return type
     lastPostPriority: number; // Int!
