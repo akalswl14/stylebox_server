@@ -4,3 +4,4 @@ export * from "./searchTag";
 export * from "./getStyleBubble";
 export * from "./getShopBubbles";
 export * from "./getSearchTagLogs";
+export * from "./createSearchTagLog";
