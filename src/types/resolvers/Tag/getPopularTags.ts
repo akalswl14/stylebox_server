@@ -24,7 +24,7 @@ export const getPopularTags = queryField("getPopularTags", {
           select: { names: { where: { lang }, select: { word: true } } },
         });
         if (tagResult) {
-          tags.push({ tagId: eachId, tagName: tagResult.names[0].word, order });
+          tags.push({ id: eachId, tagName: tagResult.names[0].word, order });
           order++;
         }
       }

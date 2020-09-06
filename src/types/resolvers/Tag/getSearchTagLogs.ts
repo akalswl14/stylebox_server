@@ -12,20 +12,47 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
   resolve: async (_, args, ctx) => {
     try {
       const { filterDate, lang = "ENG" } = args;
-      let tags;
+      let queryResult,
+        order = 0,
+        tags = [];
       const userId = Number(getUserId(ctx));
       if (filterDate) {
-        tags = await ctx.prisma.searchTagLog.findMany({
+        queryResult = await ctx.prisma.searchTagLog.findMany({
           where: { userId, createdAt: { gte: filterDate } },
           orderBy: { createdAt: "desc" },
           take: 5,
+          select: {
+            Tag: {
+              select: {
+                id: true,
+                names: { where: { lang }, select: { word: true } },
+              },
+            },
+          },
+        });
+      } else {
+        queryResult = await ctx.prisma.searchTagLog.findMany({
+          where: { userId },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: {
+            Tag: {
+              select: {
+                id: true,
+                names: { where: { lang }, select: { word: true } },
+              },
+            },
+          },
         });
       }
-      tags = await ctx.prisma.searchTagLog.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      });
+      for (const eachTag of queryResult) {
+        tags.push({
+          id: eachTag.Tag.id,
+          tagName: eachTag.Tag.names[0].word,
+          order,
+        });
+        order++;
+      }
       return tags ? tags : null;
     } catch (e) {
       console.log(e);

@@ -784,6 +784,7 @@ export interface NexusGenFieldTypes {
     getPostDetail: NexusGenRootTypes['PostDetail'] | null; // PostDetail
     getPostsbyShop: NexusGenRootTypes['PostList'] | null; // PostList
     getProduct: NexusGenRootTypes['Product'] | null; // Product
+    getRecommendShopTags: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getSearchTagLogs: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
     getShopBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
@@ -1261,6 +1262,10 @@ export interface NexusGenArgTypes {
     }
     getProduct: { // args
       id: number; // Int!
+    }
+    getRecommendShopTags: { // args
+      lang?: string | null; // String
+      word: string; // String!
     }
     getSearchTagLogs: { // args
       filterDate?: any | null; // DateTime
