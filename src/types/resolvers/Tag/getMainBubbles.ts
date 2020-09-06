@@ -3,19 +3,21 @@ import { queryField, stringArg } from '@nexus/schema';
 export const getMainBubbles = queryField('getMainBubbles', {
   type: 'ClassTagDetail',
   args: {
-    lang: stringArg({ required: true }),
+    lang: stringArg({ nullable: true }),
   },
   nullable: true,
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang } = args;
+      let { lang } = args;
       let rtn = [],
         order = 0,
         mainBubbleTagId,
         prismaResult,
         settingQueryResult,
         tagName;
+
+      if (!lang) lang = 'ENG';
 
       try {
         settingQueryResult = await ctx.prisma.setting.findOne({
@@ -37,15 +39,16 @@ export const getMainBubbles = queryField('getMainBubbles', {
               },
             });
 
-            tagName = prismaResult ? prismaResult.names[0].word : null;
+            if (!prismaResult) return null;
 
-            order++;
             rtn.push({
               id: eachId,
               order,
               tagImage: prismaResult?.tagImage,
               tagName,
             });
+
+            order++;
           }
         }
         return rtn ? rtn : null;

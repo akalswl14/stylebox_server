@@ -13,3 +13,4 @@ export * from './getLocationOption';
 export * from './getStyleOption';
 export * from './getPriceOption';
 export * from './getFeatureOption';
+export * from './getBestBubbles';
