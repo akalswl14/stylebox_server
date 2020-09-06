@@ -1,6 +1,6 @@
 import { queryField, stringArg } from "@nexus/schema";
 
-export const getCategoryOption = queryField("getCategoryOption", {
+export const getLocationOption = queryField("getLocationOption", {
   type: "levelCategoryOption",
   args: {
     lang: stringArg({ nullable: true }),
@@ -12,7 +12,7 @@ export const getCategoryOption = queryField("getCategoryOption", {
       const { lang = "ENG" } = args;
       let options = [];
       let classNameResult = await ctx.prisma.className.findMany({
-        where: { lang, Class: { is: { category: "ProductClass" } } },
+        where: { lang, Class: { is: { category: "Location" } } },
         select: {
           word: true,
           classId: true,

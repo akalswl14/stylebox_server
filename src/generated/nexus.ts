@@ -406,6 +406,7 @@ export interface NexusGenRootTypes {
   }
   TagThumbnail: { // root type
     id: number; // Int!
+    isClass?: boolean | null; // Boolean
     tagName: string; // String!
   }
   User: { // root type
@@ -434,7 +435,7 @@ export interface NexusGenRootTypes {
   levelCategoryOption: { // root type
     classId: number; // Int!
     className: string; // String!
-    subTags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
   }
   priorityPostList: { // root type
     lastPostPriority: number; // Int!
@@ -773,16 +774,20 @@ export interface NexusGenFieldTypes {
     getAllShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
+    getCategoryOption: NexusGenRootTypes['levelCategoryOption'][] | null; // [levelCategoryOption!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getEventBanners: NexusGenRootTypes['EventBanner'][] | null; // [EventBanner!]
     getEventDetail: NexusGenRootTypes['EventDetail'] | null; // EventDetail
+    getFeatureOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
     getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getLocationOption: NexusGenRootTypes['levelCategoryOption'][] | null; // [levelCategoryOption!]
     getPopularTags: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getPostDetail: NexusGenRootTypes['PostDetail'] | null; // PostDetail
     getPostsbyShop: NexusGenRootTypes['PostList'] | null; // PostList
+    getPriceOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getRecommendShopTags: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getRecommendTags: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
@@ -793,6 +798,7 @@ export interface NexusGenFieldTypes {
     getShops: NexusGenRootTypes['ShopList'] | null; // ShopList
     getSimilarPosts: NexusGenRootTypes['PostList'] | null; // PostList
     getStyleBubble: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
+    getStyleOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     searchTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
   }
   SearchTagLog: { // field return type
@@ -940,6 +946,7 @@ export interface NexusGenFieldTypes {
   }
   TagThumbnail: { // field return type
     id: number; // Int!
+    isClass: boolean | null; // Boolean
     tagName: string; // String!
   }
   User: { // field return type
@@ -976,7 +983,7 @@ export interface NexusGenFieldTypes {
   levelCategoryOption: { // field return type
     classId: number; // Int!
     className: string; // String!
-    subTags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    subTags: NexusGenRootTypes['TagThumbnail'][]; // [TagThumbnail!]!
   }
   priorityPostList: { // field return type
     lastPostPriority: number; // Int!
@@ -1229,11 +1236,17 @@ export interface NexusGenArgTypes {
     getAllTag: { // args
       id?: number | null; // Int
     }
+    getCategoryOption: { // args
+      lang?: string | null; // String
+    }
     getEvent: { // args
       id: number; // Int!
     }
     getEventDetail: { // args
       eventId: number; // Int!
+      lang?: string | null; // String
+    }
+    getFeatureOption: { // args
       lang?: string | null; // String
     }
     getLikeEvents: { // args
@@ -1244,6 +1257,9 @@ export interface NexusGenArgTypes {
     }
     getLikeShops: { // args
       id?: number | null; // Int
+    }
+    getLocationOption: { // args
+      lang?: string | null; // String
     }
     getPopularTags: { // args
       lang?: string | null; // String
@@ -1260,6 +1276,9 @@ export interface NexusGenArgTypes {
       filter?: number | null; // Int
       lang?: string | null; // String
       shopId: number; // Int!
+    }
+    getPriceOption: { // args
+      lang?: string | null; // String
     }
     getProduct: { // args
       id: number; // Int!
@@ -1303,6 +1322,9 @@ export interface NexusGenArgTypes {
     }
     getStyleBubble: { // args
       lang: string; // String!
+    }
+    getStyleOption: { // args
+      lang?: string | null; // String
     }
     searchTag: { // args
       id?: number | null; // Int

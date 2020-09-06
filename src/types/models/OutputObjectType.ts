@@ -145,6 +145,7 @@ export const TagThumbnail = objectType({
   definition(t) {
     t.int("id");
     t.string("tagName");
+    t.boolean("isClass", { nullable: true });
   },
 });
 
@@ -163,7 +164,7 @@ export const levelCategoryOption = objectType({
   definition(t) {
     t.int("classId");
     t.string("className");
-    t.field("subTags", { type: "ClassTagDetail", list: true });
+    t.field("subTags", { type: "TagThumbnail", list: true });
   },
 });
 

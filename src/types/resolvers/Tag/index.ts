@@ -9,3 +9,7 @@ export * from "./getPopularTags";
 export * from "./getRecommendShopTags";
 export * from "./getRecommendTags";
 export * from "./getCategoryOption";
+export * from "./getLocationOption";
+export * from "./getStyleOption";
+export * from "./getPriceOption";
+export * from "./getFeatureOption";
