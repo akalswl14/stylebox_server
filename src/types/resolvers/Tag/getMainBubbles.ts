@@ -1,6 +1,6 @@
 import { queryField, stringArg } from '@nexus/schema';
 
-export const getStyleBubble = queryField('getStyleBubble', {
+export const getMainBubbles = queryField('getMainBubbles', {
   type: 'ClassTagDetail',
   args: {
     lang: stringArg({ required: true }),
@@ -14,14 +14,18 @@ export const getStyleBubble = queryField('getStyleBubble', {
         order = 0,
         mainBubbleTagId,
         prismaResult,
+        settingQueryResult,
         tagName;
 
       try {
-        prismaResult = await ctx.prisma.setting.findOne({
+        settingQueryResult = await ctx.prisma.setting.findOne({
           where: { id: 1 },
           select: { mainBubbleTagId: true },
         });
-        mainBubbleTagId = prismaResult?.mainBubbleTagId;
+
+        mainBubbleTagId = settingQueryResult
+          ? settingQueryResult.mainBubbleTagId
+          : null;
 
         if (mainBubbleTagId) {
           for (const eachId of mainBubbleTagId) {
@@ -29,15 +33,11 @@ export const getStyleBubble = queryField('getStyleBubble', {
               where: { id: eachId },
               select: {
                 tagImage: true,
-                names: true,
+                names: { where: { lang }, select: { word: true } },
               },
             });
 
-            tagName = prismaResult?.names.filter((tag) => tag.lang === lang);
-
-            if (tagName) {
-              tagName = tagName[0].word;
-            }
+            tagName = prismaResult ? prismaResult.names[0].word : null;
 
             order++;
             rtn.push({
