@@ -32,6 +32,11 @@ export interface NexusGenInputs {
     lang: string; // String!
     word: string; // String!
   }
+  TagClassIdInputType: { // input type
+    classId?: number | null; // Int
+    isClass?: boolean | null; // Boolean
+    tagId?: number | null; // Int
+  }
   VideoInputType: { // input type
     isYoutube: boolean; // Boolean!
     order: number; // Int!
@@ -219,7 +224,7 @@ export interface NexusGenRootTypes {
     locationTagName?: string | null; // String
     postId: number; // Int!
     postImage?: string | null; // String
-    price: number; // Int!
+    price?: number | null; // Int
     productName: string; // String!
     shopName: string; // String!
   }
@@ -396,6 +401,12 @@ export interface NexusGenRootTypes {
     tagImage?: string | null; // String
     updatedAt: any; // DateTime!
   }
+  TagIdThumbnail: { // root type
+    category: string; // String!
+    classId?: number | null; // Int
+    isClass: boolean; // Boolean!
+    tagId: number; // Int!
+  }
   TagName: { // root type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -444,7 +455,7 @@ export interface NexusGenRootTypes {
   searchResultList: { // root type
     lastPostDate: any; // DateTime!
     posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
-    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    tags: NexusGenRootTypes['TagIdThumbnail'][]; // [TagIdThumbnail!]!
     totalPostNum: number; // Int!
   }
   String: string;
@@ -459,6 +470,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   ImageInputType: NexusGenInputs['ImageInputType'];
   LinkInputType: NexusGenInputs['LinkInputType'];
   NameInputType: NexusGenInputs['NameInputType'];
+  TagClassIdInputType: NexusGenInputs['TagClassIdInputType'];
   VideoInputType: NexusGenInputs['VideoInputType'];
   idDicInputType: NexusGenInputs['idDicInputType'];
   Category: NexusGenEnums['Category'];
@@ -686,7 +698,7 @@ export interface NexusGenFieldTypes {
     locationTagName: string | null; // String
     postId: number; // Int!
     postImage: string | null; // String
-    price: number; // Int!
+    price: number | null; // Int
     productName: string; // String!
     shopName: string; // String!
   }
@@ -774,6 +786,7 @@ export interface NexusGenFieldTypes {
     getAllShop: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllShopbyTag: NexusGenRootTypes['Shop'][] | null; // [Shop!]
     getAllTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
+    getBestBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getCategoryOption: NexusGenRootTypes['levelCategoryOption'][] | null; // [levelCategoryOption!]
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getEventBanners: NexusGenRootTypes['EventBanner'][] | null; // [EventBanner!]
@@ -781,8 +794,10 @@ export interface NexusGenFieldTypes {
     getFeatureOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
-    getLikeShops: NexusGenRootTypes['Shop'][] | null; // [Shop!]
+    getLikeShos: NexusGenRootTypes['ShopList'] | null; // ShopList
+    getLikeStyles: NexusGenRootTypes['PostList'] | null; // PostList
     getLocationOption: NexusGenRootTypes['levelCategoryOption'][] | null; // [levelCategoryOption!]
+    getMainBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getPopularTags: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getPostDetail: NexusGenRootTypes['PostDetail'] | null; // PostDetail
@@ -797,7 +812,6 @@ export interface NexusGenFieldTypes {
     getShopDetail: NexusGenRootTypes['ShopDetail'] | null; // ShopDetail
     getShops: NexusGenRootTypes['ShopList'] | null; // ShopList
     getSimilarPosts: NexusGenRootTypes['PostList'] | null; // PostList
-    getStyleBubble: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getStyleOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     searchTag: NexusGenRootTypes['Tag'][] | null; // [Tag!]
   }
@@ -935,6 +949,12 @@ export interface NexusGenFieldTypes {
     tagImage: string | null; // String
     updatedAt: any; // DateTime!
   }
+  TagIdThumbnail: { // field return type
+    category: string; // String!
+    classId: number | null; // Int
+    isClass: boolean; // Boolean!
+    tagId: number; // Int!
+  }
   TagName: { // field return type
     createdAt: any; // DateTime!
     id: number; // Int!
@@ -992,7 +1012,7 @@ export interface NexusGenFieldTypes {
   searchResultList: { // field return type
     lastPostDate: any; // DateTime!
     posts: NexusGenRootTypes['PostThumbnail'][]; // [PostThumbnail!]!
-    tags: NexusGenRootTypes['ClassTagDetail'][]; // [ClassTagDetail!]!
+    tags: NexusGenRootTypes['TagIdThumbnail'][]; // [TagIdThumbnail!]!
     totalPostNum: number; // Int!
   }
 }
@@ -1236,6 +1256,9 @@ export interface NexusGenArgTypes {
     getAllTag: { // args
       id?: number | null; // Int
     }
+    getBestBubbles: { // args
+      lang?: string | null; // String
+    }
     getCategoryOption: { // args
       lang?: string | null; // String
     }
@@ -1255,10 +1278,18 @@ export interface NexusGenArgTypes {
     getLikePosts: { // args
       id?: number | null; // Int
     }
-    getLikeShops: { // args
-      id?: number | null; // Int
+    getLikeShos: { // args
+      cursorId?: number | null; // Int
+      lang?: string | null; // String
+    }
+    getLikeStyles: { // args
+      cursorId?: number | null; // Int
+      lang?: string | null; // String
     }
     getLocationOption: { // args
+      lang?: string | null; // String
+    }
+    getMainBubbles: { // args
       lang?: string | null; // String
     }
     getPopularTags: { // args
@@ -1319,9 +1350,6 @@ export interface NexusGenArgTypes {
       LocationTagId?: number | null; // Int
       productClassTagId: NexusGenInputs['idDicInputType'][]; // [idDicInputType!]!
       styleTagId: NexusGenInputs['idDicInputType'][]; // [idDicInputType!]!
-    }
-    getStyleBubble: { // args
-      lang: string; // String!
     }
     getStyleOption: { // args
       lang?: string | null; // String
@@ -1398,9 +1426,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "ClassTagDetail" | "Event" | "EventBanner" | "EventContentsImage" | "EventDetail" | "EventImage" | "EventList" | "EventThumbnail" | "EventVideo" | "ExternalLink" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductName" | "ProductThumbnail" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopDetail" | "ShopExternalLink" | "ShopImage" | "ShopList" | "ShopName" | "ShopThumbnail" | "ShopVideo" | "Tag" | "TagName" | "TagThumbnail" | "User" | "View" | "branchThumbnail" | "contentsThumbnail" | "levelCategoryOption" | "priorityPostList" | "searchResultList";
+export type NexusGenObjectNames = "AuthPayload" | "Branch" | "BranchName" | "Class" | "ClassName" | "ClassTagDetail" | "Event" | "EventBanner" | "EventContentsImage" | "EventDetail" | "EventImage" | "EventList" | "EventThumbnail" | "EventVideo" | "ExternalLink" | "Like" | "Mutation" | "Post" | "PostDetail" | "PostImage" | "PostList" | "PostThumbnail" | "PostVideo" | "Product" | "ProductExternalLink" | "ProductImage" | "ProductName" | "ProductThumbnail" | "ProductVideo" | "Query" | "SearchTagLog" | "Setting" | "Shop" | "ShopDetail" | "ShopExternalLink" | "ShopImage" | "ShopList" | "ShopName" | "ShopThumbnail" | "ShopVideo" | "Tag" | "TagIdThumbnail" | "TagName" | "TagThumbnail" | "User" | "View" | "branchThumbnail" | "contentsThumbnail" | "levelCategoryOption" | "priorityPostList" | "searchResultList";
 
-export type NexusGenInputNames = "ImageInputType" | "LinkInputType" | "NameInputType" | "VideoInputType" | "idDicInputType";
+export type NexusGenInputNames = "ImageInputType" | "LinkInputType" | "NameInputType" | "TagClassIdInputType" | "VideoInputType" | "idDicInputType";
 
 export type NexusGenEnumNames = "Category";
 
