@@ -21,28 +21,32 @@ export const getLocationOption = queryField("getLocationOption", {
       });
       if (!classNameResult) return null;
       for (const eachclassName of classNameResult) {
-        let tagResult = await ctx.prisma.tagName.findMany({
-          where: { lang, Tag: { is: { classId: eachclassName.classId } } },
-          select: {
-            tagId: true,
-            word: true,
-            Tag: { select: { isClass: true } },
-          },
-          orderBy: { word: "asc" },
-        });
-        let subTags = [];
-        for (const eachtagName of tagResult) {
-          subTags.push({
-            id: eachtagName.tagId,
-            tagName: eachtagName.word,
-            isClass: eachtagName.Tag.isClass,
+        if (eachclassName.classId) {
+          let tagResult = await ctx.prisma.tagName.findMany({
+            where: { lang, Tag: { is: { classId: eachclassName.classId } } },
+            select: {
+              tagId: true,
+              word: true,
+              Tag: { select: { isClass: true } },
+            },
+            orderBy: { word: "asc" },
+          });
+          let subTags = [];
+          for (const eachtagName of tagResult) {
+            if (eachtagName.tagId) {
+              subTags.push({
+                id: eachtagName.tagId,
+                tagName: eachtagName.word,
+                isClass: eachtagName.Tag.isClass,
+              });
+            }
+          }
+          options.push({
+            classId: eachclassName.classId,
+            className: eachclassName.word,
+            subTags,
           });
         }
-        options.push({
-          classId: eachclassName.classId,
-          className: eachclassName.word,
-          subTags,
-        });
       }
       return options ? options : null;
     } catch (e) {

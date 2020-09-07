@@ -19,7 +19,9 @@ export const getStyleOption = queryField("getStyleOption", {
       });
       if (!nameResult) return null;
       for (const eachName of nameResult) {
-        tags.push({ id: eachName.tagId, tagName: eachName.word });
+        if (eachName.tagId) {
+          tags.push({ id: eachName.tagId, tagName: eachName.word });
+        }
       }
       return tags ? tags : null;
     } catch (e) {
