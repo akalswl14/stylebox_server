@@ -791,6 +791,7 @@ export interface NexusGenFieldTypes {
     getEvent: NexusGenRootTypes['Event'] | null; // Event
     getEventBanners: NexusGenRootTypes['EventBanner'][] | null; // [EventBanner!]
     getEventDetail: NexusGenRootTypes['EventDetail'] | null; // EventDetail
+    getEvents: NexusGenRootTypes['EventList'] | null; // EventList
     getFeatureOption: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getLikeEvents: NexusGenRootTypes['Event'][] | null; // [Event!]
     getLikePosts: NexusGenRootTypes['Post'][] | null; // [Post!]
@@ -806,6 +807,7 @@ export interface NexusGenFieldTypes {
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getRecommendShopTags: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
     getRecommendTags: NexusGenRootTypes['TagThumbnail'][] | null; // [TagThumbnail!]
+    getSearchResult: NexusGenRootTypes['searchResultList'] | null; // searchResultList
     getSearchTagLogs: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getShop: NexusGenRootTypes['Shop'] | null; // Shop
     getShopBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
@@ -1269,6 +1271,11 @@ export interface NexusGenArgTypes {
       eventId: number; // Int!
       lang?: string | null; // String
     }
+    getEvents: { // args
+      cursorId?: number | null; // Int
+      filter?: number | null; // Int
+      lang?: string | null; // String
+    }
     getFeatureOption: { // args
       lang?: string | null; // String
     }
@@ -1321,6 +1328,13 @@ export interface NexusGenArgTypes {
     getRecommendTags: { // args
       lang?: string | null; // String
       word: string; // String!
+    }
+    getSearchResult: { // args
+      cursorId?: number | null; // Int
+      filter?: number | null; // Int
+      lang?: string | null; // String
+      lastPostDate?: any | null; // DateTime
+      tags: NexusGenInputs['TagClassIdInputType']; // TagClassIdInputType!
     }
     getSearchTagLogs: { // args
       filterDate?: any | null; // DateTime
