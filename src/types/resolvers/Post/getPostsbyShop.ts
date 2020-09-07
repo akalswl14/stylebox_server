@@ -82,7 +82,11 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
           posts.push(tmp);
         }
       }
-      return posts ? posts : null;
+      let rtn = {
+        totalPostNum: posts.length,
+        posts,
+      };
+      return rtn;
     } catch (e) {
       console.log(e);
       return null;
