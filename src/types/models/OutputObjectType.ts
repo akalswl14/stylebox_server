@@ -15,7 +15,7 @@ export const PostThumbnail = objectType({
     t.string("productName");
     t.string("shopName");
     t.string("postImage", { nullable: true });
-    t.int("price");
+    t.int("price", { nullable: true });
     t.boolean("isLikePost");
     t.string("locationTagName", { nullable: true });
   },
@@ -154,7 +154,7 @@ export const searchResultList = objectType({
   definition(t) {
     t.field("lastPostDate", { type: "DateTime" });
     t.int("totalPostNum");
-    t.field("tags", { type: "ClassTagDetail", list: true });
+    t.field("tags", { type: "TagIdThumbnail", list: true });
     t.field("posts", { type: "PostThumbnail", list: true });
   },
 });
@@ -214,5 +214,15 @@ export const EventList = objectType({
   definition(t) {
     t.int("totalEventNum");
     t.field("events", { type: "EventThumbnail", list: true });
+  },
+});
+
+export const TagIdThumbnail = objectType({
+  name: "TagIdThumbnail",
+  definition(t) {
+    t.int("tagId");
+    t.int("classId", { nullable: true });
+    t.string("category");
+    t.boolean("isClass");
   },
 });
