@@ -1,7 +1,7 @@
 import { queryField } from '@nexus/schema';
 
 export const getQuestionOption = queryField('getQuestionOption', {
-  type: 'Setting',
+  type: 'String',
   nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
