@@ -18,6 +18,7 @@ export const Setting = objectType({
     t.model.shopConstD();
     t.model.shopConstE();
     t.model.adminEmail();
+    t.model.adminEmailPW();
     t.model.popularTagId();
     t.model.mainEventBannerId();
     t.model.QuestionOption();
