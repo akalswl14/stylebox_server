@@ -86,12 +86,16 @@ export const getMainPosts = queryField('getMainPosts', {
       loadingDifferentPostNum = mainPostQuery.length - postIds.length;
 
       if (mainPostQuery.length - postIds.length < loadingPostNum) {
-        for (const eachItem of mainPostQuery) {
-          for (const eachId of postIds) {
-            if (eachId != eachItem.id) {
-              saveList.push(eachItem);
+        idx = [];
+        while (idx.length <= loadingDifferentPostNum) {
+          let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
+          if (idx.indexOf(n) < 0) {
+            if (mainPostQuery[n].id !== postIds) {
+              idx.push(n);
+              saveList.push(mainPostQuery[n]);
             }
           }
+          if (idx.length === loadingPostNum) break;
         }
 
         if (lastPostPriority - 1 === 0) return null;
@@ -133,8 +137,7 @@ export const getMainPosts = queryField('getMainPosts', {
         if (!mainPostQueryNext) return null;
 
         idx = [];
-
-        while (idx.length <= loadingDifferentPostNum) {
+        while (idx.length <= loadingPostNum - loadingDifferentPostNum) {
           let n =
             Math.floor(Math.random() * (mainPostQueryNext.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
