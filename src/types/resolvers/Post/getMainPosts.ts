@@ -26,7 +26,7 @@ export const getMainPosts = queryField('getMainPosts', {
         saveList = [],
         mainPostQueryNext,
         loadingDifferentPostNum,
-        QueryOption = {},
+        QueryOption,
         idx = [];
 
       if (!lang) lang = 'ENG';
@@ -87,9 +87,9 @@ export const getMainPosts = queryField('getMainPosts', {
 
       loadingDifferentPostNum = mainPostQuery.length - postIds.length;
 
-      if (mainPostQuery.length - postIds.length < loadingPostNum) {
+      if (loadingDifferentPostNum < loadingPostNum) {
         idx = [];
-        while (idx.length !== loadingDifferentPostNum) {
+        while (idx.length <= loadingDifferentPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
             checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
@@ -122,7 +122,7 @@ export const getMainPosts = queryField('getMainPosts', {
           }
         }
       } else {
-        while (idx.length !== loadingPostNum) {
+        while (idx.length <= loadingPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
             checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);

@@ -27,7 +27,9 @@ export const getMainPostByTag = queryField('getMainPostByTag', {
         saveList = [],
         mainPostQueryNext,
         loadingDifferentPostNum,
+        QueryOption,
         createdAt,
+        checkPostId,
         period = 7,
         idx = [];
 
@@ -63,21 +65,7 @@ export const getMainPostByTag = queryField('getMainPostByTag', {
       let today = new Date();
       let standardDate = new Date(today - 3600000 * 24 * period);
 
-      mainPostQuery = await ctx.prisma.post.findMany({
-        where: {
-          priority: lastPostPriority,
-          createdAt: { gte: standardDate },
-          OR: [
-            {
-              AND: [
-                { tags: { some: { id: locationTagId } } },
-                { tags: { some: { id: styleTagId } } },
-              ],
-            },
-            { tags: { some: { id: locationTagId } } },
-            { tags: { some: { id: styleTagId } } },
-          ],
-        },
+      QueryOption = {
         select: {
           priority: true,
           preferrers: { select: { userId: true } },
@@ -99,65 +87,58 @@ export const getMainPostByTag = queryField('getMainPostByTag', {
             select: { names: { where: { lang }, select: { word: true } } },
           },
         },
-      });
+      };
+
+      if (locationTagId && styleTagId) {
+        QueryOption.where = {
+          priority: lastPostPriority,
+          createdAt: { gte: standardDate },
+          AND: [
+            { tags: { some: { id: locationTagId } } },
+            { tags: { some: { id: styleTagId } } },
+          ],
+        };
+      }
+
+      if (!locationTagId && styleTagId) {
+        QueryOption.where = {
+          priority: lastPostPriority,
+          createdAt: { gte: standardDate },
+          tags: { some: { id: styleTagId } },
+        };
+      }
+
+      if (locationTagId && !styleTagId) {
+        QueryOption.where = {
+          priority: lastPostPriority,
+          createdAt: { gte: standardDate },
+          tags: { some: { id: locationTagId } },
+        };
+      }
+
+      mainPostQuery = await ctx.prisma.post.findMany(QueryOption);
 
       if (!mainPostQuery) return null;
 
       loadingDifferentPostNum = mainPostQuery.length - postIds.length;
 
-      if (mainPostQuery.length - postIds.length < loadingPostNum) {
+      if (loadingDifferentPostNum < loadingPostNum) {
         idx = [];
         while (idx.length <= loadingDifferentPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQuery[n].id !== postIds) {
+            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQuery[n]);
             }
           }
-          if (idx.length === loadingPostNum) break;
         }
 
         if (lastPostPriority - 1 < 0) return null;
         lastPostPriority--;
 
-        mainPostQueryNext = await ctx.prisma.post.findMany({
-          where: {
-            priority: lastPostPriority,
-            createdAt: { gte: standardDate },
-            OR: [
-              {
-                AND: [
-                  { tags: { some: { id: locationTagId } } },
-                  { tags: { some: { id: styleTagId } } },
-                ],
-              },
-              { tags: { some: { id: locationTagId } } },
-              { tags: { some: { id: styleTagId } } },
-            ],
-          },
-          select: {
-            priority: true,
-            preferrers: { select: { userId: true } },
-            mainProductPrice: true,
-            id: true,
-            images: { select: { url: true } },
-            mainProductId: true,
-            Shop: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-            products: {
-              select: {
-                mainPostId: true,
-                names: { where: { lang }, select: { word: true } },
-              },
-            },
-            tags: {
-              where: { category: 'Location' },
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-          },
-        });
+        mainPostQueryNext = await ctx.prisma.post.findMany(QueryOption);
 
         if (!mainPostQueryNext) return null;
 
@@ -166,7 +147,10 @@ export const getMainPostByTag = queryField('getMainPostByTag', {
           let n =
             Math.floor(Math.random() * (mainPostQueryNext.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQueryNext[n].id !== postIds) {
+            checkPostId = postIds.filter(
+              (id) => id === mainPostQueryNext[n].id
+            );
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQueryNext[n]);
             }
@@ -176,7 +160,8 @@ export const getMainPostByTag = queryField('getMainPostByTag', {
         while (idx.length <= loadingPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQuery[n].id !== postIds) {
+            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQuery[n]);
             }
