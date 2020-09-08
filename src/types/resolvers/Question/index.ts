@@ -1,1 +1,2 @@
-export * from './getQuestionOption';
+export * from "./getQuestionOption";
+export * from "./sendEmail";

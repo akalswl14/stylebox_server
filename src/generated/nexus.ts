@@ -297,6 +297,7 @@ export interface NexusGenRootTypes {
   }
   Setting: { // root type
     adminEmail: string; // String!
+    adminEmailPW: string; // String!
     bestBubbleTagId: number[]; // [Int!]!
     bestConstA: number; // Float!
     bestConstB: number; // Float!
@@ -827,6 +828,7 @@ export interface NexusGenFieldTypes {
   }
   Setting: { // field return type
     adminEmail: string; // String!
+    adminEmailPW: string; // String!
     bestBubbleTagId: number[]; // [Int!]!
     bestConstA: number; // Float!
     bestConstB: number; // Float!
