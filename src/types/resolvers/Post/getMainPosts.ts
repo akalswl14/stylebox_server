@@ -19,12 +19,14 @@ export const getMainPosts = queryField('getMainPosts', {
         loadingPostNum,
         TodaysStylesPeriod,
         mainPostQuery,
+        checkPostId,
         returnPosts = [],
         isLikePost,
         productName,
         saveList = [],
         mainPostQueryNext,
         loadingDifferentPostNum,
+        QueryOption = {},
         idx = [];
 
       if (!lang) lang = 'ENG';
@@ -48,11 +50,10 @@ export const getMainPosts = queryField('getMainPosts', {
       let today = new Date();
       let standardDate = new Date(today - 3600000 * 24 * TodaysStylesPeriod);
 
-      mainPostQuery = await ctx.prisma.post.findMany({
+      QueryOption = {
         where: {
           priority: lastPostPriority,
           createdAt: { gte: standardDate },
-          OR: [{ tags: { some: { id: locationTagId } } }],
         },
         select: {
           priority: true,
@@ -75,7 +76,12 @@ export const getMainPosts = queryField('getMainPosts', {
             select: { names: { where: { lang }, select: { word: true } } },
           },
         },
-      });
+      };
+
+      if (locationTagId)
+        QueryOption.where.tags = { some: { id: locationTagId } };
+
+      mainPostQuery = await ctx.prisma.post.findMany(QueryOption);
 
       if (!mainPostQuery) return null;
 
@@ -83,48 +89,21 @@ export const getMainPosts = queryField('getMainPosts', {
 
       if (mainPostQuery.length - postIds.length < loadingPostNum) {
         idx = [];
-        while (idx.length <= loadingDifferentPostNum) {
+        while (idx.length !== loadingDifferentPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQuery[n].id !== postIds) {
+            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQuery[n]);
             }
           }
-          if (idx.length === loadingPostNum) break;
         }
 
         if (lastPostPriority - 1 === 0) return null;
         lastPostPriority--;
 
-        mainPostQueryNext = await ctx.prisma.post.findMany({
-          where: {
-            priority: lastPostPriority,
-            createdAt: { gte: standardDate },
-            OR: [{ tags: { some: { id: locationTagId } } }],
-          },
-          select: {
-            priority: true,
-            preferrers: { select: { userId: true } },
-            mainProductPrice: true,
-            id: true,
-            images: { select: { url: true } },
-            mainProductId: true,
-            Shop: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-            products: {
-              select: {
-                mainPostId: true,
-                names: { where: { lang }, select: { word: true } },
-              },
-            },
-            tags: {
-              where: { category: 'Location' },
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-          },
-        });
+        mainPostQueryNext = await ctx.prisma.post.findMany(QueryOption);
 
         if (!mainPostQueryNext) return null;
 
@@ -133,17 +112,21 @@ export const getMainPosts = queryField('getMainPosts', {
           let n =
             Math.floor(Math.random() * (mainPostQueryNext.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQueryNext[n].id !== postIds) {
+            checkPostId = postIds.filter(
+              (id) => id === mainPostQueryNext[n].id
+            );
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQueryNext[n]);
             }
           }
         }
       } else {
-        while (idx.length <= loadingPostNum) {
+        while (idx.length !== loadingPostNum) {
           let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
           if (idx.indexOf(n) < 0) {
-            if (mainPostQuery[n].id !== postIds) {
+            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
+            if (!checkPostId) {
               idx.push(n);
               saveList.push(mainPostQuery[n]);
             }
