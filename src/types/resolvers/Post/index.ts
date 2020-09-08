@@ -10,3 +10,4 @@ export * from './getPostDetail';
 export * from './getSimilarPosts';
 export * from './getMainPosts';
 export * from './getSearchResult';
+export * from './getMainPostByTag';

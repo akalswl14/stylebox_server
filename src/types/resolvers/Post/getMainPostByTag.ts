@@ -1,23 +1,25 @@
 import { queryField, intArg, stringArg, arg } from '@nexus/schema';
 import { getUserId } from '../../../utils';
 
-export const getMainPosts = queryField('getMainPosts', {
+export const getMainPostByTag = queryField('getMainPostByTag', {
   type: 'priorityPostList',
   args: {
     lastPostPriority: intArg({ nullable: true }),
     lang: stringArg({ nullable: true }),
     locationTagId: intArg({ nullable: true }),
+    styleTagId: intArg({ nullable: true }),
+    periodFilter: intArg({ nullable: true }),
     postIds: arg({ type: 'idDicInputType', list: true, nullable: true }),
   },
   nullable: true,
+  description: 'peroidFilter 0: this week, 1: today, 2: month , 3:lifetime',
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
-      const { locationTagId } = args;
-      let { lang, postIds, lastPostPriority } = args;
+      const { locationTagId, styleTagId } = args;
+      let { lang, postIds, lastPostPriority, periodFilter } = args;
       let settingQueryResult,
         loadingPostNum,
-        TodaysStylesPeriod,
         mainPostQuery,
         returnPosts = [],
         isLikePost,
@@ -25,34 +27,56 @@ export const getMainPosts = queryField('getMainPosts', {
         saveList = [],
         mainPostQueryNext,
         loadingDifferentPostNum,
+        createdAt,
+        period = 7,
         idx = [];
 
       if (!lang) lang = 'ENG';
       if (!postIds) postIds = [];
+      if (!periodFilter) periodFilter = 0;
       if (!lastPostPriority) lastPostPriority = 5;
-      if (lastPostPriority === 0) return null;
+      if (lastPostPriority < 0) return null;
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
-        select: { loadingPostNum: true, TodaysStylesPeriod: true },
+        select: { loadingPostNum: true, createdAt: true },
       });
 
-      loadingPostNum = settingQueryResult
+      if (!settingQueryResult) return null;
+
+      loadingPostNum = settingQueryResult.loadingPostNum
         ? settingQueryResult.loadingPostNum
         : 20;
 
-      TodaysStylesPeriod = settingQueryResult
-        ? settingQueryResult.TodaysStylesPeriod
-        : 30;
+      createdAt = settingQueryResult?.createdAt;
+
+      if (periodFilter === 0) period = 7;
+      if (periodFilter === 1) period = 1;
+      if (periodFilter === 2) period = 30;
+      if (periodFilter === 3) {
+        let Dueday = new Date(createdAt);
+        let now = new Date();
+        let gap = Dueday.getTime() - now.getTime();
+        period = Math.floor(gap / (1000 * 60 * 60 * 24)) + 1;
+      }
 
       let today = new Date();
-      let standardDate = new Date(today - 3600000 * 24 * TodaysStylesPeriod);
+      let standardDate = new Date(today - 3600000 * 24 * period);
 
       mainPostQuery = await ctx.prisma.post.findMany({
         where: {
           priority: lastPostPriority,
           createdAt: { gte: standardDate },
-          OR: [{ tags: { some: { id: locationTagId } } }],
+          OR: [
+            {
+              AND: [
+                { tags: { some: { id: locationTagId } } },
+                { tags: { some: { id: styleTagId } } },
+              ],
+            },
+            { tags: { some: { id: locationTagId } } },
+            { tags: { some: { id: styleTagId } } },
+          ],
         },
         select: {
           priority: true,
@@ -94,14 +118,23 @@ export const getMainPosts = queryField('getMainPosts', {
           if (idx.length === loadingPostNum) break;
         }
 
-        if (lastPostPriority - 1 === 0) return null;
+        if (lastPostPriority - 1 < 0) return null;
         lastPostPriority--;
 
         mainPostQueryNext = await ctx.prisma.post.findMany({
           where: {
             priority: lastPostPriority,
             createdAt: { gte: standardDate },
-            OR: [{ tags: { some: { id: locationTagId } } }],
+            OR: [
+              {
+                AND: [
+                  { tags: { some: { id: locationTagId } } },
+                  { tags: { some: { id: styleTagId } } },
+                ],
+              },
+              { tags: { some: { id: locationTagId } } },
+              { tags: { some: { id: styleTagId } } },
+            ],
           },
           select: {
             priority: true,
