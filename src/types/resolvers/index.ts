@@ -1,3 +1,4 @@
+export * from "./Branch";
 export * from "./Class";
 export * from "./Event";
 export * from "./Post";
