@@ -26,6 +26,13 @@ export const getPostDetail = queryField('getPostDetail', {
 
       if (!lang) lang = 'ENG';
 
+      await ctx.prisma.view.create({
+        data: {
+          Post: { connect: { id: postId } },
+          User: { connect: { id: userId } },
+        },
+      });
+
       postPrismaResult = await ctx.prisma.post.findOne({
         where: { id: postId },
         select: {
