@@ -12,6 +12,9 @@ export const createShop = mutationField("createShop", {
     phoneNumber: stringArg({ nullable: true, list: true }),
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
     priority: floatArg({ nullable: true }),
+    onShopListTagId: intArg({ nullable: true, list: true }),
+    onDetailTagId: intArg({ nullable: true, list: true }),
+    gotoshopLink: stringArg({ nullable: true, list: true }),
   },
   nullable: true,
   description:
@@ -28,6 +31,9 @@ export const createShop = mutationField("createShop", {
         phoneNumber,
         tags = [],
         priority = 0.0,
+        onShopListTagId = [],
+        onDetailTagId = [],
+        gotoshopLink,
       } = args;
       let shop;
       try {
@@ -42,6 +48,9 @@ export const createShop = mutationField("createShop", {
             phoneNumber: { set: phoneNumber },
             tags: { connect: tags },
             priority,
+            onShopListTagId: { set: onShopListTagId },
+            onDetailTagId: { set: onDetailTagId },
+            gotoshopLink,
           },
         });
       } catch (e) {

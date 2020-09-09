@@ -21,6 +21,7 @@ export const createProduct = mutationField("createProduct", {
     videos: arg({ type: "VideoInputType", list: true, required: false }),
     isOwnPost: booleanArg({ required: false }),
     priority: floatArg({ nullable: true }),
+    mainPostId: intArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -39,6 +40,7 @@ export const createProduct = mutationField("createProduct", {
         videos = [],
         isOwnPost = false,
         priority = 0.0,
+        mainPostId,
       } = args;
       let product;
       try {
@@ -55,6 +57,7 @@ export const createProduct = mutationField("createProduct", {
             videos: { create: videos },
             isOwnPost,
             priority,
+            mainPostId,
           },
         });
       } catch (e) {

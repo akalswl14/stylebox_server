@@ -1,4 +1,10 @@
-import { mutationField, arg, intArg } from "@nexus/schema";
+import {
+  mutationField,
+  arg,
+  intArg,
+  stringArg,
+  booleanArg,
+} from "@nexus/schema";
 
 export const createTag = mutationField("createTag", {
   type: "Tag",
@@ -6,28 +12,24 @@ export const createTag = mutationField("createTag", {
     classId: intArg({ required: true }),
     names: arg({ type: "NameInputType", list: true, required: true }),
     category: arg({ type: "Category", nullable: true }),
-    orderInPopular: intArg({ required: false }),
-    orderInRecommend: intArg({ required: false }),
+    tagImage: stringArg({ nullable: true }),
+    isOnOption: booleanArg({ required: true }),
+    isClass: booleanArg({ required: true }),
   },
   nullable: true,
   description: "name argument is for TagName.",
   resolve: async (_, args, ctx) => {
     try {
-      const {
-        names,
-        classId,
-        category,
-        orderInPopular = 0,
-        orderInRecommend = 0,
-      } = args;
+      const { names, classId, category, tagImage, isOnOption, isClass } = args;
       let tag;
       tag = await ctx.prisma.tag.create({
         data: {
           Class: { connect: { id: classId } },
           names: { create: names },
           category,
-          orderInPopular,
-          orderInRecommend,
+          tagImage,
+          isOnOption,
+          isClass,
         },
       });
       return tag;

@@ -9,7 +9,7 @@ export const createClass = mutationField("createClass", {
   nullable: true,
   description: "name argument is for ClassName.",
   resolve: async (_, args, ctx) => {
-    const { names, category = "Style" } = args;
+    const { names, category } = args;
     let classData;
     try {
       classData = await ctx.prisma.class.create({
