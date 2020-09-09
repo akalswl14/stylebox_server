@@ -12,49 +12,31 @@ export const toggleLikeEvent = mutationField("toggleLikeEvent", {
     try {
       const { id } = args;
       const userId = Number(getUserId(ctx));
-      let user,
-        event,
-        likeList,
+      let likeNum,
         result,
-        preferrersCnt = 0,
         userExists = false;
       try {
-        user = await ctx.prisma.user.findOne({ where: { id: userId } });
-        event = await ctx.prisma.event.findOne({
-          where: { id },
-          select: { preferrers: true },
+        likeNum = await ctx.prisma.like.count({
+          where: {
+            userId,
+            eventId: id,
+          },
         });
-      } catch (e) {
-        console.log(e);
-      }
-      try {
-        if (user && event) {
-          likeList = await ctx.prisma.like.findMany({
+        userExists = likeNum > 0 ? true : false;
+        if (userExists) {
+          result = await ctx.prisma.like.deleteMany({
             where: {
               userId,
               eventId: id,
             },
           });
-          preferrersCnt = event.preferrers.length;
-          userExists = preferrersCnt > 0 ? true : false;
-          if (userExists) {
-            const likeId = likeList[0].id;
-            result = await ctx.prisma.like.delete({
-              where: {
-                id: likeId,
-              },
-            });
-          } else {
-            preferrersCnt += 1;
-            result = await ctx.prisma.like.create({
-              data: {
-                User: { connect: { id: userId } },
-                Event: { connect: { id } },
-              },
-            });
-          }
         } else {
-          return false;
+          result = await ctx.prisma.like.create({
+            data: {
+              User: { connect: { id: userId } },
+              Event: { connect: { id } },
+            },
+          });
         }
       } catch (e) {
         console.log(e);
