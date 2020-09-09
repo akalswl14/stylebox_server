@@ -1,21 +1,29 @@
-import { intArg, stringArg, mutationField, arg, floatArg } from "@nexus/schema";
+import {
+  intArg,
+  stringArg,
+  mutationField,
+  arg,
+  floatArg,
+  booleanArg,
+} from '@nexus/schema';
 
-export const createPost = mutationField("createPost", {
-  type: "Post",
+export const createPost = mutationField('createPost', {
+  type: 'Post',
   args: {
     title: stringArg({ nullable: true }),
     text: stringArg({ nullable: true }),
-    images: arg({ type: "ImageInputType", list: true, nullable: true }),
+    images: arg({ type: 'ImageInputType', list: true, nullable: true }),
     publisher: stringArg({ nullable: true }),
-    products: intArg({ nullable: true, list: true }),
-    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
-    videos: arg({ type: "VideoInputType", list: true, nullable: true }),
-    mainProductId: intArg({ nullable: true }),
+    products: arg({ type: 'idDicInputType', list: true, nullable: true }),
+    tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
+    videos: arg({ type: 'VideoInputType', list: true, nullable: true }),
+    mainProductId: intArg({ required: true }),
     priority: floatArg({ nullable: true }),
+    onDetailTagId: arg({ type: 'idDicInputType', list: true, nullable: true }),
   },
   nullable: true,
   description:
-    "images argument is for PostImage and videos argument is for PostVideo.",
+    'images argument is for PostImage and videos argument is for PostVideo.',
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -28,16 +36,21 @@ export const createPost = mutationField("createPost", {
         videos = [],
         mainProductId,
         priority = 0.0,
+        onDetailTagId = [],
       } = args;
+
       const weeklyRankScore = 0.0,
         lifeTimeRankScore = 0.0,
         monthlyRankScore = 0.0;
+
       let post,
         shopresult,
         shopId,
         branches: { id: number }[] = [],
         mainProduct,
+        isOnline = false,
         mainProductPrice;
+
       if (mainProductId) {
         try {
           mainProduct = await ctx.prisma.product.findOne({
@@ -45,6 +58,7 @@ export const createPost = mutationField("createPost", {
             include: { branches: true },
           });
           mainProductPrice = mainProduct?.price;
+          isOnline = mainProductPrice === 0 ? true : false;
           branches = mainProduct ? mainProduct.branches : [];
         } catch (e) {
           console.log(e);
@@ -84,6 +98,8 @@ export const createPost = mutationField("createPost", {
               },
             },
             priority,
+            isOnline,
+            onDetailTagId: { set: onDetailTagId },
           },
         });
       } catch (e) {

@@ -800,6 +800,8 @@ export interface NexusGenFieldTypes {
     getLikeStyles: NexusGenRootTypes['PostList'] | null; // PostList
     getLocationOption: NexusGenRootTypes['levelCategoryOption'][] | null; // [levelCategoryOption!]
     getMainBubbles: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
+    getMainPostByTag: NexusGenRootTypes['priorityPostList'] | null; // priorityPostList
+    getMainPosts: NexusGenRootTypes['priorityPostList'] | null; // priorityPostList
     getPopularTags: NexusGenRootTypes['ClassTagDetail'][] | null; // [ClassTagDetail!]
     getPost: NexusGenRootTypes['Post'] | null; // Post
     getPostDetail: NexusGenRootTypes['PostDetail'] | null; // PostDetail
@@ -1073,9 +1075,10 @@ export interface NexusGenArgTypes {
     }
     createPost: { // args
       images?: NexusGenInputs['ImageInputType'][] | null; // [ImageInputType!]
-      mainProductId?: number | null; // Int
+      mainProductId: number; // Int!
+      onDetailTagId?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       priority?: number | null; // Float
-      products?: number[] | null; // [Int!]
+      products?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       publisher?: string | null; // String
       tags?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
       text?: string | null; // String
@@ -1300,6 +1303,20 @@ export interface NexusGenArgTypes {
     }
     getMainBubbles: { // args
       lang?: string | null; // String
+    }
+    getMainPostByTag: { // args
+      lang?: string | null; // String
+      lastPostPriority?: number | null; // Int
+      locationTagId?: number | null; // Int
+      periodFilter?: number | null; // Int
+      postIds?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
+      styleTagId?: number | null; // Int
+    }
+    getMainPosts: { // args
+      lang?: string | null; // String
+      lastPostPriority?: number | null; // Int
+      locationTagId?: number | null; // Int
+      postIds?: NexusGenInputs['idDicInputType'][] | null; // [idDicInputType!]
     }
     getPopularTags: { // args
       lang?: string | null; // String
