@@ -1,7 +1,8 @@
-import { queryField, stringArg, intArg } from "@nexus/schema";
+import { queryField, stringArg, intArg } from '@nexus/schema';
+import { getUserId } from '../../../utils';
 
-export const getEventDetail = queryField("getEventDetail", {
-  type: "EventDetail",
+export const getEventDetail = queryField('getEventDetail', {
+  type: 'EventDetail',
   args: {
     eventId: intArg({ required: true }),
     lang: stringArg({ nullable: true }),
@@ -9,7 +10,8 @@ export const getEventDetail = queryField("getEventDetail", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { eventId, lang = "ENG" } = args;
+      const userId = Number(getUserId(ctx));
+      const { eventId, lang = 'ENG' } = args;
       let queryResult,
         eventVideos = [],
         eventImages = [],
@@ -24,6 +26,14 @@ export const getEventDetail = queryField("getEventDetail", {
           eventContentsImage: { id: number; url: string; order: number }[];
           locationTags: { id: number; tagName: string }[];
         } = {};
+
+      await ctx.prisma.view.create({
+        data: {
+          Event: { connect: { id: eventId } },
+          User: { connect: { id: userId } },
+        },
+      });
+
       try {
         queryResult = await ctx.prisma.event.findOne({
           where: {
@@ -37,7 +47,7 @@ export const getEventDetail = queryField("getEventDetail", {
             dueDate: true,
             contentsImages: { select: { id: true, url: true, order: true } },
             tags: {
-              where: { category: "Location" },
+              where: { category: 'Location' },
               select: {
                 id: true,
                 names: { where: { lang }, select: { word: true } },
