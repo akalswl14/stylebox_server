@@ -21,7 +21,7 @@ export const createSetting = mutationField("createSetting", {
     popularTagId: intArg({ required: true, list: true }),
     mainEventBannerId: intArg({ required: true, list: true }),
     QuestionOption: stringArg({ required: true, list: true }),
-    SearchPeriod: intArg({ nullable: true, list: true }),
+    SearchPeriod: intArg({ nullable: true }),
   },
   nullable: true,
   description:

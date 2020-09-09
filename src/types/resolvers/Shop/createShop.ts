@@ -14,7 +14,8 @@ export const createShop = mutationField("createShop", {
     priority: floatArg({ nullable: true }),
     onShopListTagId: intArg({ nullable: true, list: true }),
     onDetailTagId: intArg({ nullable: true, list: true }),
-    gotoshopLink: stringArg({ nullable: true, list: true }),
+    gotoshopLink: stringArg({ nullable: true }),
+    shopNameTags: arg({ type: "NameInputType", list: true, required: true }),
   },
   nullable: true,
   description:
@@ -28,14 +29,16 @@ export const createShop = mutationField("createShop", {
         description,
         images = [],
         videos = [],
-        phoneNumber,
+        phoneNumber = [],
         tags = [],
         priority = 0.0,
         onShopListTagId = [],
         onDetailTagId = [],
         gotoshopLink,
+        shopNameTags,
       } = args;
-      let shop;
+      let shop,
+        monthlyRankScore = 0.0;
       try {
         shop = await ctx.prisma.shop.create({
           data: {
@@ -50,7 +53,23 @@ export const createShop = mutationField("createShop", {
             priority,
             onShopListTagId: { set: onShopListTagId },
             onDetailTagId: { set: onDetailTagId },
+            monthlyRankScore,
             gotoshopLink,
+          },
+        });
+        let classResult = await ctx.prisma.class.create({
+          data: {
+            category: "ShopName",
+            names: { create: shopNameTags },
+          },
+        });
+        await ctx.prisma.tag.create({
+          data: {
+            names: { create: shopNameTags },
+            isClass: true,
+            category: "ShopName",
+            isOnOption: false,
+            Class: { connect: { id: classResult.id } },
           },
         });
       } catch (e) {
