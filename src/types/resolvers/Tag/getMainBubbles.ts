@@ -14,8 +14,7 @@ export const getMainBubbles = queryField('getMainBubbles', {
         order = 0,
         mainBubbleTagId,
         prismaResult,
-        settingQueryResult,
-        tagName;
+        settingQueryResult;
 
       if (!lang) lang = 'ENG';
 
@@ -36,6 +35,7 @@ export const getMainBubbles = queryField('getMainBubbles', {
               select: {
                 tagImage: true,
                 names: { where: { lang }, select: { word: true } },
+                classId: true,
               },
             });
 
@@ -45,7 +45,8 @@ export const getMainBubbles = queryField('getMainBubbles', {
               id: eachId,
               order,
               tagImage: prismaResult?.tagImage,
-              tagName,
+              tagName: prismaResult.names[0].word,
+              classId: prismaResult.classId,
             });
 
             order++;
