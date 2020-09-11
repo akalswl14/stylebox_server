@@ -13,14 +13,18 @@ export const getFeatureOption = queryField("getFeatureOption", {
       let nameResult,
         tags = [];
       nameResult = await ctx.prisma.tagName.findMany({
-        where: { lang, Tag: { is: { category: "Feature" } } },
+        where: { lang, Tag: { category: "Feature" } },
         select: { word: true, tagId: true },
         orderBy: { word: "asc" },
       });
       if (!nameResult) return null;
       for (const eachName of nameResult) {
         if (eachName.tagId) {
-          tags.push({ id: eachName.tagId, tagName: eachName.word });
+          tags.push({
+            id: eachName.tagId,
+            tagName: eachName.word,
+            isClass: true,
+          });
         }
       }
       return tags ? tags : null;

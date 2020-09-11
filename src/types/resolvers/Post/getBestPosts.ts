@@ -27,7 +27,7 @@ export const getBestPosts = queryField("getBestPosts", {
       } = args;
       let queryResult,
         postResult,
-        tagResult,
+        tagResult = [],
         orderQuery,
         queryArg,
         loadingPostNum,
@@ -47,9 +47,12 @@ export const getBestPosts = queryField("getBestPosts", {
       } else if (bestTotalPostNum - pageNum * loadingPostNum < loadingPostNum) {
         loadingPostNum = bestTotalPostNum - pageNum * loadingPostNum;
       }
-      tagResult = await ctx.prisma.tag.findMany({
-        where: { classId },
-      });
+      if (classId) {
+        tagResult = await ctx.prisma.tag.findMany({
+          where: { classId },
+          select: { id: true },
+        });
+      }
       if (locationTagId) {
         tagResult.push({ id: locationTagId });
       }
@@ -78,6 +81,7 @@ export const getBestPosts = queryField("getBestPosts", {
           },
         },
         orderBy: orderOption,
+        take: loadingPostNum,
       };
       if (cursorId) {
         queryOption.cursor = { id: cursorId };

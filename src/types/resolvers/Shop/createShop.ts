@@ -57,21 +57,24 @@ export const createShop = mutationField("createShop", {
             gotoshopLink,
           },
         });
-        let classResult = await ctx.prisma.class.create({
-          data: {
-            category: "ShopName",
-            names: { create: shopNameTags },
-          },
-        });
-        await ctx.prisma.tag.create({
-          data: {
-            names: { create: shopNameTags },
-            isClass: true,
-            category: "ShopName",
-            isOnOption: false,
-            Class: { connect: { id: classResult.id } },
-          },
-        });
+        if (shop) {
+          let classResult = await ctx.prisma.class.create({
+            data: {
+              category: "ShopName",
+              names: { create: shopNameTags },
+            },
+          });
+          await ctx.prisma.tag.create({
+            data: {
+              names: { create: shopNameTags },
+              isClass: true,
+              category: "ShopName",
+              isOnOption: false,
+              Class: { connect: { id: classResult.id } },
+              shops: { connect: { id: shop.id } },
+            },
+          });
+        }
       } catch (e) {
         console.log(e);
       }

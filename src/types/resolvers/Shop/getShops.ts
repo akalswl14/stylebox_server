@@ -8,7 +8,7 @@ export const getShops = queryField("getShops", {
     locationId: intArg({ nullable: true }),
     tagId: intArg({ nullable: true }),
     classId: intArg({ nullable: true }),
-    isClass: booleanArg({ required: true }),
+    isClass: booleanArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
   },
   nullable: true,
@@ -25,7 +25,11 @@ export const getShops = queryField("getShops", {
       let shopResults,
         queryResult,
         loadingPostNum,
+        totalShopNum = 0,
         shops = [],
+        classTags = [],
+        queryOption,
+        countQueryOption,
         tags = [];
       try {
         const userId = Number(getUserId(ctx));
@@ -40,17 +44,12 @@ export const getShops = queryField("getShops", {
           : 4;
         if (isClass) {
           if (classId) {
-            tags = await ctx.prisma.tag.findMany({
+            classTags = await ctx.prisma.tag.findMany({
               where: {
                 classId,
               },
               select: {
                 id: true,
-              },
-            });
-            await ctx.prisma.shop.findMany({
-              where: {
-                OR: tags,
               },
             });
           }
@@ -60,32 +59,39 @@ export const getShops = queryField("getShops", {
         if (locationId) {
           tags.push({ id: locationId });
         }
-        if (cursorId) {
-          shopResults = await ctx.prisma.shop.findMany({
-            orderBy: { monthlyRankScore: "desc" },
-            take: loadingPostNum,
-            cursor: { id: cursorId },
-            skip: 1,
-            select: {
-              id: true,
-              logoUrl: true,
-              names: { select: { word: true }, where: { lang } },
-              onShopListTagId: true,
-            },
-          });
+        queryOption = {
+          orderBy: { monthlyRankScore: "desc" },
+          take: loadingPostNum,
+          select: {
+            id: true,
+            logoUrl: true,
+            names: { select: { word: true }, where: { lang } },
+            onShopListTagId: true,
+          },
+        };
+        if (tags.length > 0) {
+          if (classTags.length > 0) {
+            queryOption.where = {
+              tags: { some: { AND: tags, OR: classTags } },
+            };
+            countQueryOption = {
+              tags: { some: { AND: tags, OR: classTags } },
+            };
+          } else {
+            queryOption.where = { tags: { some: { AND: tags } } };
+            countQueryOption = { tags: { some: { AND: tags } } };
+          }
         } else {
-          shopResults = await ctx.prisma.shop.findMany({
-            orderBy: { monthlyRankScore: "desc" },
-            take: loadingPostNum,
-            skip: 1,
-            select: {
-              id: true,
-              logoUrl: true,
-              names: { select: { word: true }, where: { lang } },
-              onShopListTagId: true,
-            },
-          });
+          if (classTags.length > 0) {
+            queryOption.where = { tags: { some: { OR: classTags } } };
+            countQueryOption = { tags: { some: { OR: classTags } } };
+          }
         }
+        if (cursorId) {
+          queryOption.cursor = { id: cursorId };
+          queryOption.skip = 1;
+        }
+        shopResults = await ctx.prisma.shop.findMany(queryOption);
         for (const eachShop of shopResults) {
           let isLikeShop,
             queryResult,
@@ -121,11 +127,18 @@ export const getShops = queryField("getShops", {
           }
           shops.push(tmp);
         }
+        if (tags.length == 0 && classTags.length == 0) {
+          totalShopNum = await ctx.prisma.shop.count({});
+        } else {
+          totalShopNum = await ctx.prisma.shop.count({
+            where: countQueryOption,
+          });
+        }
       } catch (e) {
         console.log(e);
       }
       return {
-        totalShopNum: shops.length,
+        totalShopNum,
         shops,
       };
     } catch (e) {

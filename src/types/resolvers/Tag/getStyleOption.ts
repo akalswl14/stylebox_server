@@ -13,14 +13,18 @@ export const getStyleOption = queryField("getStyleOption", {
       let nameResult,
         tags = [];
       nameResult = await ctx.prisma.tagName.findMany({
-        where: { lang, Tag: { is: { category: "Style" } } },
+        where: { lang, Tag: { category: "Style" } },
         select: { word: true, tagId: true },
         orderBy: { word: "asc" },
       });
       if (!nameResult) return null;
       for (const eachName of nameResult) {
         if (eachName.tagId) {
-          tags.push({ id: eachName.tagId, tagName: eachName.word });
+          tags.push({
+            id: eachName.tagId,
+            tagName: eachName.word,
+            isClass: true,
+          });
         }
       }
       return tags ? tags : null;

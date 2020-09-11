@@ -15,18 +15,24 @@ export const getRecommendShopTags = queryField("getRecommendShopTags", {
       let tags = [];
       let queryResult = await ctx.prisma.tag.findMany({
         where: {
-          names: { some: { word: { contains: word } } },
+          names: { some: { word: { contains: word }, lang } },
           category: "ShopName",
         },
         select: {
           shops: { select: { id: true } },
           names: { where: { lang }, select: { word: true } },
+          isClass: true,
         },
         take,
       });
+      console.log(queryResult);
       if (!queryResult) return null;
       for (const eachTag of queryResult) {
-        tags.push({ id: eachTag.shops[0].id, tagName: eachTag.names[0].word });
+        tags.push({
+          id: eachTag.shops[0].id,
+          tagName: eachTag.names[0].word,
+          isClass: eachTag.isClass,
+        });
       }
       return tags ? tags : null;
     } catch (e) {

@@ -12,7 +12,7 @@ export const getLocationOption = queryField("getLocationOption", {
       const { lang = "ENG" } = args;
       let options = [];
       let classNameResult = await ctx.prisma.className.findMany({
-        where: { lang, Class: { is: { category: "Location" } } },
+        where: { lang, Class: { category: "Location" } },
         select: {
           word: true,
           classId: true,
@@ -23,7 +23,7 @@ export const getLocationOption = queryField("getLocationOption", {
       for (const eachclassName of classNameResult) {
         if (eachclassName.classId) {
           let tagResult = await ctx.prisma.tagName.findMany({
-            where: { lang, Tag: { is: { classId: eachclassName.classId } } },
+            where: { lang, Tag: { classId: eachclassName.classId } },
             select: {
               tagId: true,
               word: true,

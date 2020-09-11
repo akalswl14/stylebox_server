@@ -39,7 +39,7 @@ export const sendEmail = queryField("sendEmail", {
         to: adminEmail, // list of receivers
         subject: "Question sended from Stylebox Question", // Subject line
         text: "", // plain text body
-        html: `<p>Question type : <b>${option}</b></p><p>Question content : <b>${contents}</b></p><p>EMail to be answered : <b>${answerEmailAddress}</b>.</p>`, // html body
+        html: `<p>Question type : <b>${option}</b></p><p>Question content : <b>${contents}</b></p><p>Email to be answered : <b>${answerEmailAddress}</b>.</p>`, // html body
       });
       console.log("Message sent: %s", info.messageId);
       return true;

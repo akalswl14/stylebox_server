@@ -19,6 +19,7 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
         orderQuery,
         queryArg,
         loadingPostNum,
+        totalPostNum,
         posts = [];
       const userId = Number(getUserId(ctx));
       queryResult = await ctx.prisma.setting.findOne({
@@ -31,8 +32,8 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
       } else {
         orderQuery =
           filter == 2
-            ? [{ isOnline: "desc" }, { mainProductPrice: "asc" }]
-            : [{ isOnline: "asc" }, { mainProductPrice: "desc" }];
+            ? [{ isOnline: "asc" }, { mainProductPrice: "asc" }]
+            : [{ isOnline: "desc" }, { mainProductPrice: "desc" }];
       }
       queryArg = {
         where: { shopId },
@@ -82,8 +83,9 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
           posts.push(tmp);
         }
       }
+      totalPostNum = await ctx.prisma.post.count({ where: { shopId } });
       let rtn = {
-        totalPostNum: posts.length,
+        totalPostNum,
         posts,
       };
       return rtn;

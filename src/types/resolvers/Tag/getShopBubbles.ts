@@ -35,6 +35,7 @@ export const getShopBubbles = queryField("getShopBubbles", {
               tagImage: true,
               classId: true,
               isClass: true,
+              category: true,
             },
           });
           let tmp = {
@@ -43,6 +44,8 @@ export const getShopBubbles = queryField("getShopBubbles", {
             tagImage: queryResult?.tagImage,
             order: eachTagId.order,
             isClass: queryResult?.isClass,
+            classId: queryResult?.classId,
+            Category: queryResult?.category,
           };
           rtn.push(tmp);
         }

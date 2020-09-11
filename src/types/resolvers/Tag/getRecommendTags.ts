@@ -19,14 +19,19 @@ export const getRecommendTags = queryField("getRecommendTags", {
           category: { in: ["Style", "ProductClass", "Feature", "Location"] },
         },
         select: {
-          shops: { select: { id: true } },
+          id: true,
           names: { where: { lang }, select: { word: true } },
+          isClass: true,
         },
         take,
       });
       if (!queryResult) return null;
       for (const eachTag of queryResult) {
-        tags.push({ id: eachTag.shops[0].id, tagName: eachTag.names[0].word });
+        tags.push({
+          id: eachTag.id,
+          tagName: eachTag.names[0].word,
+          isClass: eachTag.isClass,
+        });
       }
       return tags ? tags : null;
     } catch (e) {
