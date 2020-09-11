@@ -98,16 +98,20 @@ export const getLikeStyles = queryField('getLikeStyles', {
       if (!totalPostNum) totalPostNum = 0;
 
       for (const eachLike of QueryResult) {
-        mainProduct = eachLike.products.filter(
-          (product) => product.mainPostId === eachLike.id
-        );
+        mainProduct = await ctx.prisma.product.findOne({
+          where: { id: eachLike.mainProductId },
+          select: {
+            names: { where: { lang }, select: { word: true } },
+          },
+        });
+
         locationTag = eachLike.tags.filter(
           (tag) => tag.category === 'Location'
         );
 
         posts.push({
           postId: eachLike.id,
-          productName: mainProduct[0].names[0].word,
+          productName: mainProduct.names[0].word,
           shopName: eachLike.Shop?.names[0].word,
           postImage: eachLike.images[0].url,
           price: eachLike.mainProductPrice,

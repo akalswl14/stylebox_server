@@ -1,10 +1,11 @@
 import { queryField, intArg, stringArg, arg } from '@nexus/schema';
 import { getUserId } from '../../../utils';
+import { equal } from 'assert';
 
 export const getSimilarPosts = queryField('getSimilarPosts', {
   type: 'PostList',
   args: {
-    LocationTagId: intArg({ nullable: true }),
+    LocationTagId: intArg({ required: true }),
     lang: stringArg({ nullable: true }),
     productClassTagId: arg({
       type: 'idDicInputType',
@@ -22,12 +23,13 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
       let { lang, cursorId } = args;
       let similarPostPrismaResult,
         posts = [],
-        productName,
-        isLikeBoolean,
+        isLikePost,
         settingQueryResult,
         loadingPostNum,
-        lastPostInResults,
-        postTotalNum;
+        totalPostNum,
+        mainProductName,
+        filterArrayOne = [],
+        filterArrayTwo = [];
 
       if (!lang) lang = 'ENG';
 
@@ -40,27 +42,43 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
         ? settingQueryResult.loadingPostNum
         : 20;
 
+      let result1 = await ctx.prisma.post.findMany({
+        where: {
+          tags: { some: { id: LocationTagId, category: 'Location' } },
+        },
+        select: { id: true },
+      });
+
+      let result2 = await ctx.prisma.post.findMany({
+        where: {
+          tags: { some: { OR: productClassTagId, category: 'ProductClass' } },
+        },
+        select: { id: true },
+      });
+
+      for (const one of result1) {
+        result2.filter((item) =>
+          item.id === one.id ? filterArrayOne.push(item) : true
+        );
+      }
+
+      let result3 = await ctx.prisma.post.findMany({
+        where: { tags: { some: { OR: styleTagId, category: 'Style' } } },
+        select: { id: true },
+      });
+
+      for (const one of result3) {
+        filterArrayOne.filter((item) =>
+          item.id === one.id ? filterArrayTwo.push(item) : true
+        );
+      }
+
       if (!cursorId) {
         similarPostPrismaResult = await ctx.prisma.post.findMany({
           orderBy: { createdAt: 'desc' },
           take: loadingPostNum,
           where: {
-            tags: { every: { names: { every: { lang } } } },
-            AND: {
-              tags: {
-                every: {
-                  names: {
-                    some: {
-                      OR: [
-                        { id: LocationTagId },
-                        { id: productClassTagId },
-                        { id: styleTagId },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
+            OR: filterArrayTwo,
           },
           select: {
             preferrers: { select: { userId: true } },
@@ -75,6 +93,14 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
               select: {
                 mainPostId: true,
                 names: { where: { lang }, select: { word: true } },
+              },
+            },
+            tags: {
+              select: {
+                names: {
+                  where: { lang },
+                  select: { word: true },
+                },
               },
             },
           },
@@ -86,22 +112,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
           skip: 1,
           cursor: { id: cursorId },
           where: {
-            tags: { every: { names: { every: { lang } } } },
-            AND: {
-              tags: {
-                every: {
-                  names: {
-                    some: {
-                      OR: [
-                        { id: LocationTagId },
-                        { id: productClassTagId },
-                        { id: styleTagId },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
+            OR: filterArrayTwo,
           },
           select: {
             preferrers: { select: { userId: true } },
@@ -118,21 +129,29 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
                 names: { where: { lang }, select: { word: true } },
               },
             },
+            tags: {
+              select: {
+                names: {
+                  where: { lang },
+                  select: { word: true },
+                },
+              },
+            },
           },
         });
       }
 
       if (!similarPostPrismaResult) return null;
 
-      lastPostInResults = similarPostPrismaResult[loadingPostNum - 1];
-      cursorId = lastPostInResults.id;
-
       for (const item of similarPostPrismaResult) {
-        productName = item.products.filter(
-          (product) => product.mainPostId === item.id
-        );
+        mainProductName = await ctx.prisma.product.findOne({
+          where: { id: item.mainProductId },
+          select: {
+            names: { where: { lang }, select: { word: true } },
+          },
+        });
 
-        isLikeBoolean = item.preferrers.filter(
+        isLikePost = item.preferrers.filter(
           (preferrer) => preferrer.userId === userId
         )
           ? true
@@ -142,35 +161,20 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
           postId: item.id,
           postImage: item.images[0].url,
           shopName: item.Shop?.names[0].word,
-          productName: productName[0].names[0].word,
+          productName: mainProductName.names[0].word,
           price: item.mainProductPrice,
-          isLikeBoolean,
+          isLikePost,
         });
       }
 
-      postTotalNum = await ctx.prisma.post.count({
+      totalPostNum = await ctx.prisma.post.count({
         where: {
-          tags: { every: { names: { every: { lang } } } },
-          AND: {
-            tags: {
-              every: {
-                names: {
-                  some: {
-                    OR: [
-                      { id: LocationTagId },
-                      { id: productClassTagId },
-                      { id: styleTagId },
-                    ],
-                  },
-                },
-              },
-            },
-          },
+          OR: filterArrayTwo,
         },
       });
 
       let rtn = {
-        postTotalNum,
+        totalPostNum,
         posts,
       };
       return rtn;

@@ -23,7 +23,7 @@ export const getEventDetail = queryField('getEventDetail', {
           eventImages: { id: number; url: string; order: number }[];
           url: string | null;
           dueDate: Date;
-          eventContentsImage: { id: number; url: string; order: number }[];
+          eventContentsImages: { id: number; url: string; order: number }[];
           locationTags: { id: number; tagName: string }[];
         } = {};
 
@@ -90,7 +90,7 @@ export const getEventDetail = queryField('getEventDetail', {
         rtn.dueDate = queryResult.dueDate;
         rtn.eventVideos = eventVideos;
         rtn.eventImages = eventImages;
-        rtn.eventContentsImage = eventContentsImage;
+        rtn.eventContentsImages = eventContentsImage;
         rtn.locationTags = locationTags;
       } catch (e) {
         console.log(e);

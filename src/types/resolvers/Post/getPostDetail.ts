@@ -119,9 +119,15 @@ export const getPostDetail = queryField('getPostDetail', {
         ? postPrismaResult.updatedAt
         : postPrismaResult.createdAt;
 
-      mainProduct = postPrismaResult.products.filter(
-        (item) => item.mainPostId === postId
-      );
+      mainProduct = await ctx.prisma.product.findOne({
+        where: { id: postPrismaResult.mainProductId },
+        select: {
+          description: true,
+          names: { where: { lang }, select: { word: true } },
+        },
+      });
+
+      postPrismaResult.products.filter((item) => item.mainPostId === postId);
 
       YoutubeVideoUrl = postPrismaResult.videos.filter(
         (item) => item.isYoutube === true
@@ -135,16 +141,16 @@ export const getPostDetail = queryField('getPostDetail', {
         shopId: postPrismaResult.shopId,
         shopName: postPrismaResult.Shop?.names[0].word,
         shopLogoUrl: postPrismaResult.Shop?.logoUrl,
-        description: mainProduct[0].description,
+        description: mainProduct.description,
         YoutubeVideoUrl: YoutubeVideoUrl[0].url,
         mainProductId: postPrismaResult.mainProductId,
-        mainProductName: mainProduct[0].names[0].word,
+        mainProductName: mainProduct.names[0].word,
         mainProductExternalLinks,
         postImages,
         tags,
         products,
       };
-      return rtn;
+      return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
       return null;
