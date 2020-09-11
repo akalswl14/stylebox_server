@@ -1,7 +1,7 @@
 import { stringArg, mutationField, arg, intArg, floatArg } from "@nexus/schema";
 
 export const createSetting = mutationField("createSetting", {
-  type: "Shop",
+  type: "Setting",
   args: {
     mainBubbleTagId: intArg({ required: true, list: true }),
     bestBubbleTagId: intArg({ required: true, list: true }),
