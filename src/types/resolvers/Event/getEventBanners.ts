@@ -15,17 +15,18 @@ export const getEventBanners = queryField('getEventBanners', {
           where: { id: 1 },
           select: { mainEventBannerId: true },
         });
+
         eventBannersId = prismaResult?.mainEventBannerId;
 
         if (eventBannersId) {
           for (const eachId of eventBannersId) {
             prismaResult = await ctx.prisma.event.findOne({
               where: { id: eachId },
-              select: { bannerImage: true },
+              select: { bannerImage: true, id: true },
             });
             order++;
             rtn.push({
-              id: eachId,
+              eventId: prismaResult?.id,
               bannerImage: prismaResult?.bannerImage,
               order,
             });
