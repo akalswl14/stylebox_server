@@ -16,10 +16,11 @@ export const getLikeShops = queryField('getLikeShos', {
         totalShopNum,
         styleTagName,
         locationTagName,
-        TagResult,
         shops = [],
         settingQueryResult,
-        loadingPostNum;
+        loadingPostNum,
+        tagResult,
+        styleAndLocationTag = [];
 
       const userId = Number(getUserId(ctx));
 
@@ -75,35 +76,38 @@ export const getLikeShops = queryField('getLikeShos', {
       if (!totalShopNum) totalShopNum = 0;
 
       for (const eachLike of QueryResult) {
-        for (const eachTag of eachLike.onShopListTagId) {
-          TagResult = await ctx.prisma.tag.findOne({
-            where: { id: eachTag },
+        for (const eachTagId of eachLike.onShopListTagId) {
+          tagResult = await ctx.prisma.tag.findMany({
+            where: {
+              id: eachTagId,
+              OR: [{ category: 'Location' }, { category: 'Style' }],
+            },
             select: {
               names: { where: { lang }, select: { word: true } },
-              Class: { select: { category: true } },
+              category: true,
             },
           });
 
-          if (!TagResult) return null;
-
-          locationTagName =
-            TagResult?.Class.category === 'Location'
-              ? TagResult.names[0].word
-              : null;
-
-          styleTagName =
-            TagResult?.Class.category === 'Style'
-              ? TagResult.names[0].word
-              : null;
-
-          shops.push({
-            shopId: eachLike.id,
-            ShopName: eachLike.names[0].word,
-            logoUrl: eachLike.logoUrl,
-            styleTagName,
-            locationTagName,
-          });
+          styleAndLocationTag.push(tagResult[0]);
         }
+
+        styleTagName =
+          styleAndLocationTag[0].category === 'Style'
+            ? styleAndLocationTag[0].names[0].word
+            : styleAndLocationTag[1].names[0].word;
+
+        locationTagName =
+          styleAndLocationTag[0].category === 'Location'
+            ? styleAndLocationTag[0].names[0].word
+            : styleAndLocationTag[1].names[0].word;
+
+        shops.push({
+          shopId: eachLike.id,
+          shopName: eachLike.names[0].word,
+          logoUrl: eachLike.logoUrl,
+          styleTagName,
+          locationTagName,
+        });
       }
 
       let rtn = {
