@@ -9,6 +9,7 @@ export * from "./getPostsbyShop";
 export * from "./getPostDetail";
 export * from "./getSimilarPosts";
 export * from "./getMainPosts";
-export * from "./getSearchResult";
+export * from "./getPriceSearchResult";
 export * from "./getMainPostByTag";
 export * from "./getBestPosts";
+export * from "./getRecentSearchResult";

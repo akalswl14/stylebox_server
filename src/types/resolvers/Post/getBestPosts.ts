@@ -28,8 +28,6 @@ export const getBestPosts = queryField("getBestPosts", {
       let queryResult,
         postResult,
         tagResult = [],
-        orderQuery,
-        queryArg,
         loadingPostNum,
         bestTotalPostNum,
         queryOption,
@@ -48,24 +46,27 @@ export const getBestPosts = queryField("getBestPosts", {
         loadingPostNum = bestTotalPostNum - pageNum * loadingPostNum;
       }
       if (classId) {
-        tagResult = await ctx.prisma.tag.findMany({
+        let classTags = await ctx.prisma.tag.findMany({
           where: { classId },
           select: { id: true },
         });
+        for (const eachTag of classTags) {
+          tagResult.push({ tags: { some: { id: eachTag.id } } });
+        }
       }
       if (locationTagId) {
-        tagResult.push({ id: locationTagId });
+        tagResult.push({ tags: { some: { id: locationTagId } } });
       }
       if (periodFilter == 1) {
-        orderOption = { weeklyRankScore: "desc" };
+        orderOption = [{ weeklyRankScore: "desc" }, { createdAt: "asc" }];
       } else if (periodFilter == 2) {
-        orderOption = { monthlyRankScore: "desc" };
+        orderOption = [{ monthlyRankScore: "desc" }, { createdAt: "asc" }];
       } else {
-        orderOption = { lifeTimeRankScore: "desc" };
+        orderOption = [{ lifeTimeRankScore: "desc" }, { createdAt: "asc" }];
       }
       queryOption = {
         where: {
-          tags: { some: { AND: tagResult } },
+          AND: tagResult,
         },
         select: {
           id: true,
