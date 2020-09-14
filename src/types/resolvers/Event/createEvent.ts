@@ -1,12 +1,12 @@
 import { stringArg, mutationField, arg, booleanArg } from "@nexus/schema";
 
-export const createEvent = mutationField('createEvent', {
-  type: 'Event',
+export const createEvent = mutationField("createEvent", {
+  type: "Event",
   args: {
-    images: arg({ type: 'ImageInputType', list: true, required: true }),
-    videos: arg({ type: 'VideoInputType', list: true, required: true }),
+    images: arg({ type: "ImageInputType", list: true, required: true }),
+    videos: arg({ type: "VideoInputType", list: true, required: true }),
     url: stringArg({ nullable: true }),
-    dueDate: arg({ type: 'DateTime', required: true }),
+    dueDate: arg({ type: "DateTime", required: true }),
     bannerImage: stringArg({ required: true }),
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
     isOnList: booleanArg({ required: true }),
@@ -45,6 +45,7 @@ export const createEvent = mutationField('createEvent', {
             title,
             bannerText,
             contentsImages: { create: contentsImages },
+            isExpired: false,
           },
         });
       } catch (e) {

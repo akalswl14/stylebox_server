@@ -13,7 +13,6 @@ export const Tag = objectType({
     t.model.events();
     t.model.category();
     t.model.tagImage();
-    t.model.isOnOption();
     t.model.searchTagLogs();
     t.model.isClass();
     t.model.createdAt();

@@ -18,7 +18,7 @@ export const createPost = mutationField("createPost", {
     tags: arg({ type: "idDicInputType", list: true, nullable: true }),
     videos: arg({ type: "VideoInputType", list: true, nullable: true }),
     mainProductId: intArg({ required: true }),
-    priority: floatArg({ nullable: true }),
+    priority: intArg({ nullable: true }),
     onDetailTagId: intArg({ list: true }),
   },
   nullable: true,
@@ -35,7 +35,7 @@ export const createPost = mutationField("createPost", {
         tags = [],
         videos = [],
         mainProductId,
-        priority = 0.0,
+        priority = 0,
         onDetailTagId = [],
       } = args;
 

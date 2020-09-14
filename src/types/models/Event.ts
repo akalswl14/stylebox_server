@@ -15,6 +15,7 @@ export const Event = objectType({
     t.model.isOnList();
     t.model.title();
     t.model.bannerText();
+    t.model.isExpired();
     t.model.createdAt();
     t.model.updatedAt();
   },
