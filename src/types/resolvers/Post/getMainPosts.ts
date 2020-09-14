@@ -1,164 +1,98 @@
-import { queryField, intArg, stringArg, arg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, intArg, stringArg, arg } from "@nexus/schema";
+import { Post } from "@prisma/client";
+import { Context } from "nexus-prisma/dist/utils";
+import { getUserId } from "../../../utils";
 
-export const getMainPosts = queryField('getMainPosts', {
-  type: 'priorityPostList',
+export const getMainPosts = queryField("getMainPosts", {
+  type: "priorityPostList",
   args: {
     lastPostPriority: intArg({ nullable: true }),
     lang: stringArg({ nullable: true }),
     locationTagId: intArg({ nullable: true }),
-    postIds: arg({ type: 'idDicInputType', list: true, nullable: true }),
+    postIds: intArg({ list: true, nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const userId = Number(getUserId(ctx));
-      const { locationTagId } = args;
-      let { lang, postIds, lastPostPriority } = args;
+      const {
+        lang = "ENG",
+        postIds = [],
+        lastPostPriority,
+        locationTagId,
+      } = args;
       let settingQueryResult,
         loadingPostNum,
         TodaysStylesPeriod,
-        mainPostQuery,
-        checkPostId,
-        returnPosts = [],
-        isLikePost,
-        productName,
-        saveList = [],
-        mainPostQueryNext,
-        loadingDifferentPostNum,
-        QueryOption,
-        idx = [];
-
-      if (!lang) lang = 'ENG';
-      if (!postIds) postIds = [];
-      if (!lastPostPriority) lastPostPriority = 5;
-      if (lastPostPriority === 0) return null;
-
+        queryLoadingPostNum,
+        queryPriority = 5,
+        queryResult,
+        postResult = [],
+        rtnLastPostPriority = 5,
+        posts = [];
+      const userId = Number(getUserId(ctx));
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, TodaysStylesPeriod: true },
       });
-
       loadingPostNum = settingQueryResult
         ? settingQueryResult.loadingPostNum
         : 20;
-
       TodaysStylesPeriod = settingQueryResult
         ? settingQueryResult.TodaysStylesPeriod
         : 30;
+      queryLoadingPostNum = loadingPostNum;
+      const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+      let queryDate = new Date();
+      queryDate.setUTCDate(today.getUTCDate() - TodaysStylesPeriod);
+      queryDate.setUTCHours(0, 0, 0, 0);
 
-      let today = new Date();
-      let standardDate = new Date(today - 3600000 * 24 * TodaysStylesPeriod);
-
-      QueryOption = {
-        where: {
-          priority: lastPostPriority,
-          createdAt: { gte: standardDate },
-        },
-        select: {
-          priority: true,
-          preferrers: { select: { userId: true } },
-          mainProductPrice: true,
-          id: true,
-          images: { select: { url: true } },
-          mainProductId: true,
-          Shop: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
-          products: {
-            select: {
-              mainPostId: true,
-              names: { where: { lang }, select: { word: true } },
-            },
-          },
-          tags: {
-            where: { category: 'Location' },
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
-        },
-      };
-
-      if (locationTagId)
-        QueryOption.where.tags = { some: { id: locationTagId } };
-
-      mainPostQuery = await ctx.prisma.post.findMany(QueryOption);
-
-      if (!mainPostQuery) return null;
-
-      loadingDifferentPostNum = mainPostQuery.length - postIds.length;
-
-      if (loadingDifferentPostNum < loadingPostNum) {
-        idx = [];
-        while (idx.length <= loadingDifferentPostNum) {
-          let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
-          if (idx.indexOf(n) < 0) {
-            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
-            if (!checkPostId) {
-              idx.push(n);
-              saveList.push(mainPostQuery[n]);
-            }
-          }
-        }
-
-        if (lastPostPriority - 1 === 0) return null;
-        lastPostPriority--;
-
-        mainPostQueryNext = await ctx.prisma.post.findMany(QueryOption);
-
-        if (!mainPostQueryNext) return null;
-
-        idx = [];
-        while (idx.length <= loadingPostNum - loadingDifferentPostNum) {
-          let n =
-            Math.floor(Math.random() * (mainPostQueryNext.length - 1)) + 0;
-          if (idx.indexOf(n) < 0) {
-            checkPostId = postIds.filter(
-              (id) => id === mainPostQueryNext[n].id
-            );
-            if (!checkPostId) {
-              idx.push(n);
-              saveList.push(mainPostQueryNext[n]);
-            }
-          }
-        }
-      } else {
-        while (idx.length <= loadingPostNum) {
-          let n = Math.floor(Math.random() * (mainPostQuery.length - 1)) + 0;
-          if (idx.indexOf(n) < 0) {
-            checkPostId = postIds.filter((id) => id === mainPostQuery[n].id);
-            if (!checkPostId) {
-              idx.push(n);
-              saveList.push(mainPostQuery[n]);
-            }
-          }
-        }
-      }
-
-      for (const eachItem of saveList) {
-        productName = eachItem.products.filter(
-          (product) => product.mainPostId === eachItem.id
+      queryPriority = lastPostPriority ? lastPostPriority : 5;
+      while (postResult.length < loadingPostNum && queryPriority > 0) {
+        queryResult = await getfindManyResult(
+          ctx,
+          queryDate,
+          lang,
+          queryPriority,
+          postIds,
+          locationTagId
         );
-
-        isLikePost = eachItem.preferrers.filter(
-          (preferrer) => preferrer.userId === userId
-        )
-          ? true
-          : false;
-
-        returnPosts.push({
-          postId: eachItem.id,
-          shopName: eachItem.Shop?.names[0].word,
-          price: eachItem.mainProductPrice,
-          postImage: eachItem.images[0].url,
-          locationTagName: eachItem.tags[0].names[0].word,
-          isLikePost,
-          productName,
-        });
+        let randomPostResult = await getRandomResult(
+          queryLoadingPostNum,
+          queryResult
+        );
+        postResult.push(...randomPostResult);
+        if (queryResult.length < queryLoadingPostNum) {
+          queryLoadingPostNum = loadingPostNum - postResult.length;
+        }
+        queryPriority--;
       }
-
+      console.log(postResult);
+      if (postResult.length > 0) {
+        rtnLastPostPriority = postResult[postResult.length - 1].priority;
+        for (const eachPost of postResult) {
+          queryResult = await ctx.prisma.like.count({
+            where: { userId, postId: eachPost.id },
+          });
+          let isLikePost = queryResult > 0 ? true : false;
+          queryResult = await ctx.prisma.productName.findMany({
+            where: { productId: eachPost.mainProductId, lang },
+            select: { word: true },
+          });
+          let productName = queryResult[0].word;
+          posts.push({
+            postId: eachPost.id,
+            productName,
+            shopName: eachPost.Shop.names[0].word,
+            postImage: eachPost.images[0].url,
+            price: eachPost.mainProductPrice,
+            isLikePost,
+            locationTagName: eachPost.tags[0].names[0].word,
+          });
+        }
+      }
       let rtn = {
-        lastPostPriority,
-        returnPosts,
+        lastPostPriority: rtnLastPostPriority,
+        posts,
       };
 
       return rtn ? rtn : null;
@@ -168,3 +102,47 @@ export const getMainPosts = queryField('getMainPosts', {
     }
   },
 });
+
+const getfindManyResult = async (
+  ctx: Context,
+  queryDate: Date,
+  lang: String,
+  priority: number,
+  postIds = [],
+  locationTagId?: number
+) => {
+  let queryResult = await ctx.prisma.post.findMany({
+    where: {
+      priority,
+      id: { notIn: postIds },
+      createdAt: { gte: queryDate },
+      tags: { some: { id: locationTagId } },
+    },
+    select: {
+      id: true,
+      Shop: { select: { names: { where: { lang }, select: { word: true } } } },
+      mainProductId: true,
+      mainProductPrice: true,
+      tags: {
+        where: { category: "Location" },
+        select: { names: { where: { lang }, select: { word: true } } },
+      },
+      images: { select: { url: true }, orderBy: { order: "asc" }, take: 1 },
+      priority: true,
+    },
+  });
+  return queryResult;
+};
+
+const getRandomResult = async (loadingPostNum: number, posts: Post[]) => {
+  let results: Post[] = [];
+  console.log("RANDOM INPUT : ", posts);
+  while (results.length < loadingPostNum && posts.length > 0) {
+    let postNum = posts.length;
+    let randomIdx = await Math.floor(Math.random() * postNum);
+    await results.push(posts[randomIdx]);
+    await posts.splice(randomIdx, 1);
+    console.log("IN WHILE ", results);
+  }
+  return results;
+};

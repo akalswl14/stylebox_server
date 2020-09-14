@@ -19,6 +19,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         PostResult = [],
         ClassResult,
         loadingPostNum,
+        queryLoadingPostNum,
         totalPostNum,
         SearchPeriod,
         inputLastDate,
@@ -35,6 +36,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       });
       loadingPostNum = queryResult ? queryResult.loadingPostNum : 20;
       SearchPeriod = queryResult ? queryResult.SearchPeriod : 30;
+      queryLoadingPostNum = loadingPostNum;
       const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDate = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDateTomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
@@ -76,7 +78,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       ) {
         queryResult = await getResult(
           ctx,
-          loadingPostNum,
+          queryLoadingPostNum,
           lang,
           tagIds,
           queryDate,
@@ -84,6 +86,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           functionOption
         );
         PostResult.push(...queryResult);
+        queryLoadingPostNum = loadingPostNum - PostResult.length;
         if (queryResult.length > 0) {
           functionOption = { cursorId: queryResult[queryResult.length - 1].id };
         } else {
