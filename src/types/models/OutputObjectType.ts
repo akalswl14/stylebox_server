@@ -86,13 +86,13 @@ export const ShopList = objectType({
 export const ClassTagDetail = objectType({
   name: "ClassTagDetail",
   definition(t) {
-    t.int("id");
-    t.string("tagName");
-    t.int("order");
-    t.string("tagImage", { nullable: true });
-    t.int("classId", { nullable: true });
-    t.boolean("isClass", { nullable: true });
-    t.field("Category", { type: "Category", nullable: true });
+    t.int('id');
+    t.string('tagName');
+    t.int('order');
+    t.string('tagImage', { nullable: true });
+    t.int('classId', { nullable: true });
+    t.boolean('isClass', { nullable: true });
+    t.field('Category', { type: 'Category', nullable: true });
   },
 });
 
