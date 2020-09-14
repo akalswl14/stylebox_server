@@ -78,7 +78,7 @@ export const getEvents = queryField('getEvents', {
           orderBy: { dueDate: 'asc' },
           where: {
             tags: { some: { names: { some: { lang } } } },
-            dueDate: { gte: new Date() },
+            dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
             isOnList: true,
           },
           include: { preferrers: true },
@@ -88,15 +88,7 @@ export const getEvents = queryField('getEvents', {
 
         const idx = checkEventIdResult.length - 1;
         lastPostInResults = checkEventIdResult[idx];
-        console.log(
-          '=============기간이 지나지 않은것 라스트 이벤트 결과=============='
-        );
-        console.log(lastPostInResults);
         myCursor = lastPostInResults.id; //기간 지나지 않은것들중 마지막 Id
-        console.log(
-          '=============기간이 지나지 않은 이벤트의 아이디==============='
-        );
-        console.log(myCursor);
 
         if (!cursorId) {
           prismaQueryResults = await ctx.prisma.event.findMany({
@@ -104,7 +96,7 @@ export const getEvents = queryField('getEvents', {
             take: loadingPostNum,
             where: {
               tags: { some: { names: { some: { lang } } } },
-              dueDate: { gte: new Date() },
+              dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
               isOnList: true,
             },
             include: { preferrers: true },
@@ -114,7 +106,7 @@ export const getEvents = queryField('getEvents', {
             orderBy: { dueDate: 'asc' },
             where: {
               id: cursorId,
-              dueDate: { gte: new Date() },
+              dueDate: { gt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
               isOnList: true,
             },
           }); //cursorId가 기간이 지나지 않은 event의 Id인지
@@ -127,27 +119,31 @@ export const getEvents = queryField('getEvents', {
               cursor: { id: cursorId },
               where: {
                 tags: { some: { names: { some: { lang } } } },
-                dueDate: { gte: new Date() },
+                dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                 isOnList: true,
               },
               include: { preferrers: true },
             });
 
-            const idx1 = prismaQueryResults.length - 1;
-            const lastPostInResults = prismaQueryResults[idx1];
-            const ChechkCursorId = lastPostInResults.id;
+            if (prismaQueryResults.length > 0) {
+              const idx1 = prismaQueryResults.length - 1;
+              const lastPostInResults = prismaQueryResults[idx1];
+              let ChechkCursorId = lastPostInResults.id;
+            } else {
+              let ChechkCursorId = myCursor;
+            }
 
             if (ChechkCursorId === myCursor) {
               DdayEventCheck = true;
               loadingEventNum = loadingPostNum - prismaQueryResults.length;
-              loadingEventNum =
-                loadingEventNum !== 0 ? loadingEventNum : loadingPostNum;
+              loadingEventNum = loadingEventNum !== 0 ? loadingEventNum : 0;
+
               secondPrismaQueryResults = await ctx.prisma.event.findMany({
                 orderBy: { dueDate: 'desc' },
                 take: loadingEventNum,
                 where: {
                   tags: { some: { names: { some: { lang } } } },
-                  dueDate: { lt: new Date() },
+                  dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                   isOnList: true,
                 },
                 include: { preferrers: true },
@@ -161,7 +157,7 @@ export const getEvents = queryField('getEvents', {
               cursor: { id: cursorId },
               where: {
                 tags: { some: { names: { some: { lang } } } },
-                dueDate: { lt: new Date() },
+                dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                 isOnList: true,
               },
               include: { preferrers: true },
@@ -177,12 +173,10 @@ export const getEvents = queryField('getEvents', {
 
         isLikeEvent = preferrersCheck ? true : false;
 
-        let Dueday = new Date(item.dueDate);
-        let now = new Date();
+        let Dueday = new Date(item.dueDate.setUTCHours(0, 0, 0, 0));
+        let now = new Date(new Date().setUTCHours(0, 0, 0, 0));
         let gap = Dueday.getTime() - now.getTime();
-        Dday = Math.floor(gap / (1000 * 60 * 60 * 24)) + 1;
-
-        Dday = Dday < 0 ? 0 : Dday;
+        Dday = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
 
         events.push({
           eventId: item.id,
@@ -202,12 +196,10 @@ export const getEvents = queryField('getEvents', {
 
             isLikeEvent = preferrersCheck ? true : false;
 
-            let Dueday = new Date(item.dueDate);
-            let now = new Date();
+            let Dueday = new Date(item.dueDate.setUTCHours(0, 0, 0, 0));
+            let now = new Date(new Date().setUTCHours(0, 0, 0, 0));
             let gap = Dueday.getTime() - now.getTime();
-            Dday = Math.floor(gap / (1000 * 60 * 60 * 24)) + 1;
-
-            Dday = Dday < 0 ? 0 : Dday;
+            Dday = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
 
             events.push({
               eventId: item.id,
