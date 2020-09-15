@@ -20,11 +20,26 @@ export const getLikeShops = queryField('getLikeShos', {
         settingQueryResult,
         loadingPostNum,
         tagResult,
+        QueryOption,
         styleAndLocationTag = [];
 
       const userId = Number(getUserId(ctx));
 
       if (!lang) lang = 'ENG';
+
+      QueryOption = {
+        take: loadingPostNum,
+        where: { preferrers: { some: { userId } } },
+        select: {
+          id: true,
+          logoUrl: true,
+          names: { where: { lang }, select: { word: true } },
+          onShopListTagId: true,
+          tags: {
+            select: { names: { where: { lang }, select: { word: true } } },
+          },
+        },
+      };
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -36,35 +51,11 @@ export const getLikeShops = queryField('getLikeShos', {
         : 20;
 
       if (!cursorId) {
-        QueryResult = await ctx.prisma.shop.findMany({
-          take: loadingPostNum,
-          where: { preferrers: { some: { userId } } },
-          select: {
-            id: true,
-            logoUrl: true,
-            names: { where: { lang }, select: { word: true } },
-            onShopListTagId: true,
-            tags: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-          },
-        });
+        QueryResult = await ctx.prisma.shop.findMany(QueryOption);
       } else {
-        QueryResult = await ctx.prisma.shop.findMany({
-          take: loadingPostNum,
-          skip: 1,
-          cursor: { id: cursorId },
-          where: { preferrers: { some: { userId } } },
-          select: {
-            id: true,
-            logoUrl: true,
-            names: { where: { lang }, select: { word: true } },
-            onShopListTagId: true,
-            tags: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-          },
-        });
+        QueryOption.skip = 1;
+        QueryOption.cursor = { id: cursorId };
+        QueryResult = await ctx.prisma.shop.findMany(QueryOption);
       }
 
       if (!QueryResult) return null;
