@@ -9,3 +9,4 @@ export * from "./getBestPosts";
 export * from "./getRecentSearchResult";
 export * from "./getMainPosts";
 export * from "./getMainPostByTag";
+export * from "./addPostLinkClick";
