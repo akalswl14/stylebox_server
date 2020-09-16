@@ -42,12 +42,6 @@ export const getLikeStyles = queryField('getLikeStyles', {
               names: { where: { lang }, select: { word: true } },
             },
           },
-          tags: {
-            select: {
-              names: { where: { lang }, select: { word: true } },
-              category: true,
-            },
-          },
         },
       };
 
@@ -84,17 +78,12 @@ export const getLikeStyles = queryField('getLikeStyles', {
           },
         });
 
-        locationTag = eachLike.tags.filter(
-          (tag) => tag.category === 'Location'
-        );
-
         posts.push({
           postId: eachLike.id,
           productName: mainProduct.names[0].word,
           shopName: eachLike.Shop?.names[0].word,
           postImage: eachLike.images[0].url,
           price: eachLike.mainProductPrice,
-          locationTagName: locationTag[0].names[0].word,
         });
       }
 

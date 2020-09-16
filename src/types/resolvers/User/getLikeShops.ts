@@ -14,14 +14,12 @@ export const getLikeShops = queryField('getLikeShos', {
       let { lang } = args;
       let QueryResult,
         totalShopNum,
-        styleTagName,
-        locationTagName,
         shops = [],
         settingQueryResult,
         loadingPostNum,
         tagResult,
         QueryOption,
-        styleAndLocationTag = [];
+        styleTag = [];
 
       const userId = Number(getUserId(ctx));
 
@@ -35,9 +33,6 @@ export const getLikeShops = queryField('getLikeShos', {
           logoUrl: true,
           names: { where: { lang }, select: { word: true } },
           onShopListTagId: true,
-          tags: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
         },
       };
 
@@ -68,36 +63,23 @@ export const getLikeShops = queryField('getLikeShos', {
 
       for (const eachLike of QueryResult) {
         for (const eachTagId of eachLike.onShopListTagId) {
-          tagResult = await ctx.prisma.tag.findMany({
+          tagResult = await ctx.prisma.tag.findOne({
             where: {
               id: eachTagId,
-              OR: [{ category: 'Location' }, { category: 'Style' }],
             },
             select: {
               names: { where: { lang }, select: { word: true } },
-              category: true,
             },
           });
 
-          styleAndLocationTag.push(tagResult[0]);
+          styleTag.push(tagResult?.names[0].word);
         }
-
-        styleTagName =
-          styleAndLocationTag[0].category === 'Style'
-            ? styleAndLocationTag[0].names[0].word
-            : styleAndLocationTag[1].names[0].word;
-
-        locationTagName =
-          styleAndLocationTag[0].category === 'Location'
-            ? styleAndLocationTag[0].names[0].word
-            : styleAndLocationTag[1].names[0].word;
 
         shops.push({
           shopId: eachLike.id,
           shopName: eachLike.names[0].word,
           logoUrl: eachLike.logoUrl,
-          styleTagName,
-          locationTagName,
+          styleTagName: styleTag,
         });
       }
 
