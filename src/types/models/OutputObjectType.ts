@@ -34,6 +34,10 @@ export const ProductThumbnail = objectType({
     t.int('productId');
     t.string('productName');
     t.string('price');
+    t.field('productExternalLink', {
+      type: 'ExternalLink',
+      list: true,
+    });
     t.int('mainPostId', { nullable: true });
   },
 });
@@ -52,7 +56,7 @@ export const PostDetail = objectType({
     t.string('YoutubeVideoUrl', { nullable: true });
     t.int('mainProductId');
     t.string('mainProductName');
-    t.field('mainProductExternalLinks', {
+    t.field('postExternalLinks', {
       type: 'ExternalLink',
       list: true,
     });

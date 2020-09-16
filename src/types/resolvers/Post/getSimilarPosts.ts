@@ -1,11 +1,10 @@
 import { queryField, intArg, stringArg, arg } from '@nexus/schema';
 import { getUserId } from '../../../utils';
-import { equal } from 'assert';
 
 export const getSimilarPosts = queryField('getSimilarPosts', {
   type: 'PostList',
   args: {
-    LocationTagId: intArg({ required: true }),
+    LocationTagId: arg({ type: 'idDicInputType', list: true, required: true }),
     lang: stringArg({ nullable: true }),
     productClassTagId: arg({
       type: 'idDicInputType',
@@ -45,7 +44,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
 
       let result1 = await ctx.prisma.post.findMany({
         where: {
-          tags: { some: { id: LocationTagId, category: 'Location' } },
+          tags: { some: { OR: LocationTagId, category: 'Location' } },
         },
         select: { id: true },
       });
@@ -93,14 +92,6 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
             select: {
               mainPostId: true,
               names: { where: { lang }, select: { word: true } },
-            },
-          },
-          tags: {
-            select: {
-              names: {
-                where: { lang },
-                select: { word: true },
-              },
             },
           },
         },

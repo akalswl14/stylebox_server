@@ -13,8 +13,7 @@ export const getPostDetail = queryField('getPostDetail', {
       const userId = Number(getUserId(ctx));
       const { postId } = args;
       let { lang } = args;
-      let mainProductExternalLinks = [],
-        postImages = [],
+      let postImages = [],
         tags = [],
         products = [],
         isLikePost,
@@ -22,7 +21,8 @@ export const getPostDetail = queryField('getPostDetail', {
         YoutubeVideoUrl,
         postPrismaResult,
         order = 0,
-        mainProduct;
+        mainProduct,
+        tagResult;
 
       if (!lang) lang = 'ENG';
 
@@ -41,11 +41,11 @@ export const getPostDetail = queryField('getPostDetail', {
           updatedAt: true,
           mainProductPrice: true,
           shopId: true,
+          text: true,
           Shop: {
             select: {
               names: { where: { lang }, select: { word: true } },
               logoUrl: true,
-              description: true,
             },
           },
           videos: { select: { isYoutube: true, url: true, order: true } },
@@ -57,18 +57,15 @@ export const getPostDetail = queryField('getPostDetail', {
               mainPostId: true,
               names: { where: { lang }, select: { word: true } },
               externalLinks: {
-                select: { url: true, linkType: true, id: true },
+                select: { id: true, url: true, linkType: true },
               },
-              description: true,
             },
+          },
+          postExternalLinks: {
+            select: { url: true, linkType: true, id: true },
           },
           images: { select: { id: true, order: true, url: true } },
-          tags: {
-            select: {
-              id: true,
-              names: { where: { lang }, select: { word: true } },
-            },
-          },
+          onDetailTagId: true,
         },
       });
 
@@ -80,24 +77,25 @@ export const getPostDetail = queryField('getPostDetail', {
           productName: eachProduct.names[0].word,
           price: eachProduct.price,
           mainPostId: eachProduct.mainPostId,
+          productExternalLink: eachProduct.externalLinks,
         });
-
-        if (eachProduct.mainPostId === postId) {
-          for (const eachLink of eachProduct.externalLinks) {
-            mainProductExternalLinks.push({
-              id: eachLink.id,
-              url: eachLink.url,
-              linkType: eachLink.linkType,
-            });
-          }
-        }
       }
 
-      for (const eachTag of postPrismaResult.tags) {
+      for (const eachTag of postPrismaResult.onDetailTagId) {
+        tagResult = await ctx.prisma.tag.findOne({
+          where: {
+            id: eachTag,
+          },
+          select: {
+            id: true,
+            names: { where: { lang }, select: { word: true } },
+          },
+        });
+
         tags.push({
-          id: eachTag.id,
+          id: tagResult?.id,
           order: order++,
-          tagName: eachTag.names[0].word,
+          tagName: tagResult?.names[0].word,
         });
       }
 
@@ -122,7 +120,6 @@ export const getPostDetail = queryField('getPostDetail', {
       mainProduct = await ctx.prisma.product.findOne({
         where: { id: postPrismaResult.mainProductId },
         select: {
-          description: true,
           names: { where: { lang }, select: { word: true } },
         },
       });
@@ -141,11 +138,11 @@ export const getPostDetail = queryField('getPostDetail', {
         shopId: postPrismaResult.shopId,
         shopName: postPrismaResult.Shop?.names[0].word,
         shopLogoUrl: postPrismaResult.Shop?.logoUrl,
-        description: mainProduct.description,
+        description: postPrismaResult.text,
         YoutubeVideoUrl: YoutubeVideoUrl[0].url,
         mainProductId: postPrismaResult.mainProductId,
         mainProductName: mainProduct.names[0].word,
-        mainProductExternalLinks,
+        mainProductExternalLinks: postPrismaResult.postExternalLinks,
         postImages,
         tags,
         products,
