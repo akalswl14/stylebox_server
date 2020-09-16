@@ -5,27 +5,27 @@ import {
   arg,
   booleanArg,
   floatArg,
-} from "@nexus/schema";
+} from '@nexus/schema';
 
-export const createProduct = mutationField("createProduct", {
-  type: "Product",
+export const createProduct = mutationField('createProduct', {
+  type: 'Product',
   args: {
-    names: arg({ type: "NameInputType", list: true, required: true }),
-    images: arg({ type: "ImageInputType", list: true, required: false }),
-    branches: arg({ type: "idDicInputType", list: true, required: false }),
-    tags: arg({ type: "idDicInputType", list: true, required: false }),
+    names: arg({ type: 'NameInputType', list: true, required: true }),
+    images: arg({ type: 'ImageInputType', list: true, required: false }),
+    branches: arg({ type: 'idDicInputType', list: true, required: false }),
+    tags: arg({ type: 'idDicInputType', list: true, required: false }),
     description: stringArg({ nullable: true }),
     instaText: stringArg({ nullable: true }),
     price: intArg({ nullable: true }),
-    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
-    videos: arg({ type: "VideoInputType", list: true, required: false }),
+    externalLink: arg({ type: 'LinkInputType', required: false }),
+    videos: arg({ type: 'VideoInputType', list: true, required: false }),
     isOwnPost: booleanArg({ required: false }),
     priority: intArg({ nullable: true }),
     mainPostId: intArg({ nullable: true }),
   },
   nullable: true,
   description:
-    "names argument is for ProductName and images argument is for PostImage.",
+    'names argument is for ProductName and images argument is for PostImage.',
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -36,7 +36,7 @@ export const createProduct = mutationField("createProduct", {
         description,
         instaText,
         price = 0,
-        externalLinks = [],
+        externalLink,
         videos = [],
         isOwnPost = false,
         priority = 0,
@@ -53,7 +53,7 @@ export const createProduct = mutationField("createProduct", {
             description,
             instaText,
             price,
-            externalLinks: { create: externalLinks },
+            externalLink: { create: externalLink },
             videos: { create: videos },
             isOwnPost,
             priority,

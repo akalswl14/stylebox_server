@@ -1,0 +1,17 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Product",
+      "field": "externalLink",
+      "type": "ProductExternalLink",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Product",
+      "field": "externalLinks"
+    }
+  ]
+}
