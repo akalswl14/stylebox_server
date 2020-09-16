@@ -17,7 +17,7 @@ model User {
 }
 
 model Product {
-  id            Int                   @id @default(autoincrement())
+  id            Int                 @id @default(autoincrement())
   names         ProductName[]
   images        ProductImage[]
   preferrers    Like[]
@@ -27,14 +27,14 @@ model Product {
   description   String?
   instaText     String?
   price         Int?
-  externalLinks ProductExternalLink[]
+  externalLinks ProductExternalLink
   videos        ProductVideo[]
   isOwnPost     Boolean?
   views         View[]
-  priority      Float?
+  priority      Int?
   mainPostId    Int?
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @default(now()) @updatedAt
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
 }
 
 model ProductName {
@@ -42,7 +42,7 @@ model ProductName {
   productId Int?
   Product   Product? @relation(fields: [productId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -80,27 +80,27 @@ model ProductExternalLink {
 }
 
 model Shop {
-  id                Int                @id @default(autoincrement())
-  names             ShopName[]
-  branches          Branch[]
-  externalLinks     ShopExternalLink[]
-  logoUrl           String?
-  description       String?
-  images            ShopImage[]
-  videos            ShopVideo[]
-  phoneNumber       String[]
-  preferrers        Like[]
-  tags              Tag[]
-  posts             Post[]
-  views             View[]
-  weeklyRankScore   Float?
-  monthlyRankScore  Float?
-  lifeTimeRankScore Float?
-  priority          Float?
-  onShopListTagId   Int[]
-  onDetailTagId     Int[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @default(now()) @updatedAt
+  id                   Int                @id @default(autoincrement())
+  names                ShopName[]
+  branches             Branch[]
+  externalLinks        ShopExternalLink[]
+  logoUrl              String?
+  description          String?
+  images               ShopImage[]
+  videos               ShopVideo[]
+  phoneNumber          String[]
+  preferrers           Like[]
+  tags                 Tag[]
+  posts                Post[]
+  views                View[]
+  monthlyRankScore     Float?
+  priority             Int?
+  onShopListTagId      Int[]
+  onDetailTagId        Int[]
+  gotoshopLink         String?
+  externalLinkClickNum Int
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now()) @updatedAt
 }
 
 model ShopName {
@@ -108,7 +108,7 @@ model ShopName {
   shopId    Int?
   Shop      Shop?    @relation(fields: [shopId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -153,7 +153,7 @@ model Branch {
   logoUrl      String?
   phoneNumbers String[]
   products     Product[]
-  address      String[]
+  address      String
   googleMapId  Int?
   tags         Tag[]
   createdAt    DateTime     @default(now())
@@ -165,7 +165,7 @@ model BranchName {
   branchId  Int?
   Branch    Branch?  @relation(fields: [branchId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -184,6 +184,7 @@ model Event {
   title          String
   bannerText     String?
   contentsImages EventContentsImage[]
+  isExpired      Boolean
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @default(now()) @updatedAt
 }
@@ -242,7 +243,7 @@ model ClassName {
   classId   Int?
   Class     Class?   @relation(fields: [classId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -259,8 +260,8 @@ model Tag {
   events        Event[]
   category      Category?
   tagImage      String?
-  isOnOption    Boolean
   searchTagLogs SearchTagLog[]
+  isClass       Boolean
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @default(now()) @updatedAt
 }
@@ -270,34 +271,47 @@ model TagName {
   tagId     Int?
   Tag       Tag?     @relation(fields: [tagId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Post {
-  id                Int         @id @default(autoincrement())
-  shopId            Int?
-  Shop              Shop?       @relation(fields: [shopId], references: [id])
-  title             String?
-  text              String?
-  images            PostImage[]
-  preferrers        Like[]
-  weeklyRankScore   Float?
-  lifeTimeRankScore Float?
-  monthlyRankScore  Float?
-  publisher         String?
-  products          Product[]
-  tags              Tag[]
-  videos            PostVideo[]
-  mainProductId     Int?
-  mainProductPrice  Int?
-  views             View[]
-  priority          Float?
-  onDetailTagId     Int[]
-  isOnline          Boolean
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @default(now()) @updatedAt
+  id                   Int                @id @default(autoincrement())
+  shopId               Int?
+  Shop                 Shop?              @relation(fields: [shopId], references: [id])
+  title                String?
+  text                 String?
+  images               PostImage[]
+  preferrers           Like[]
+  weeklyRankScore      Float?
+  lifeTimeRankScore    Float?
+  monthlyRankScore     Float?
+  publisher            String?
+  products             Product[]
+  tags                 Tag[]
+  videos               PostVideo[]
+  mainProductId        Int?
+  mainProductPrice     Int?
+  views                View[]
+  priority             Int?
+  onDetailTagId        Int[]
+  isOnline             Boolean
+  externalLinkClickNum Int
+  postExternalLinks    PostExternalLink[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now()) @updatedAt
+}
+
+model PostExternalLink {
+  id        Int      @id @default(autoincrement())
+  url       String
+  order     Int
+  linkType  String
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model PostImage {
@@ -353,32 +367,27 @@ model Like {
 }
 
 model Setting {
-  id                   Int      @id @default(autoincrement())
-  mainBubbleTagId      Int[]
-  bestBubbleTagId      Int[]
-  shopBubbleTagId      Int[]
-  loadingPostNum       Int
-  TodaysStylesPeriod   Int
-  bestTotalPostNum     Int
-  bestConstA           Float
-  bestConstB           Float
-  shopConstA           Float
-  shopConstB           Float
-  shopConstC           Float
-  shopConstD           Float
-  shopConstE           Float
-  adminEmail           String
-  popularTagId         Int[]
-  mainEventBannerId    Int[]
-  QuestionOption       String[]
-  SearchPeriod         Int
-  SearchCategoryOption String
-  SearchLocationOption String
-  SearchStyleOption    String
-  SearchPriceOption    String
-  SearchFeatureOption  String
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @default(now()) @updatedAt
+  id                 Int      @id @default(autoincrement())
+  mainBubbleTagId    Int[]
+  bestBubbleTagId    Int[]
+  shopBubbleTagId    Int[]
+  loadingPostNum     Int
+  TodaysStylesPeriod Int
+  bestTotalPostNum   Int
+  bestConstA         Float
+  bestConstB         Float
+  shopConstA         Float
+  shopConstB         Float
+  shopConstC         Float
+  shopConstD         Float
+  adminEmail         String
+  adminEmailPW       String
+  popularTagId       Int[]
+  mainEventBannerId  Int[]
+  QuestionOption     String[]
+  SearchPeriod       Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
 }
 
 model SearchTagLog {

@@ -2,16 +2,15 @@
   "version": "0.3.14-fixed",
   "steps": [
     {
-      "tag": "CreateField",
+      "tag": "UpdateField",
       "model": "Shop",
-      "field": "gotoshopLink",
-      "type": "String",
+      "field": "externalLinkClickNum",
       "arity": "Required"
     },
     {
       "tag": "UpdateField",
-      "model": "Branch",
-      "field": "address",
+      "model": "Post",
+      "field": "externalLinkClickNum",
       "arity": "Required"
     }
   ]

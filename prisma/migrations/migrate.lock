@@ -1,21 +1,5 @@
 # Prisma Migrate lockfile v1
 
-20200824125502-inital-migration
-20200824132116-fix-event
-20200825134706-add-priority
-20200901164927-change-db-schema
-20200901173912-add-main-event-banner-id-to-setting
-20200902115201-add-maini-mage
-20200902115435-add-event-contents-image
-20200902135648-add-question-option-to-setting
-20200902151100-add-search-period-to-setting
-20200902153459-add-is-online-to-post
-20200902164219-add-search-option-to-setting
-20200902171047-delete-search-option-from-setting
-20200904102358-delete-weekly-rank-score-and-lifetime-rank-score-from-shop
-20200904173152-add-is-class-to-tag
-20200905043424-update-address-on-branch-and-add-gotoshop-link-on-shop
-20200905043805-update-schema
-20200908024205-add-admin-email-pw-to-setting
-20200910044109-update-word-preferrence---unique
-20200914055222-initial-schma
+20200916053018-initial-migration
+20200916053736-initial-migration
+20200916053956-inital-migration

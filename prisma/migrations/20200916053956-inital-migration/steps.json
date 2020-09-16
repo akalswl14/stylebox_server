@@ -3,8 +3,8 @@
   "steps": [
     {
       "tag": "DeleteField",
-      "model": "Event",
-      "field": "viewCnt"
+      "model": "Setting",
+      "field": "shopConstD"
     }
   ]
 }

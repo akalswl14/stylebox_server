@@ -1,7 +1,7 @@
-import { objectType } from "@nexus/schema";
+import { objectType } from '@nexus/schema';
 
 export const Setting = objectType({
-  name: "Setting",
+  name: 'Setting',
   definition(t) {
     t.model.id();
     t.model.mainBubbleTagId();
@@ -15,7 +15,6 @@ export const Setting = objectType({
     t.model.shopConstA();
     t.model.shopConstB();
     t.model.shopConstC();
-    t.model.shopConstD();
     t.model.adminEmail();
     t.model.adminEmailPW();
     t.model.popularTagId();

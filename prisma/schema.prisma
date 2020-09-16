@@ -17,7 +17,7 @@ model User {
 }
 
 model Product {
-  id            Int                   @id @default(autoincrement())
+  id            Int                 @id @default(autoincrement())
   names         ProductName[]
   images        ProductImage[]
   preferrers    Like[]
@@ -27,14 +27,14 @@ model Product {
   description   String?
   instaText     String?
   price         Int?
-  externalLinks ProductExternalLink[]
+  externalLinks ProductExternalLink
   videos        ProductVideo[]
   isOwnPost     Boolean?
   views         View[]
   priority      Int?
   mainPostId    Int?
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @default(now()) @updatedAt
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
 }
 
 model ProductName {
@@ -80,26 +80,27 @@ model ProductExternalLink {
 }
 
 model Shop {
-  id               Int                @id @default(autoincrement())
-  names            ShopName[]
-  branches         Branch[]
-  externalLinks    ShopExternalLink[]
-  logoUrl          String?
-  description      String?
-  images           ShopImage[]
-  videos           ShopVideo[]
-  phoneNumber      String[]
-  preferrers       Like[]
-  tags             Tag[]
-  posts            Post[]
-  views            View[]
-  monthlyRankScore Float?
-  priority         Int?
-  onShopListTagId  Int[]
-  onDetailTagId    Int[]
-  gotoshopLink     String?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @default(now()) @updatedAt
+  id                   Int                @id @default(autoincrement())
+  names                ShopName[]
+  branches             Branch[]
+  externalLinks        ShopExternalLink[]
+  logoUrl              String?
+  description          String?
+  images               ShopImage[]
+  videos               ShopVideo[]
+  phoneNumber          String[]
+  preferrers           Like[]
+  tags                 Tag[]
+  posts                Post[]
+  views                View[]
+  monthlyRankScore     Float?
+  priority             Int?
+  onShopListTagId      Int[]
+  onDetailTagId        Int[]
+  gotoshopLink         String?
+  externalLinkClickNum Int
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now()) @updatedAt
 }
 
 model ShopName {
@@ -276,28 +277,41 @@ model TagName {
 }
 
 model Post {
-  id                Int         @id @default(autoincrement())
-  shopId            Int?
-  Shop              Shop?       @relation(fields: [shopId], references: [id])
-  title             String?
-  text              String?
-  images            PostImage[]
-  preferrers        Like[]
-  weeklyRankScore   Float?
-  lifeTimeRankScore Float?
-  monthlyRankScore  Float?
-  publisher         String?
-  products          Product[]
-  tags              Tag[]
-  videos            PostVideo[]
-  mainProductId     Int?
-  mainProductPrice  Int?
-  views             View[]
-  priority          Int?
-  onDetailTagId     Int[]
-  isOnline          Boolean
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @default(now()) @updatedAt
+  id                   Int                @id @default(autoincrement())
+  shopId               Int?
+  Shop                 Shop?              @relation(fields: [shopId], references: [id])
+  title                String?
+  text                 String?
+  images               PostImage[]
+  preferrers           Like[]
+  weeklyRankScore      Float?
+  lifeTimeRankScore    Float?
+  monthlyRankScore     Float?
+  publisher            String?
+  products             Product[]
+  tags                 Tag[]
+  videos               PostVideo[]
+  mainProductId        Int?
+  mainProductPrice     Int?
+  views                View[]
+  priority             Int?
+  onDetailTagId        Int[]
+  isOnline             Boolean
+  externalLinkClickNum Int
+  postExternalLinks    PostExternalLink[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now()) @updatedAt
+}
+
+model PostExternalLink {
+  id        Int      @id @default(autoincrement())
+  url       String
+  order     Int
+  linkType  String
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model PostImage {
@@ -365,7 +379,6 @@ model Setting {
   shopConstA         Float
   shopConstB         Float
   shopConstC         Float
-  shopConstD         Float
   adminEmail         String
   adminEmailPW       String
   popularTagId       Int[]
