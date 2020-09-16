@@ -66,7 +66,6 @@ export const getMainPosts = queryField("getMainPosts", {
         }
         queryPriority--;
       }
-      console.log(postResult);
       if (postResult.length > 0) {
         rtnLastPostPriority = postResult[postResult.length - 1].priority;
         for (const eachPost of postResult) {
@@ -86,7 +85,6 @@ export const getMainPosts = queryField("getMainPosts", {
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost,
-            locationTagName: eachPost.tags[0].names[0].word,
           });
         }
       }
@@ -123,10 +121,6 @@ const getfindManyResult = async (
       Shop: { select: { names: { where: { lang }, select: { word: true } } } },
       mainProductId: true,
       mainProductPrice: true,
-      tags: {
-        where: { category: "Location" },
-        select: { names: { where: { lang }, select: { word: true } } },
-      },
       images: { select: { url: true }, orderBy: { order: "asc" }, take: 1 },
       priority: true,
     },

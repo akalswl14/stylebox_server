@@ -76,10 +76,6 @@ export const getBestPosts = queryField("getBestPosts", {
           },
           mainProductId: true,
           mainProductPrice: true,
-          tags: {
-            where: { category: "Location" },
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
         },
         orderBy: orderOption,
         take: loadingPostNum,
@@ -107,7 +103,6 @@ export const getBestPosts = queryField("getBestPosts", {
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost,
-            locationTagName: eachPost.tags[0].names[0].word,
           };
           posts.push(tmp);
         }

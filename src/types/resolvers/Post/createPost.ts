@@ -20,6 +20,7 @@ export const createPost = mutationField("createPost", {
     mainProductId: intArg({ required: true }),
     priority: intArg({ nullable: true }),
     onDetailTagId: intArg({ list: true }),
+    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
   },
   nullable: true,
   description:
@@ -37,6 +38,7 @@ export const createPost = mutationField("createPost", {
         mainProductId,
         priority = 0,
         onDetailTagId = [],
+        externalLinks = [],
       } = args;
 
       const weeklyRankScore = 0.0,
@@ -55,11 +57,17 @@ export const createPost = mutationField("createPost", {
         try {
           mainProduct = await ctx.prisma.product.findOne({
             where: { id: mainProductId },
-            include: { branches: true },
+            include: {
+              branches: true,
+              externalLinks: {
+                select: { url: true, order: true, linkType: true },
+              },
+            },
           });
           mainProductPrice = mainProduct?.price;
           isOnline = mainProductPrice === 0 ? true : false;
           branches = mainProduct ? mainProduct.branches : [];
+          externalLinks.unshift(mainProduct?.externalLinks);
         } catch (e) {
           console.log(e);
         }
@@ -100,6 +108,8 @@ export const createPost = mutationField("createPost", {
             priority,
             isOnline,
             onDetailTagId: { set: onDetailTagId },
+            externalLinkClickNum: 0,
+            postExternalLinks: { create: externalLinks },
           },
         });
       } catch (e) {

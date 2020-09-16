@@ -1,7 +1,7 @@
 import { queryField, stringArg } from "@nexus/schema";
 
 export const getLocationOption = queryField("getLocationOption", {
-  type: "levelCategoryOption",
+  type: "TagThumbnail",
   args: {
     lang: stringArg({ nullable: true }),
   },
@@ -10,45 +10,33 @@ export const getLocationOption = queryField("getLocationOption", {
   resolve: async (_, args, ctx) => {
     try {
       const { lang = "ENG" } = args;
-      let options = [];
-      let classNameResult = await ctx.prisma.className.findMany({
-        where: { lang, Class: { category: "Location" } },
-        select: {
-          word: true,
-          classId: true,
-        },
+      let nameResult,
+        tagResult,
+        tags = [];
+      nameResult = await ctx.prisma.tagName.findMany({
+        where: { lang, Tag: { category: "Location" } },
+        select: { word: true, tagId: true },
         orderBy: { word: "asc" },
       });
-      if (!classNameResult) return null;
-      for (const eachclassName of classNameResult) {
-        if (eachclassName.classId) {
-          let tagResult = await ctx.prisma.tagName.findMany({
-            where: { lang, Tag: { classId: eachclassName.classId } },
+      if (!nameResult) return null;
+      for (const eachName of nameResult) {
+        if (eachName.tagId) {
+          tagResult = await ctx.prisma.tag.findOne({
+            where: { id: eachName.tagId },
             select: {
-              tagId: true,
-              word: true,
-              Tag: { select: { isClass: true } },
+              isClass: true,
             },
-            orderBy: { word: "asc" },
           });
-          let subTags = [];
-          for (const eachtagName of tagResult) {
-            if (eachtagName.tagId) {
-              subTags.push({
-                id: eachtagName.tagId,
-                tagName: eachtagName.word,
-                isClass: eachtagName.Tag.isClass,
-              });
-            }
+          if (tagResult) {
+            tags.push({
+              id: eachName.tagId,
+              tagName: eachName.word,
+              isClass: tagResult.isClass,
+            });
           }
-          options.push({
-            classId: eachclassName.classId,
-            className: eachclassName.word,
-            subTags,
-          });
         }
       }
-      return options ? options : null;
+      return tags ? tags : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -86,7 +86,6 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost,
-            locationTagName: eachPost.tags[0].names[0].word,
           });
         }
       }
@@ -123,10 +122,6 @@ const getfindManyResult = async (
       Shop: { select: { names: { where: { lang }, select: { word: true } } } },
       mainProductId: true,
       mainProductPrice: true,
-      tags: {
-        where: { category: "Location" },
-        select: { names: { where: { lang }, select: { word: true } } },
-      },
       images: { select: { url: true }, orderBy: { order: "asc" }, take: 1 },
       priority: true,
     },

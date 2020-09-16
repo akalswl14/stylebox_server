@@ -40,10 +40,6 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
         select: {
           id: true,
           images: { select: { url: true } },
-          tags: {
-            where: { category: "Location" },
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
           mainProductId: true,
           mainProductPrice: true,
         },
@@ -78,7 +74,6 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost: likeResult > 0 ? true : false,
-            locationTagName: eachPost.tags[0].names[0].word,
           };
           posts.push(tmp);
         }

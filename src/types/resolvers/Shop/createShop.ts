@@ -55,6 +55,7 @@ export const createShop = mutationField("createShop", {
             onDetailTagId: { set: onDetailTagId },
             monthlyRankScore,
             gotoshopLink,
+            externalLinkClickNum: 0,
           },
         });
         if (shop) {

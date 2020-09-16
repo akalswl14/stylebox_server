@@ -28,7 +28,6 @@ export const updateRankScore = mutationField("updateRankScore", {
           shopConstA: true,
           shopConstB: true,
           shopConstC: true,
-          shopConstD: true,
         },
       });
       if (!queryResult) return false;
@@ -37,7 +36,6 @@ export const updateRankScore = mutationField("updateRankScore", {
       const shopConstA = queryResult.shopConstA;
       const shopConstB = queryResult.shopConstB;
       const shopConstC = queryResult.shopConstC;
-      const shopConstD = queryResult.shopConstD;
       const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let before7Days = new Date();
       let before1Month = new Date();
@@ -111,13 +109,23 @@ export const updateRankScore = mutationField("updateRankScore", {
               createdAt: { gte: before1Month },
             },
           });
+          let shopResult = await ctx.prisma.shop.findOne({
+            where: {
+              id: eachPost.shopId,
+            },
+            select: {
+              priority: true,
+            },
+          });
+          let shopPriority =
+            shopResult && shopResult.priority ? shopResult.priority : 1;
           ShopmonthlyRankScore =
             (shopConstA * ShopMonthViewNum +
               shopConstB +
               ShopMonthLikeNum +
               shopConstC * monthlyRankScore) /
               ShopPostNum +
-            shopConstD;
+            shopPriority;
           if (eachPost.Shop && eachPost.Shop.monthlyRankScore) {
             ShopmonthlyRankScore += eachPost.Shop.monthlyRankScore;
           }
