@@ -29,7 +29,8 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
         totalPostNum,
         mainProductName,
         filterArrayOne = [],
-        filterArrayTwo = [];
+        filterArrayTwo = [],
+        QueryOption;
 
       if (!lang) lang = 'ENG';
 
@@ -73,72 +74,44 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
         );
       }
 
+      QueryOption = {
+        orderBy: { createdAt: 'desc' },
+        take: loadingPostNum,
+        where: {
+          OR: filterArrayTwo,
+        },
+        select: {
+          preferrers: { select: { userId: true } },
+          mainProductPrice: true,
+          id: true,
+          images: { select: { url: true } },
+          mainProductId: true,
+          Shop: {
+            select: { names: { where: { lang }, select: { word: true } } },
+          },
+          products: {
+            select: {
+              mainPostId: true,
+              names: { where: { lang }, select: { word: true } },
+            },
+          },
+          tags: {
+            select: {
+              names: {
+                where: { lang },
+                select: { word: true },
+              },
+            },
+          },
+        },
+      };
+
       if (!cursorId) {
-        similarPostPrismaResult = await ctx.prisma.post.findMany({
-          orderBy: { createdAt: 'desc' },
-          take: loadingPostNum,
-          where: {
-            OR: filterArrayTwo,
-          },
-          select: {
-            preferrers: { select: { userId: true } },
-            mainProductPrice: true,
-            id: true,
-            images: { select: { url: true } },
-            mainProductId: true,
-            Shop: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-            products: {
-              select: {
-                mainPostId: true,
-                names: { where: { lang }, select: { word: true } },
-              },
-            },
-            tags: {
-              select: {
-                names: {
-                  where: { lang },
-                  select: { word: true },
-                },
-              },
-            },
-          },
-        });
+        similarPostPrismaResult = await ctx.prisma.post.findMany(QueryOption);
       } else {
-        similarPostPrismaResult = await ctx.prisma.post.findMany({
-          orderBy: { createdAt: 'desc' },
-          take: loadingPostNum,
-          skip: 1,
-          cursor: { id: cursorId },
-          where: {
-            OR: filterArrayTwo,
-          },
-          select: {
-            preferrers: { select: { userId: true } },
-            mainProductPrice: true,
-            id: true,
-            images: { select: { url: true } },
-            mainProductId: true,
-            Shop: {
-              select: { names: { where: { lang }, select: { word: true } } },
-            },
-            products: {
-              select: {
-                mainPostId: true,
-                names: { where: { lang }, select: { word: true } },
-              },
-            },
-            tags: {
-              select: {
-                names: {
-                  where: { lang },
-                  select: { word: true },
-                },
-              },
-            },
-          },
-        });
+        QueryOption.skip = 1;
+        QueryOption.cursor = { id: cursorId };
+        similarPostPrismaResult = await ctx.prisma.post.findMany(QueryOption);
       }
 
       if (!similarPostPrismaResult) return null;
