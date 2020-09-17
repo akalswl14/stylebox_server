@@ -17,14 +17,11 @@ export const createSetting = mutationField("createSetting", {
     shopConstD: floatArg({ nullable: true }),
     adminEmail: stringArg({ required: true }),
     adminEmailPW: stringArg({ required: true }),
-    popularTagId: intArg({ required: true, list: true }),
     mainEventBannerId: intArg({ required: true, list: true }),
     QuestionOption: stringArg({ required: true, list: true }),
     SearchPeriod: intArg({ nullable: true }),
   },
   nullable: true,
-  description:
-    "names argument is for ShopName, images argument is for ShopImage and videos argument is for ShopVideo.",
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -42,7 +39,6 @@ export const createSetting = mutationField("createSetting", {
         shopConstD = 1.0,
         adminEmail,
         adminEmailPW,
-        popularTagId,
         mainEventBannerId,
         QuestionOption,
         SearchPeriod = 30,
@@ -65,7 +61,6 @@ export const createSetting = mutationField("createSetting", {
             shopConstD,
             adminEmail,
             adminEmailPW,
-            popularTagId: { set: popularTagId },
             mainEventBannerId: { set: mainEventBannerId },
             QuestionOption: { set: QuestionOption },
             SearchPeriod,
