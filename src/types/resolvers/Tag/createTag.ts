@@ -14,12 +14,20 @@ export const createTag = mutationField("createTag", {
     category: arg({ type: "Category", nullable: true }),
     tagImage: stringArg({ nullable: true }),
     isClass: booleanArg({ required: true }),
+    isRecommendation: booleanArg({ required: true }),
   },
   nullable: true,
   description: "name argument is for TagName.",
   resolve: async (_, args, ctx) => {
     try {
-      const { names, classId, category, tagImage, isClass } = args;
+      const {
+        names,
+        classId,
+        category,
+        tagImage,
+        isClass,
+        isRecommendation,
+      } = args;
       let tag;
       tag = await ctx.prisma.tag.create({
         data: {
@@ -28,6 +36,7 @@ export const createTag = mutationField("createTag", {
           category,
           tagImage,
           isClass,
+          isRecommendation,
         },
       });
       return tag;
