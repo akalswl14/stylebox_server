@@ -11,22 +11,21 @@ export const getPopularTags = queryField("getPopularTags", {
     try {
       const { lang = "ENG" } = args;
       let tagResult,
-        tags = [],
-        order = 0;
-      let queryResult = await ctx.prisma.setting.findOne({
-        where: { id: 1 },
-        select: { popularTagId: true },
+        tags = [];
+      tagResult = await ctx.prisma.tag.findMany({
+        where: { isRecommendation: { gt: 0 } },
+        select: {
+          id: true,
+          names: { where: { lang }, select: { word: true } },
+        },
+        orderBy: { isRecommendation: "asc" },
       });
-      if (!queryResult) return null;
-      for (const eachId of queryResult.popularTagId) {
-        tagResult = await ctx.prisma.tag.findOne({
-          where: { id: eachId },
-          select: { names: { where: { lang }, select: { word: true } } },
+      for (const eachTag of tagResult) {
+        tags.push({
+          id: eachTag.id,
+          tagName: eachTag.names[0].word,
+          order: eachTag.isRecommendation,
         });
-        if (tagResult) {
-          tags.push({ id: eachId, tagName: tagResult.names[0].word, order });
-          order++;
-        }
       }
       return tags ? tags : null;
     } catch (e) {
