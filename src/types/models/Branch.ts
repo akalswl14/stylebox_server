@@ -11,6 +11,7 @@ export const Branch = objectType({
     t.model.phoneNumbers();
     t.model.products();
     t.model.address();
+    t.model.googleMapUrl();
     t.model.longitude();
     t.model.latitude();
     t.model.tags();
