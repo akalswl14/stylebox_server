@@ -8,7 +8,7 @@ export const createBranch = mutationField('createBranch', {
     logoUrl: stringArg({ nullable: true }),
     phoneNumbers: stringArg({ nullable: true, list: true }),
     address: stringArg({ required: true }),
-    googleMapId: intArg({ nullable: true }),
+    googleMapUrl: stringArg({ nullable: true }),
     tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
   },
   nullable: true,
@@ -19,11 +19,17 @@ export const createBranch = mutationField('createBranch', {
       logoUrl,
       phoneNumbers = [],
       address,
-      googleMapId,
+      googleMapUrl,
       tags,
     } = args;
-    let branchData;
+    let branchData, latitude, longitude;
     try {
+      let url = googleMapUrl;
+      let urlArray = url.split('@');
+      let parsingArray = urlArray[1].split(',', 2);
+      latitude = parseFloat(parsingArray[0]);
+      longitude = parseFloat(parsingArray[1]);
+
       branchData = await ctx.prisma.branch.create({
         data: {
           Shop: {
@@ -35,7 +41,9 @@ export const createBranch = mutationField('createBranch', {
           logoUrl,
           phoneNumbers: { set: phoneNumbers },
           address,
-          googleMapId,
+          googleMapUrl,
+          longitude,
+          latitude,
           tags: { connect: tags },
         },
       });
