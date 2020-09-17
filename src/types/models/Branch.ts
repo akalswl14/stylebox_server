@@ -1,7 +1,7 @@
-import { objectType } from "@nexus/schema";
+import { objectType } from '@nexus/schema';
 
 export const Branch = objectType({
-  name: "Branch",
+  name: 'Branch',
   definition(t) {
     t.model.id();
     t.model.shopId();
@@ -11,7 +11,8 @@ export const Branch = objectType({
     t.model.phoneNumbers();
     t.model.products();
     t.model.address();
-    t.model.googleMapId();
+    t.model.longitude();
+    t.model.latitude();
     t.model.tags();
     t.model.createdAt();
     t.model.updatedAt();
@@ -19,7 +20,7 @@ export const Branch = objectType({
 });
 
 export const BranchName = objectType({
-  name: "BranchName",
+  name: 'BranchName',
   definition(t) {
     t.model.id();
     t.model.branchId();

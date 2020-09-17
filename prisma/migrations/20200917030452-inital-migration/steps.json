@@ -1,0 +1,36 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "longitude",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "latitude",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Branch",
+      "field": "googleMapId"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "isRecommendation",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Setting",
+      "field": "popularTagId"
+    }
+  ]
+}

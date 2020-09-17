@@ -1,7 +1,7 @@
-import { objectType } from "@nexus/schema";
+import { objectType } from '@nexus/schema';
 
 export const Tag = objectType({
-  name: "Tag",
+  name: 'Tag',
   definition(t) {
     t.model.id();
     t.model.classId();
@@ -15,13 +15,14 @@ export const Tag = objectType({
     t.model.tagImage();
     t.model.searchTagLogs();
     t.model.isClass();
+    t.model.isRecommendation();
     t.model.createdAt();
     t.model.updatedAt();
   },
 });
 
 export const TagName = objectType({
-  name: "TagName",
+  name: 'TagName',
   definition(t) {
     t.model.id();
     t.model.tagId();
