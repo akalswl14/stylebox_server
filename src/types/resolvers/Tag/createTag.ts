@@ -5,6 +5,8 @@ import {
   stringArg,
   booleanArg,
 } from "@nexus/schema";
+import AWS from "aws-sdk";
+import { IAM_ID, IAM_SECRETKEY, BUCKET_NAME } from "../AWS_IAM";
 
 export const createTag = mutationField("createTag", {
   type: "Tag",
@@ -14,7 +16,7 @@ export const createTag = mutationField("createTag", {
     category: arg({ type: "Category", nullable: true }),
     tagImage: stringArg({ nullable: true }),
     isClass: booleanArg({ required: true }),
-    isRecommendation: booleanArg({ required: true }),
+    isRecommendation: intArg({ required: true }),
   },
   nullable: true,
   description: "name argument is for TagName.",
@@ -28,6 +30,16 @@ export const createTag = mutationField("createTag", {
         isClass,
         isRecommendation,
       } = args;
+      const s3 = new AWS.S3({
+        accessKeyId: IAM_ID,
+        secretAccessKey: IAM_SECRETKEY,
+      });
+      const params = {
+        Bucket: BUCKET_NAME,
+        CreateBucketConfiguration: {
+          LocationConstraint: "ap-southeast-1",
+        },
+      };
       let tag;
       tag = await ctx.prisma.tag.create({
         data: {

@@ -23,6 +23,7 @@
     "@nexus/schema": "0.14.0",
     "@prisma/client": "^2.6.2",
     "@types/nodemailer": "^6.4.0",
+    "aws-sdk": "^2.755.0",
     "bcryptjs": "2.4.3",
     "dotenv": "^8.2.0",
     "global": "^4.4.0",
