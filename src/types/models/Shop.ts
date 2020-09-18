@@ -20,7 +20,6 @@ export const Shop = objectType({
     t.model.priority();
     t.model.onShopListTagId();
     t.model.onDetailTagId();
-    t.model.gotoshopLink();
     t.model.externalLinkClickNum();
     t.model.createdAt();
     t.model.updatedAt();
@@ -72,10 +71,11 @@ export const ShopExternalLink = objectType({
   definition(t) {
     t.model.id();
     t.model.url();
-    t.model.order();
     t.model.linkType();
     t.model.shopId();
     t.model.Shop();
+    t.model.isOnDetail();
+    t.model.isOnGoToShop();
     t.model.createdAt();
     t.model.updatedAt();
   },

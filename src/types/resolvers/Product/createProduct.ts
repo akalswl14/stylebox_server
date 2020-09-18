@@ -4,7 +4,6 @@ import {
   mutationField,
   arg,
   booleanArg,
-  floatArg,
 } from '@nexus/schema';
 
 export const createProduct = mutationField('createProduct', {

@@ -1,13 +1,3 @@
 # Prisma Migrate lockfile v1
 
-<<<<<<< Updated upstream
-20200916053018-initial-migration
-20200916053736-initial-migration
-20200916053956-inital-migration
-20200916074550-initial-migration
-20200917030452-inital-migration
-20200917044929-migration
-20200918020457-migration
-=======
-20200918022549-initial-migration
->>>>>>> Stashed changes
+20200918065158-initial-migration

@@ -72,7 +72,7 @@ model ProductExternalLink {
   id        Int      @id @default(autoincrement())
   url       String
   order     Int
-  linkType  String
+  linkType  LinkType
   productId Int?
   Product   Product? @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
@@ -97,7 +97,6 @@ model Shop {
   priority             Int?
   onShopListTagId      Int[]
   onDetailTagId        Int[]
-  gotoshopLink         String?
   externalLinkClickNum Int
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @default(now()) @updatedAt
@@ -135,14 +134,15 @@ model ShopVideo {
 }
 
 model ShopExternalLink {
-  id        Int      @id @default(autoincrement())
-  url       String
-  order     Int
-  linkType  String
-  shopId    Int?
-  Shop      Shop?    @relation(fields: [shopId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id           Int      @id @default(autoincrement())
+  url          String
+  linkType     LinkType
+  shopId       Int?
+  Shop         Shop?    @relation(fields: [shopId], references: [id])
+  isOnDetail   Boolean
+  isOnGoToShop Boolean
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model Branch {
@@ -228,6 +228,19 @@ enum Category {
   ShopName
 }
 
+enum LinkType {
+  Instagram
+  Facebook
+  FacebookMessanger
+  Youtube
+  TikTok
+  Shopee
+  Sendo
+  LAZADA
+  Tiki
+  OnlineShop
+}
+
 model Class {
   id        Int         @id @default(autoincrement())
   names     ClassName[]
@@ -306,7 +319,7 @@ model PostExternalLink {
   id        Int      @id @default(autoincrement())
   url       String
   order     Int
-  linkType  String
+  linkType  LinkType
   Post      Post?    @relation(fields: [postId], references: [id])
   postId    Int?
   createdAt DateTime @default(now())

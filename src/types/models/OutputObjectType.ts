@@ -121,7 +121,7 @@ export const ExternalLink = objectType({
   definition(t) {
     t.int('id');
     t.string('url');
-    t.string('linkType');
+    t.field('linkType', { type: 'LinkType' });
   },
 });
 
@@ -226,5 +226,13 @@ export const TagIdThumbnail = objectType({
     t.int('classId', { nullable: true });
     t.string('category');
     t.boolean('isClass');
+  },
+});
+
+export const ShopAndBranch = objectType({
+  name: 'ShopAndBranch',
+  definition(t) {
+    t.field('shop', { type: 'Shop' });
+    t.field('branch', { type: 'Branch', list: true });
   },
 });

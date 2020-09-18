@@ -1,30 +1,23 @@
-import {
-  intArg,
-  stringArg,
-  mutationField,
-  arg,
-  floatArg,
-  booleanArg,
-} from "@nexus/schema";
+import { intArg, stringArg, mutationField, arg } from '@nexus/schema';
 
-export const createPost = mutationField("createPost", {
-  type: "Post",
+export const createPost = mutationField('createPost', {
+  type: 'Post',
   args: {
     title: stringArg({ nullable: true }),
     text: stringArg({ nullable: true }),
-    images: arg({ type: "ImageInputType", list: true, nullable: true }),
+    images: arg({ type: 'ImageInputType', list: true, nullable: true }),
     publisher: stringArg({ nullable: true }),
-    products: arg({ type: "idDicInputType", list: true, nullable: true }),
-    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
-    videos: arg({ type: "VideoInputType", list: true, nullable: true }),
+    products: arg({ type: 'idDicInputType', list: true, nullable: true }),
+    tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
+    videos: arg({ type: 'VideoInputType', list: true, nullable: true }),
     mainProductId: intArg({ required: true }),
     priority: intArg({ nullable: true }),
     onDetailTagId: intArg({ list: true }),
-    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
+    externalLinks: arg({ type: 'LinkInputType', list: true, required: false }),
   },
   nullable: true,
   description:
-    "images argument is for PostImage and videos argument is for PostVideo.",
+    'images argument is for PostImage and videos argument is for PostVideo.',
   resolve: async (_, args, ctx) => {
     try {
       const {

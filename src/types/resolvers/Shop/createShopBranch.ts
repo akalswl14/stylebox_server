@@ -1,7 +1,7 @@
-import { stringArg, mutationField, arg, intArg, floatArg } from '@nexus/schema';
+import { stringArg, mutationField, arg, intArg } from '@nexus/schema';
 
-export const createShop = mutationField('createShop', {
-  type: 'Shop',
+export const createShopBranch = mutationField('createShopBranch', {
+  type: 'ShopAndBranch',
   args: {
     names: arg({ type: 'NameInputType', nullable: true, list: true }),
     externalLinks: arg({
@@ -19,7 +19,7 @@ export const createShop = mutationField('createShop', {
     onShopListTagId: intArg({ nullable: true, list: true }),
     onDetailTagId: intArg({ nullable: true, list: true }),
     gotoshopLink: stringArg({ nullable: true }),
-    shopNameTags: arg({ type: 'NameInputType', list: true, required: true }),
+    branchInfo: arg({ type: 'branchInputType', list: true, nullable: true }),
   },
   nullable: true,
   description:
@@ -39,9 +39,13 @@ export const createShop = mutationField('createShop', {
         onShopListTagId = [],
         onDetailTagId = [],
         gotoshopLink,
-        shopNameTags,
+        branchInfo = [],
       } = args;
       let shop,
+        branchData,
+        latitude,
+        longitude,
+        branch = [],
         monthlyRankScore = 0.0;
       try {
         shop = await ctx.prisma.shop.create({
@@ -66,12 +70,13 @@ export const createShop = mutationField('createShop', {
           let classResult = await ctx.prisma.class.create({
             data: {
               category: 'ShopName',
-              names: { create: shopNameTags },
+              names: { create: names },
             },
           });
+
           await ctx.prisma.tag.create({
             data: {
-              names: { create: shopNameTags },
+              names: { create: names },
               isClass: true,
               category: 'ShopName',
               Class: { connect: { id: classResult.id } },
@@ -79,11 +84,41 @@ export const createShop = mutationField('createShop', {
               isRecommendation: 0,
             },
           });
+
+          for (const eachBranch of branchInfo) {
+            let url = eachBranch.branchGoogleMapUrl;
+            let urlArray = url.split('@');
+            let parsingArray = urlArray[1].split(',', 2);
+            latitude = parseFloat(parsingArray[0]);
+            longitude = parseFloat(parsingArray[1]);
+
+            branchData = await ctx.prisma.branch.create({
+              data: {
+                Shop: {
+                  connect: {
+                    id: shop.id,
+                  },
+                },
+                names: { create: eachBranch.branchNames },
+                phoneNumbers: { set: eachBranch.branchPhoneNumbers },
+                address: eachBranch.branchAddress,
+                googleMapUrl: eachBranch.branchGoogleMapUrl,
+                longitude,
+                latitude,
+              },
+            });
+
+            branch.push(branchData);
+          }
         }
       } catch (e) {
         console.log(e);
       }
-      return shop ? shop : null;
+      let rtn = {
+        shop,
+        branch,
+      };
+      return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
       return null;
