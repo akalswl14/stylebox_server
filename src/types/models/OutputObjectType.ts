@@ -121,7 +121,7 @@ export const ExternalLink = objectType({
   definition(t) {
     t.int('id');
     t.string('url');
-    t.string('linkType');
+    t.field('linkType', { type: 'LinkType' });
   },
 });
 
@@ -233,6 +233,6 @@ export const ShopAndBranch = objectType({
   name: 'ShopAndBranch',
   definition(t) {
     t.field('shop', { type: 'Shop' });
-    t.field('branch', { type: 'Branch' });
+    t.field('branch', { type: 'Branch', list: true });
   },
 });

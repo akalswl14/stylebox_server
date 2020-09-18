@@ -1,4 +1,4 @@
-import { stringArg, mutationField, arg, intArg, floatArg } from '@nexus/schema';
+import { stringArg, mutationField, arg, intArg } from '@nexus/schema';
 
 export const createShopBranch = mutationField('createShopBranch', {
   type: 'ShopAndBranch',

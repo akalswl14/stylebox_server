@@ -14,6 +14,22 @@
       ]
     },
     {
+      "tag": "CreateEnum",
+      "enum": "LinkType",
+      "values": [
+        "Instagram",
+        "Facebook",
+        "FacebookMessanger",
+        "Youtube",
+        "TikTok",
+        "Shopee",
+        "Sendo",
+        "LAZADA",
+        "Tiki",
+        "OnlineShop"
+      ]
+    },
+    {
       "tag": "CreateSource",
       "source": "db"
     },
@@ -1055,7 +1071,7 @@
       "tag": "CreateField",
       "model": "ProductExternalLink",
       "field": "linkType",
-      "type": "String",
+      "type": "LinkType",
       "arity": "Required"
     },
     {
@@ -1344,13 +1360,6 @@
       "field": "onDetailTagId",
       "type": "Int",
       "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Shop",
-      "field": "gotoshopLink",
-      "type": "String",
-      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -2076,15 +2085,8 @@
     {
       "tag": "CreateField",
       "model": "ShopExternalLink",
-      "field": "order",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "ShopExternalLink",
       "field": "linkType",
-      "type": "String",
+      "type": "LinkType",
       "arity": "Required"
     },
     {
@@ -2139,6 +2141,20 @@
       },
       "argument": "references",
       "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "isOnDetail",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "isOnGoToShop",
+      "type": "Boolean",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -2769,13 +2785,6 @@
       "field": "contentsImages",
       "type": "EventContentsImage",
       "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Event",
-      "field": "isExpired",
-      "type": "Boolean",
-      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -4587,7 +4596,7 @@
       "tag": "CreateField",
       "model": "PostExternalLink",
       "field": "linkType",
-      "type": "String",
+      "type": "LinkType",
       "arity": "Required"
     },
     {

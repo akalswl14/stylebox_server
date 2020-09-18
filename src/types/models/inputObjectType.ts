@@ -47,7 +47,7 @@ export const LinkInputType = inputObjectType({
   definition(t) {
     t.string('url', { required: true });
     t.int('order', { required: true });
-    t.string('linkType', { required: true });
+    t.field('linkType', { type: 'LinkType', required: true });
   },
 });
 
@@ -55,7 +55,7 @@ export const ShopLinkInputType = inputObjectType({
   name: 'ShopLinkInputType',
   definition(t) {
     t.string('url', { required: true });
-    t.string('linkType', { required: true });
+    t.field('linkType', { type: 'LinkType', required: true });
     t.boolean('isOnDetail', { required: true });
     t.boolean('isOnGoToShop', { required: true });
   },

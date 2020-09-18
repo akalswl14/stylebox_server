@@ -113,3 +113,5 @@ yarn.lock
 src/generated/nexus.ts
 
 prisma/migrations/migrate.lock
+
+.vscode
