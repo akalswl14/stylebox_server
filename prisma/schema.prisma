@@ -97,7 +97,6 @@ model Shop {
   priority             Int?
   onShopListTagId      Int[]
   onDetailTagId        Int[]
-  gotoshopLink         String?
   externalLinkClickNum Int
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @default(now()) @updatedAt
@@ -135,14 +134,15 @@ model ShopVideo {
 }
 
 model ShopExternalLink {
-  id        Int      @id @default(autoincrement())
-  url       String
-  order     Int
-  linkType  String
-  shopId    Int?
-  Shop      Shop?    @relation(fields: [shopId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id           Int      @id @default(autoincrement())
+  url          String
+  linkType     String
+  shopId       Int?
+  Shop         Shop?    @relation(fields: [shopId], references: [id])
+  isOnDetail   Boolean
+  isOnGoToShop Boolean
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model Branch {

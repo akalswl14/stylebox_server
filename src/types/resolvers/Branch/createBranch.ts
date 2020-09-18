@@ -5,23 +5,13 @@ export const createBranch = mutationField('createBranch', {
   args: {
     shopId: intArg({ required: true }),
     names: arg({ type: 'NameInputType', list: true, required: true }),
-    logoUrl: stringArg({ nullable: true }),
     phoneNumbers: stringArg({ nullable: true, list: true }),
     address: stringArg({ required: true }),
     googleMapUrl: stringArg({ nullable: true }),
-    tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
-    const {
-      shopId,
-      names,
-      logoUrl,
-      phoneNumbers = [],
-      address,
-      googleMapUrl,
-      tags,
-    } = args;
+    const { shopId, names, phoneNumbers = [], address, googleMapUrl } = args;
     let branchData, latitude, longitude;
     try {
       let url = googleMapUrl;
@@ -38,13 +28,11 @@ export const createBranch = mutationField('createBranch', {
             },
           },
           names: { create: names },
-          logoUrl,
           phoneNumbers: { set: phoneNumbers },
           address,
           googleMapUrl,
           longitude,
           latitude,
-          tags: { connect: tags },
         },
       });
       return branchData;

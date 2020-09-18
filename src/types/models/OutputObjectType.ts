@@ -228,3 +228,11 @@ export const TagIdThumbnail = objectType({
     t.boolean('isClass');
   },
 });
+
+export const ShopAndBranch = objectType({
+  name: 'ShopAndBranch',
+  definition(t) {
+    t.field('shop', { type: 'Shop' });
+    t.field('branch', { type: 'Branch' });
+  },
+});
