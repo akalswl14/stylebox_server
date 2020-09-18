@@ -291,7 +291,7 @@
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "externalLinks",
+      "field": "externalLink",
       "type": "ProductExternalLink",
       "arity": "Required"
     },
@@ -1357,7 +1357,7 @@
       "model": "Shop",
       "field": "externalLinkClickNum",
       "type": "Int",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -2325,13 +2325,6 @@
     {
       "tag": "CreateField",
       "model": "Branch",
-      "field": "logoUrl",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Branch",
       "field": "phoneNumbers",
       "type": "String",
       "arity": "List"
@@ -2353,16 +2346,23 @@
     {
       "tag": "CreateField",
       "model": "Branch",
-      "field": "googleMapId",
-      "type": "Int",
+      "field": "googleMapUrl",
+      "type": "String",
       "arity": "Optional"
     },
     {
       "tag": "CreateField",
       "model": "Branch",
-      "field": "tags",
-      "type": "Tag",
-      "arity": "List"
+      "field": "longitude",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
+      "field": "latitude",
+      "type": "Float",
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -3886,13 +3886,6 @@
     {
       "tag": "CreateField",
       "model": "Tag",
-      "field": "branches",
-      "type": "Branch",
-      "arity": "List"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Tag",
       "field": "posts",
       "type": "Post",
       "arity": "List"
@@ -3937,6 +3930,13 @@
       "model": "Tag",
       "field": "isClass",
       "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tag",
+      "field": "isRecommendation",
+      "type": "Int",
       "arity": "Required"
     },
     {
@@ -4438,7 +4438,7 @@
       "model": "Post",
       "field": "externalLinkClickNum",
       "type": "Int",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -5961,13 +5961,6 @@
     {
       "tag": "CreateField",
       "model": "Setting",
-      "field": "shopConstD",
-      "type": "Float",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Setting",
       "field": "adminEmail",
       "type": "String",
       "arity": "Required"
@@ -5978,13 +5971,6 @@
       "field": "adminEmailPW",
       "type": "String",
       "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Setting",
-      "field": "popularTagId",
-      "type": "Int",
-      "arity": "List"
     },
     {
       "tag": "CreateField",

@@ -111,3 +111,5 @@ yarn.lock
 .DS_Store
 
 src/generated/nexus.ts
+
+prisma/migrations/migrate.lock

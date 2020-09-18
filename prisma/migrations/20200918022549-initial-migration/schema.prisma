@@ -150,14 +150,12 @@ model Branch {
   shopId       Int?
   Shop         Shop?        @relation(fields: [shopId], references: [id])
   names        BranchName[]
-  logoUrl      String?
   phoneNumbers String[]
   products     Product[]
   address      String
   googleMapUrl String?
   longitude    Float?
   latitude     Float?
-  tags         Tag[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @default(now()) @updatedAt
 }
@@ -256,7 +254,6 @@ model Tag {
   Class            Class          @relation(fields: [classId], references: [id])
   names            TagName[]
   shops            Shop[]
-  branches         Branch[]
   posts            Post[]
   products         Product[]
   events           Event[]
