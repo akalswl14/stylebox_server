@@ -1,4 +1,5 @@
 import { queryField, stringArg, intArg } from '@nexus/schema';
+import { IoTSecureTunneling } from 'aws-sdk';
 import { getUserId } from '../../../utils';
 
 export const getPostDetail = queryField('getPostDetail', {
@@ -24,7 +25,7 @@ export const getPostDetail = queryField('getPostDetail', {
         mainProduct,
         tagResult;
 
-      if (!lang) lang = 'ENG';
+      if (!lang) lang = 'VI';
 
       await ctx.prisma.view.create({
         data: {
@@ -54,15 +55,14 @@ export const getPostDetail = queryField('getPostDetail', {
             select: {
               id: true,
               price: true,
-              mainPostId: true,
               names: { where: { lang }, select: { word: true } },
-              externalLinks: {
-                select: { id: true, url: true, linkType: true },
+              externalLink: {
+                select: { id: true, url: true, order: true, linkType: true },
               },
             },
           },
           postExternalLinks: {
-            select: { url: true, linkType: true, id: true },
+            select: { url: true, linkType: true, id: true, order: true },
           },
           images: { select: { id: true, order: true, url: true } },
           onDetailTagId: true,
@@ -76,8 +76,7 @@ export const getPostDetail = queryField('getPostDetail', {
           productId: eachProduct.id,
           productName: eachProduct.names[0].word,
           price: eachProduct.price,
-          mainPostId: eachProduct.mainPostId,
-          productExternalLink: eachProduct.externalLinks,
+          productExternalLink: eachProduct.externalLink,
         });
       }
 
@@ -123,8 +122,6 @@ export const getPostDetail = queryField('getPostDetail', {
           names: { where: { lang }, select: { word: true } },
         },
       });
-
-      postPrismaResult.products.filter((item) => item.mainPostId === postId);
 
       YoutubeVideoUrl = postPrismaResult.videos.filter(
         (item) => item.isYoutube === true

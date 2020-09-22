@@ -31,7 +31,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
         filterArrayTwo = [],
         QueryOption;
 
-      if (!lang) lang = 'ENG';
+      if (!lang) lang = 'VI';
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -90,7 +90,6 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
           },
           products: {
             select: {
-              mainPostId: true,
               names: { where: { lang }, select: { word: true } },
             },
           },

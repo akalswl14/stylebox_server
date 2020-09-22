@@ -38,7 +38,6 @@ export const ProductThumbnail = objectType({
       type: 'ExternalLink',
       list: true,
     });
-    t.int('mainPostId', { nullable: true });
   },
 });
 
@@ -120,6 +119,7 @@ export const ExternalLink = objectType({
   name: 'ExternalLink',
   definition(t) {
     t.int('id');
+    t.int('order');
     t.string('url');
     t.field('linkType', { type: 'LinkType' });
   },
@@ -147,6 +147,7 @@ export const TagThumbnail = objectType({
   definition(t) {
     t.int('id');
     t.string('tagName');
+    t.int('order');
     t.boolean('isClass', { nullable: true });
   },
 });
@@ -179,7 +180,7 @@ export const EventDetail = objectType({
     t.field('eventImages', { type: 'contentsThumbnail', list: true });
     t.field('eventVideos', { type: 'contentsThumbnail', list: true });
     t.field('eventContentsImages', { type: 'contentsThumbnail', list: true });
-    t.field('locationTags', { type: 'TagThumbnail', list: true });
+    t.field('detailTags', { type: 'TagThumbnail', list: true });
   },
 });
 
@@ -207,7 +208,6 @@ export const EventThumbnail = objectType({
     t.string('bannerImage');
     t.boolean('isLikeEvent');
     t.int('Dday');
-    t.string('bannerText', { nullable: true });
   },
 });
 
