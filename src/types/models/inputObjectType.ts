@@ -56,8 +56,8 @@ export const ShopLinkInputType = inputObjectType({
   definition(t) {
     t.string('url', { required: true });
     t.field('linkType', { type: 'LinkType', required: true });
-    t.boolean('isOnDetail', { required: true });
-    t.boolean('isOnGoToShop', { required: true });
+    t.boolean('isOnBottom', { required: true });
+    t.int('order', { required: true });
   },
 });
 

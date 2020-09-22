@@ -3,10 +3,8 @@ import { intArg, stringArg, mutationField, arg } from '@nexus/schema';
 export const createPost = mutationField('createPost', {
   type: 'Post',
   args: {
-    title: stringArg({ nullable: true }),
     text: stringArg({ nullable: true }),
     images: arg({ type: 'ImageInputType', list: true, nullable: true }),
-    publisher: stringArg({ nullable: true }),
     products: arg({ type: 'idDicInputType', list: true, nullable: true }),
     tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
     videos: arg({ type: 'VideoInputType', list: true, nullable: true }),
@@ -21,10 +19,8 @@ export const createPost = mutationField('createPost', {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        title,
         text,
         images = [],
-        publisher,
         products = [],
         tags = [],
         videos = [],
@@ -38,13 +34,19 @@ export const createPost = mutationField('createPost', {
         lifeTimeRankScore = 0.0,
         monthlyRankScore = 0.0;
 
+      const weeklyRankNum = 0,
+        monthlyRankNum = 0,
+        lifeTimeRankNum = 0,
+        externalLinkClickNum = 0;
+
       let post,
         shopresult,
         shopId,
         branches: { id: number }[] = [],
         mainProduct,
         isOnline = false,
-        mainProductPrice;
+        mainProductPrice,
+        mainProductExternalLink = {};
 
       if (mainProductId) {
         try {
@@ -52,15 +54,22 @@ export const createPost = mutationField('createPost', {
             where: { id: mainProductId },
             include: {
               branches: true,
-              externalLinks: {
-                select: { url: true, order: true, linkType: true },
+              externalLink: {
+                select: { url: true, linkType: true  },
               },
             },
           });
           mainProductPrice = mainProduct?.price;
           isOnline = mainProductPrice === 0 ? true : false;
           branches = mainProduct ? mainProduct.branches : [];
-          externalLinks.unshift(mainProduct?.externalLinks);
+
+          if(mainProduct?.externalLink){
+            mainProductExternalLink.url = mainProduct?.externalLink.url;
+            mainProductExternalLink.linkType = mainProduct?.externalLink.linkType;
+            mainProductExternalLink.order = 0;
+            externalLinks.unshift(mainProductExternalLink);
+          }
+          
         } catch (e) {
           console.log(e);
         }
@@ -81,13 +90,14 @@ export const createPost = mutationField('createPost', {
       try {
         post = await ctx.prisma.post.create({
           data: {
-            title,
             text,
             images: { create: images },
             weeklyRankScore,
             lifeTimeRankScore,
             monthlyRankScore,
-            publisher,
+            weeklyRankNum,
+            lifeTimeRankNum,
+            monthlyRankNum
             products: { connect: products },
             tags: { connect: tags },
             videos: { create: videos },
@@ -101,7 +111,7 @@ export const createPost = mutationField('createPost', {
             priority,
             isOnline,
             onDetailTagId: { set: onDetailTagId },
-            externalLinkClickNum: 0,
+            externalLinkClickNum,
             postExternalLinks: { create: externalLinks },
           },
         });
