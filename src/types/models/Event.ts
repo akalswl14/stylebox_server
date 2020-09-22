@@ -14,7 +14,9 @@ export const Event = objectType({
     t.model.views();
     t.model.isOnList();
     t.model.title();
-    t.model.bannerText();
+    t.model.address();
+    t.model.startDate();
+    t.model.onDetailTagId();
     t.model.createdAt();
     t.model.updatedAt();
   },

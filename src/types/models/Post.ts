@@ -6,14 +6,12 @@ export const Post = objectType({
     t.model.id();
     t.model.shopId();
     t.model.Shop();
-    t.model.title();
     t.model.text();
     t.model.images();
     t.model.preferrers();
     t.model.weeklyRankScore();
     t.model.lifeTimeRankScore();
     t.model.monthlyRankScore();
-    t.model.publisher();
     t.model.products();
     t.model.tags();
     t.model.videos();
@@ -24,6 +22,9 @@ export const Post = objectType({
     t.model.onDetailTagId();
     t.model.isOnline();
     t.model.externalLinkClickNum();
+    t.model.weeklyRankNum();
+    t.model.monthlyRankNum();
+    t.model.lifeTimeRankNum();
     t.model.postExternalLinks();
     t.model.createdAt();
     t.model.updatedAt();

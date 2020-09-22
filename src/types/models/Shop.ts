@@ -21,6 +21,7 @@ export const Shop = objectType({
     t.model.onShopListTagId();
     t.model.onDetailTagId();
     t.model.externalLinkClickNum();
+    t.model.monthlyRankNum();
     t.model.createdAt();
     t.model.updatedAt();
   },
@@ -76,6 +77,8 @@ export const ShopExternalLink = objectType({
     t.model.Shop();
     t.model.isOnDetail();
     t.model.isOnGoToShop();
+    t.model.order();
+    t.model.onBottom();
     t.model.createdAt();
     t.model.updatedAt();
   },
