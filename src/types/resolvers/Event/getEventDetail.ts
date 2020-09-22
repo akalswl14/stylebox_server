@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getEventDetail = queryField('getEventDetail', {
-  type: 'EventDetail',
+export const getEventDetail = queryField("getEventDetail", {
+  type: "EventDetail",
   args: {
     eventId: intArg({ required: true }),
     lang: stringArg({ nullable: true }),

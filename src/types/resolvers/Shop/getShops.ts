@@ -15,7 +15,7 @@ export const getShops = queryField("getShops", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        lang = "ENG",
+        lang = "VI",
         locationId,
         tagId,
         classId,

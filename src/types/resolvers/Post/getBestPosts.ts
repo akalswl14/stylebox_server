@@ -18,7 +18,7 @@ export const getBestPosts = queryField("getBestPosts", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        lang = "ENG",
+        lang = "VI",
         periodFilter = 1,
         locationTagId,
         classId,

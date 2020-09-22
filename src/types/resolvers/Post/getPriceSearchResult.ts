@@ -13,7 +13,7 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
   description: "About filter, 2 means Price Low and 3 means Price High",
   resolve: async (_, args, ctx) => {
     try {
-      const { tags, filter = 1, lang = "ENG", cursorId } = args;
+      const { tags, filter = 1, lang = "VI", cursorId } = args;
       let queryResult,
         TagResult = [],
         PostResult = [],

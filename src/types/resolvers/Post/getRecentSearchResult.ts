@@ -13,7 +13,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { tags, lang = "ENG", lastPostDate, cursorId } = args;
+      const { tags, lang = "VI", lastPostDate, cursorId } = args;
       let queryResult,
         TagResult = [],
         PostResult = [],

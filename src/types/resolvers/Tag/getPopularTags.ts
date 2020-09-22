@@ -9,7 +9,7 @@ export const getPopularTags = queryField("getPopularTags", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG" } = args;
+      const { lang = "VI" } = args;
       let tagResult,
         tags = [];
       tagResult = await ctx.prisma.tag.findMany({

@@ -14,7 +14,7 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
     "About filter, 1 means Recent, 2 means Price Low and 3 means Price High",
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG", shopId, filter = 1, cursorId } = args;
+      const { lang = "VI", shopId, filter = 1, cursorId } = args;
       let queryResult,
         orderQuery,
         queryArg,

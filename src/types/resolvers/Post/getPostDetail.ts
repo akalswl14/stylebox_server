@@ -1,9 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { IoTSecureTunneling } from 'aws-sdk';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getPostDetail = queryField('getPostDetail', {
-  type: 'PostDetail',
+export const getPostDetail = queryField("getPostDetail", {
+  type: "PostDetail",
   args: {
     lang: stringArg({ nullable: true }),
     postId: intArg({ required: true }),

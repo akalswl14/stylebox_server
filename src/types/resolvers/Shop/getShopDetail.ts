@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getShopDetail = queryField('getShopDetail', {
-  type: 'ShopDetail',
+export const getShopDetail = queryField("getShopDetail", {
+  type: "ShopDetail",
   args: {
     shopId: intArg({ required: true }),
     lang: stringArg({ nullable: true }),
@@ -10,7 +10,7 @@ export const getShopDetail = queryField('getShopDetail', {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { shopId, lang = 'ENG' } = args;
+      const { shopId, lang = "VI" } = args;
       let queryResult,
         tagsResult,
         likeResult,
@@ -38,7 +38,7 @@ export const getShopDetail = queryField('getShopDetail', {
           names: { where: { lang }, select: { word: true } },
           posts: {
             take: 1,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
             select: { createdAt: true },
           },
           onDetailTagId: true,

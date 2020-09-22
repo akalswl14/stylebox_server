@@ -11,7 +11,7 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { filterDate, lang = "ENG" } = args;
+      const { filterDate, lang = "VI" } = args;
       let queryResult,
         order = 0,
         tags = [];

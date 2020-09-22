@@ -1,15 +1,15 @@
-import { queryField, stringArg, intArg, booleanArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg, booleanArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getEvents = queryField('getEvents', {
-  type: 'EventList',
+export const getEvents = queryField("getEvents", {
+  type: "EventList",
   args: {
     lang: stringArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
     filter: intArg({ nullable: true }),
   },
   nullable: true,
-  description: 'filter is sorting standard(0 :(recent), 1 :(Dday))',
+  description: "filter is sorting standard(0 :(recent), 1 :(Dday))",
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
@@ -53,7 +53,7 @@ export const getEvents = queryField('getEvents', {
         : 20;
 
       QueryOption_filter0 = {
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: loadingPostNum,
         where: {
           tags: { some: { names: { some: { lang } } } },
@@ -63,7 +63,7 @@ export const getEvents = queryField('getEvents', {
       };
 
       QueryOption_filter1 = {
-        orderBy: { dueDate: 'asc' },
+        orderBy: { dueDate: "asc" },
         where: {
           tags: { some: { names: { some: { lang } } } },
           dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
@@ -73,7 +73,7 @@ export const getEvents = queryField('getEvents', {
       };
 
       QueryOption_filter1_desc = {
-        orderBy: { dueDate: 'desc' },
+        orderBy: { dueDate: "desc" },
         take: loadingEventNum,
         where: {
           tags: { some: { names: { some: { lang } } } },
@@ -113,7 +113,7 @@ export const getEvents = queryField('getEvents', {
           );
         } else {
           check = await ctx.prisma.event.findMany({
-            orderBy: { dueDate: 'asc' },
+            orderBy: { dueDate: "asc" },
             where: {
               id: cursorId,
               dueDate: { gt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },

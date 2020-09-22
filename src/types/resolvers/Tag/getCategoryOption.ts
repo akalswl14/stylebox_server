@@ -9,7 +9,7 @@ export const getCategoryOption = queryField("getCategoryOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG" } = args;
+      const { lang = "VI" } = args;
       let options = [];
       let classNameResult = await ctx.prisma.className.findMany({
         where: { lang, Class: { category: "ProductClass" } },

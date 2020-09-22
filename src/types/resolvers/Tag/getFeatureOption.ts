@@ -9,7 +9,7 @@ export const getFeatureOption = queryField("getFeatureOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG" } = args;
+      const { lang = "VI" } = args;
       let nameResult,
         tags = [];
       nameResult = await ctx.prisma.tagName.findMany({

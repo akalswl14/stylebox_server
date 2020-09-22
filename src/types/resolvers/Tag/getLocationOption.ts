@@ -9,7 +9,7 @@ export const getLocationOption = queryField("getLocationOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG" } = args;
+      const { lang = "VI" } = args;
       let nameResult,
         tagResult,
         tags = [];

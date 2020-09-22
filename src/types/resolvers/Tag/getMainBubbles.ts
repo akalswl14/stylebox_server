@@ -1,7 +1,7 @@
-import { queryField, stringArg } from '@nexus/schema';
+import { queryField, stringArg } from "@nexus/schema";
 
-export const getMainBubbles = queryField('getMainBubbles', {
-  type: 'ClassTagDetail',
+export const getMainBubbles = queryField("getMainBubbles", {
+  type: "ClassTagDetail",
   args: {
     lang: stringArg({ nullable: true }),
   },
@@ -16,7 +16,7 @@ export const getMainBubbles = queryField('getMainBubbles', {
         prismaResult,
         settingQueryResult;
 
-      if (!lang) lang = 'ENG';
+      if (!lang) lang = "VI";
 
       try {
         settingQueryResult = await ctx.prisma.setting.findOne({

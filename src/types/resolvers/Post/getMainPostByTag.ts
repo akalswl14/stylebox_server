@@ -14,10 +14,10 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "ENG", postIds = [], lastPostPriority, tags = [] } = args;
+      const { lang = "VI", postIds = [], lastPostPriority, tags = [] } = args;
       let settingQueryResult,
         loadingPostNum,
-        TodaysStylesPeriod,
+        TodaysStylesDate,
         queryLoadingPostNum,
         queryPriority = 5,
         queryResult,
@@ -30,17 +30,13 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
         where: { id: 1 },
         select: { loadingPostNum: true, TodaysStylesPeriod: true },
       });
-      loadingPostNum = settingQueryResult
-        ? settingQueryResult.loadingPostNum
-        : 20;
-      TodaysStylesPeriod = settingQueryResult
-        ? settingQueryResult.TodaysStylesPeriod
-        : 30;
+      if (!settingQueryResult) {
+        console.log("Setting Query's result is null.");
+        return null;
+      }
+      loadingPostNum = settingQueryResult.loadingPostNum;
+      TodaysStylesDate = settingQueryResult.TodaysStylesPeriod;
       queryLoadingPostNum = loadingPostNum;
-      const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
-      let queryDate = new Date();
-      queryDate.setUTCDate(today.getUTCDate() - TodaysStylesPeriod);
-      queryDate.setUTCHours(0, 0, 0, 0);
       queryPriority = lastPostPriority ? lastPostPriority : 5;
 
       for (const eachTag of tags) {
@@ -50,7 +46,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
       while (postResult.length < loadingPostNum && queryPriority >= 0) {
         queryResult = await getfindManyResult(
           ctx,
-          queryDate,
+          TodaysStylesDate,
           lang,
           queryPriority,
           postIds,

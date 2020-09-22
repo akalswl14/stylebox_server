@@ -1,7 +1,7 @@
-import { queryField, stringArg } from '@nexus/schema';
+import { queryField, stringArg } from "@nexus/schema";
 
-export const getBestBubbles = queryField('getBestBubbles', {
-  type: 'ClassTagDetail',
+export const getBestBubbles = queryField("getBestBubbles", {
+  type: "ClassTagDetail",
   args: {
     lang: stringArg({ nullable: true }),
   },
@@ -16,7 +16,7 @@ export const getBestBubbles = queryField('getBestBubbles', {
         tagQueryResult,
         order = 0;
 
-      if (!lang) lang = 'ENG';
+      if (!lang) lang = "VI";
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
