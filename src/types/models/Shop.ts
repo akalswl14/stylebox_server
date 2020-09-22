@@ -1,7 +1,7 @@
-import { objectType } from '@nexus/schema';
+import { objectType } from "@nexus/schema";
 
 export const Shop = objectType({
-  name: 'Shop',
+  name: "Shop",
   definition(t) {
     t.model.id();
     t.model.names();
@@ -18,7 +18,6 @@ export const Shop = objectType({
     t.model.views();
     t.model.monthlyRankScore();
     t.model.priority();
-    t.model.onShopListTagId();
     t.model.onDetailTagId();
     t.model.externalLinkClickNum();
     t.model.monthlyRankNum();
@@ -28,7 +27,7 @@ export const Shop = objectType({
 });
 
 export const ShopName = objectType({
-  name: 'ShopName',
+  name: "ShopName",
   definition(t) {
     t.model.id();
     t.model.shopId();
@@ -41,7 +40,7 @@ export const ShopName = objectType({
 });
 
 export const ShopImage = objectType({
-  name: 'ShopImage',
+  name: "ShopImage",
   definition(t) {
     t.model.id();
     t.model.shopId();
@@ -54,7 +53,7 @@ export const ShopImage = objectType({
 });
 
 export const ShopVideo = objectType({
-  name: 'ShopVideo',
+  name: "ShopVideo",
   definition(t) {
     t.model.id();
     t.model.shopId();
@@ -68,7 +67,7 @@ export const ShopVideo = objectType({
 });
 
 export const ShopExternalLink = objectType({
-  name: 'ShopExternalLink',
+  name: "ShopExternalLink",
   definition(t) {
     t.model.id();
     t.model.url();
