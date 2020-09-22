@@ -1,21 +1,21 @@
-import { intArg, stringArg, mutationField, arg } from '@nexus/schema';
+import { intArg, stringArg, mutationField, arg } from "@nexus/schema";
 
-export const createPost = mutationField('createPost', {
-  type: 'Post',
+export const createPost = mutationField("createPost", {
+  type: "Post",
   args: {
     text: stringArg({ nullable: true }),
-    images: arg({ type: 'ImageInputType', list: true, nullable: true }),
-    products: arg({ type: 'idDicInputType', list: true, nullable: true }),
-    tags: arg({ type: 'idDicInputType', list: true, nullable: true }),
-    videos: arg({ type: 'VideoInputType', list: true, nullable: true }),
+    images: arg({ type: "ImageInputType", list: true, nullable: true }),
+    products: arg({ type: "idDicInputType", list: true, nullable: true }),
+    tags: arg({ type: "idDicInputType", list: true, nullable: true }),
+    videos: arg({ type: "VideoInputType", list: true, nullable: true }),
     mainProductId: intArg({ required: true }),
     priority: intArg({ nullable: true }),
     onDetailTagId: intArg({ list: true }),
-    externalLinks: arg({ type: 'LinkInputType', list: true, required: false }),
+    externalLinks: arg({ type: "LinkInputType", list: true, required: false }),
   },
   nullable: true,
   description:
-    'images argument is for PostImage and videos argument is for PostVideo.',
+    "images argument is for PostImage and videos argument is for PostVideo.",
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -55,7 +55,7 @@ export const createPost = mutationField('createPost', {
             include: {
               branches: true,
               externalLink: {
-                select: { url: true, linkType: true  },
+                select: { url: true, linkType: true },
               },
             },
           });
@@ -63,13 +63,13 @@ export const createPost = mutationField('createPost', {
           isOnline = mainProductPrice === 0 ? true : false;
           branches = mainProduct ? mainProduct.branches : [];
 
-          if(mainProduct?.externalLink){
+          if (mainProduct?.externalLink) {
             mainProductExternalLink.url = mainProduct?.externalLink.url;
-            mainProductExternalLink.linkType = mainProduct?.externalLink.linkType;
+            mainProductExternalLink.linkType =
+              mainProduct?.externalLink.linkType;
             mainProductExternalLink.order = 0;
             externalLinks.unshift(mainProductExternalLink);
           }
-          
         } catch (e) {
           console.log(e);
         }
@@ -97,7 +97,7 @@ export const createPost = mutationField('createPost', {
             monthlyRankScore,
             weeklyRankNum,
             lifeTimeRankNum,
-            monthlyRankNum
+            monthlyRankNum,
             products: { connect: products },
             tags: { connect: tags },
             videos: { create: videos },
