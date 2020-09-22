@@ -1,4 +1,5 @@
 import { mutationField } from "@nexus/schema";
+import { or } from "graphql-shield";
 
 export const updateRankScore = mutationField("updateRankScore", {
   type: "Boolean",
@@ -7,6 +8,8 @@ export const updateRankScore = mutationField("updateRankScore", {
     try {
       let postResult,
         queryResult,
+        shopListResult,
+        order = 1,
         PostWeekLikeNum = 0,
         PostMonthLikeNum = 0,
         PostLifeLikeNum = 0,
@@ -135,6 +138,61 @@ export const updateRankScore = mutationField("updateRankScore", {
           });
           if (!queryResult) return false;
         }
+      }
+      postResult = await ctx.prisma.post.findMany({
+        orderBy: {
+          weeklyRankScore: "desc",
+        },
+      });
+      for (const eachPost of postResult) {
+        queryResult = await ctx.prisma.post.update({
+          where: { id: eachPost.id },
+          data: { weeklyRankNum: order },
+        });
+        if (!queryResult) return false;
+        order++;
+      }
+      order = 0;
+      postResult = await ctx.prisma.post.findMany({
+        orderBy: {
+          monthlyRankScore: "desc",
+        },
+      });
+      for (const eachPost of postResult) {
+        queryResult = await ctx.prisma.post.update({
+          where: { id: eachPost.id },
+          data: { monthlyRankNum: order },
+        });
+        if (!queryResult) return false;
+        order++;
+      }
+      order = 0;
+      postResult = await ctx.prisma.post.findMany({
+        orderBy: {
+          lifeTimeRankScore: "desc",
+        },
+      });
+      for (const eachPost of postResult) {
+        queryResult = await ctx.prisma.post.update({
+          where: { id: eachPost.id },
+          data: { lifeTimeRankNum: order },
+        });
+        if (!queryResult) return false;
+        order++;
+      }
+      order = 0;
+      shopListResult = await ctx.prisma.shop.findMany({
+        orderBy: {
+          monthlyRankScore: "desc",
+        },
+      });
+      for (const eachShop of shopListResult) {
+        queryResult = await ctx.prisma.shop.update({
+          where: { id: eachShop.id },
+          data: { monthlyRankNum: order },
+        });
+        if (!queryResult) return false;
+        order++;
       }
       return true;
     } catch (e) {
