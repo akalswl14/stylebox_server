@@ -74,8 +74,6 @@ export const ShopExternalLink = objectType({
     t.model.linkType();
     t.model.shopId();
     t.model.Shop();
-    t.model.isOnDetail();
-    t.model.isOnGoToShop();
     t.model.order();
     t.model.onBottom();
     t.model.createdAt();
