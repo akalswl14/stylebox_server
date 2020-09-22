@@ -18,9 +18,7 @@ export const createProduct = mutationField('createProduct', {
     price: intArg({ nullable: true }),
     externalLink: arg({ type: 'LinkInputType', required: false }),
     videos: arg({ type: 'VideoInputType', list: true, required: false }),
-    isOwnPost: booleanArg({ required: false }),
     priority: intArg({ nullable: true }),
-    mainPostId: intArg({ nullable: true }),
   },
   nullable: true,
   description:
@@ -37,9 +35,7 @@ export const createProduct = mutationField('createProduct', {
         price = 0,
         externalLink,
         videos = [],
-        isOwnPost = false,
         priority = 0,
-        mainPostId,
       } = args;
       let product;
       try {
@@ -54,9 +50,7 @@ export const createProduct = mutationField('createProduct', {
             price,
             externalLink: { create: externalLink },
             videos: { create: videos },
-            isOwnPost,
             priority,
-            mainPostId,
           },
         });
       } catch (e) {
