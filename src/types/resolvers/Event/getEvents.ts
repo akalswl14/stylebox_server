@@ -35,7 +35,7 @@ export const getEvents = queryField('getEvents', {
         QueryOption_filter1_desc;
 
       if (!filter) filter = 0;
-      if (!lang) lang = 'ENG';
+      if (!lang) lang = 'VI';
 
       totalEventNum = await ctx.prisma.event.count({
         where: { tags: { some: { names: { some: { lang } } } } },
@@ -173,7 +173,6 @@ export const getEvents = queryField('getEvents', {
           bannerImage: item.bannerImage,
           isLikeEvent,
           Dday,
-          bannerText: item.bannerText,
         });
       }
 
@@ -196,7 +195,6 @@ export const getEvents = queryField('getEvents', {
               bannerImage: item.bannerImage,
               isLikeEvent,
               Dday,
-              bannerText: item.bannerText,
             });
           }
         }

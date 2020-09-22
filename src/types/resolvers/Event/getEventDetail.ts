@@ -11,12 +11,14 @@ export const getEventDetail = queryField('getEventDetail', {
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
-      const { eventId, lang = 'ENG' } = args;
+      const { eventId, lang = 'VI' } = args;
       let queryResult,
+        order = 0,
+        tagResult,
         eventVideos = [],
         eventImages = [],
         eventContentsImage = [],
-        locationTags = [],
+        detailTags = [],
         rtn: {
           eventTitle: string;
           eventVideos: { id: number; url: string; order: number }[];
@@ -24,7 +26,7 @@ export const getEventDetail = queryField('getEventDetail', {
           url: string | null;
           dueDate: Date;
           eventContentsImages: { id: number; url: string; order: number }[];
-          locationTags: { id: number; tagName: string }[];
+          detailTags: { id: number; tagName: string; order: number }[];
         } = {};
 
       await ctx.prisma.view.create({
@@ -46,13 +48,7 @@ export const getEventDetail = queryField('getEventDetail', {
             url: true,
             dueDate: true,
             contentsImages: { select: { id: true, url: true, order: true } },
-            tags: {
-              where: { category: 'Location' },
-              select: {
-                id: true,
-                names: { where: { lang }, select: { word: true } },
-              },
-            },
+            onDetailTagId: true,
           },
         });
         if (!queryResult) {
@@ -79,10 +75,21 @@ export const getEventDetail = queryField('getEventDetail', {
             order: eachContentsImage.order,
           });
         }
-        for (const eachTag of queryResult.tags) {
-          locationTags.push({
-            id: eachTag.id,
-            tagName: eachTag.names[0].word,
+        for (const eachTag of queryResult.onDetailTagId) {
+          tagResult = await ctx.prisma.tag.findOne({
+            where: {
+              id: eachTag,
+            },
+            select: {
+              id: true,
+              names: { where: { lang }, select: { word: true } },
+            },
+          });
+
+          detailTags.push({
+            id: tagResult?.id,
+            order: order++,
+            tagName: tagResult?.names[0].word,
           });
         }
         rtn.eventTitle = queryResult.title;
@@ -91,7 +98,7 @@ export const getEventDetail = queryField('getEventDetail', {
         rtn.eventVideos = eventVideos;
         rtn.eventImages = eventImages;
         rtn.eventContentsImages = eventContentsImage;
-        rtn.locationTags = locationTags;
+        rtn.detailTags = detailTags;
       } catch (e) {
         console.log(e);
       }
