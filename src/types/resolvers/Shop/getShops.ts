@@ -66,7 +66,7 @@ export const getShops = queryField("getShops", {
             id: true,
             logoUrl: true,
             names: { select: { word: true }, where: { lang } },
-            onShopListTagId: true,
+            onDetailTagId: true,
           },
         };
         if (tags.length > 0) {
@@ -100,7 +100,7 @@ export const getShops = queryField("getShops", {
               shopName: eachShop.names[0].word,
               logoUrl: eachShop.logoUrl,
               isLikeShop: false,
-              styleTagName: [],
+              tagNames: [],
             };
           queryResult = await ctx.prisma.like.count({
             where: {
@@ -110,7 +110,9 @@ export const getShops = queryField("getShops", {
           });
           isLikeShop = queryResult > 0 ? true : false;
           tmp.isLikeShop = isLikeShop;
-          for (const eachId of eachShop.onShopListTagId) {
+          let order = 0;
+          for (const eachId of eachShop.onDetailTagId) {
+            if (order >= 3) break;
             queryResult = await ctx.prisma.tag.findOne({
               where: { id: eachId },
               select: {
@@ -118,7 +120,8 @@ export const getShops = queryField("getShops", {
               },
             });
             if (queryResult) {
-              tmp.styleTagName.push(queryResult.names[0].word);
+              tmp.tagNames.push(queryResult.names[0].word);
+              order++;
             }
           }
           shops.push(tmp);

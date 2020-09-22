@@ -14,12 +14,14 @@ export const getShopDetail = queryField("getShopDetail", {
       let queryResult,
         tagsResult,
         likeResult,
+        linkResult,
         shopVideos = [],
         shopImages = [],
         tags = [],
         order = 0,
         isLikeShop = false,
-        ExternalLinks = [];
+        TopExternalLinks = [],
+        BottomExternalLinks = [];
       const userId = Number(getUserId(ctx));
 
       await ctx.prisma.view.create({
@@ -42,11 +44,9 @@ export const getShopDetail = queryField("getShopDetail", {
             select: { createdAt: true },
           },
           onDetailTagId: true,
-          externalLinks: { select: { id: true, url: true, linkType: true } },
           images: { select: { id: true, url: true, order: true } },
           videos: { select: { id: true, url: true, order: true } },
-          branches: { select: { address: true, googleMapId: true } },
-          gotoshopLink: true,
+          branches: { select: { address: true, googleMapUrl: true } },
           description: true,
         },
       });
@@ -81,11 +81,56 @@ export const getShopDetail = queryField("getShopDetail", {
           order++;
         }
       }
-      for (const eachLink of queryResult.externalLinks) {
-        ExternalLinks.push({
+      order = 0;
+      linkResult = await ctx.prisma.shopExternalLink.findMany({
+        where: { onBottom: false, linkType: "Facebook" },
+        orderBy: { order: "asc" },
+      });
+      for (const eachLink of linkResult) {
+        TopExternalLinks.push({
           id: eachLink.id,
           url: eachLink.url,
-          linkType: eachLink.linkType,
+          linkResult: eachLink.linkType,
+          order: order,
+        });
+        order++;
+      }
+      linkResult = await ctx.prisma.shopExternalLink.findMany({
+        where: { onBottom: false, linkType: "Instagram" },
+        orderBy: { order: "asc" },
+      });
+      for (const eachLink of linkResult) {
+        TopExternalLinks.push({
+          id: eachLink.id,
+          url: eachLink.url,
+          linkResult: eachLink.linkType,
+          order: order,
+        });
+        order++;
+      }
+      linkResult = await ctx.prisma.shopExternalLink.findMany({
+        where: { onBottom: false, linkType: "Youtube" },
+        orderBy: { order: "asc" },
+      });
+      for (const eachLink of linkResult) {
+        TopExternalLinks.push({
+          id: eachLink.id,
+          url: eachLink.url,
+          linkResult: eachLink.linkType,
+          order: order,
+        });
+        order++;
+      }
+      linkResult = await ctx.prisma.shopExternalLink.findMany({
+        where: { onBottom: true },
+        orderBy: { order: "asc" },
+      });
+      for (const eachLink of linkResult) {
+        BottomExternalLinks.push({
+          id: eachLink.id,
+          url: eachLink.url,
+          linkResult: eachLink.linkType,
+          order: eachLink.order,
         });
       }
       likeResult = await ctx.prisma.like.count({
@@ -101,10 +146,10 @@ export const getShopDetail = queryField("getShopDetail", {
         shopName: queryResult.names[0].word,
         isLikeShop,
         lastUpdateDate: queryResult.posts[0].createdAt,
-        addressUrl: queryResult.gotoshopLink,
         description: queryResult.description,
         tags,
-        ExternalLinks,
+        TopExternalLinks,
+        BottomExternalLinks,
         shopImages,
         shopVideos,
         Branches: queryResult.branches,
