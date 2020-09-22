@@ -40,6 +40,7 @@ export const getMainPosts = queryField("getMainPosts", {
       }
       loadingPostNum = settingQueryResult.loadingPostNum;
       TodaysStylesDate = settingQueryResult.TodaysStylesPeriod;
+      TodaysStylesDate.setUTCHours(0, 0, 0, 0);
       queryLoadingPostNum = loadingPostNum;
 
       queryPriority = lastPostPriority ? lastPostPriority : 5;
