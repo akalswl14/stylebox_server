@@ -20,7 +20,6 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         ClassResult,
         loadingPostNum,
         totalPostNum,
-        SearchPeriod,
         rtnLastPostDate,
         queryOption,
         tagIds = [],
