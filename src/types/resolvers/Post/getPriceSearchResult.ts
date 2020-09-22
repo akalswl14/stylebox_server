@@ -64,10 +64,6 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         take: loadingPostNum,
         select: {
           id: true,
-          tags: {
-            where: { category: "Location" },
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
           Shop: {
             select: { names: { where: { lang }, select: { word: true } } },
           },

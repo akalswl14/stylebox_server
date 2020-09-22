@@ -21,7 +21,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         loadingPostNum,
         queryLoadingPostNum,
         totalPostNum,
-        SearchPeriod,
         inputLastDate,
         rtnLastPostDate,
         functionOption = {},
@@ -34,15 +33,13 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         where: { id: 1 },
         select: { loadingPostNum: true, SearchPeriod: true },
       });
-      loadingPostNum = queryResult ? queryResult.loadingPostNum : 20;
-      SearchPeriod = queryResult ? queryResult.SearchPeriod : 30;
+      if (!queryResult) return null;
+      loadingPostNum = queryResult.loadingPostNum;
+      let searchDate = queryResult?.SearchPeriod;
+      searchDate.setUTCHours(0, 0, 0, 0);
       queryLoadingPostNum = loadingPostNum;
-      const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDate = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDateTomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
-      let searchDate = new Date();
-      searchDate.setUTCDate(today.getUTCDate() - SearchPeriod);
-      searchDate.setUTCHours(0, 0, 0, 0);
       inputLastDate = Date.parse(lastPostDate);
       for (const eachTag of tags) {
         if (eachTag.isClass && eachTag.classId) {
@@ -128,12 +125,11 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           let productName = queryResult[0].word;
           posts.push({
             postId: eachPost.id,
-            locationTagName: eachPost.tags[0].names[0].word,
-            isLikePost,
-            shopName: eachPost.Shop.names[0].word,
             productName,
-            price: eachPost.mainProductPrice,
+            shopName: eachPost.Shop.names[0].word,
             postImage: eachPost.images[0].url,
+            price: eachPost.mainProductPrice,
+            isLikePost,
           });
         }
       }
@@ -171,10 +167,6 @@ const getResult = async (
     orderBy: { priority: "desc" },
     select: {
       id: true,
-      tags: {
-        where: { category: "Location" },
-        select: { names: { where: { lang }, select: { word: true } } },
-      },
       Shop: {
         select: { names: { where: { lang }, select: { word: true } } },
       },
