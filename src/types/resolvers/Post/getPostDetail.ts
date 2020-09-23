@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from "@nexus/schema";
-import { getUserId } from "../../../utils";
+import { queryField, stringArg, intArg } from '@nexus/schema';
+import { getUserId } from '../../../utils';
 
-export const getPostDetail = queryField("getPostDetail", {
-  type: "PostDetail",
+export const getPostDetail = queryField('getPostDetail', {
+  type: 'PostDetail',
   args: {
     lang: stringArg({ nullable: true }),
     postId: intArg({ required: true }),
@@ -61,6 +61,7 @@ export const getPostDetail = queryField("getPostDetail", {
             },
           },
           postExternalLinks: {
+            where: { isShown: true },
             select: { url: true, linkType: true, id: true, order: true },
           },
           images: { select: { id: true, order: true, url: true } },
