@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -139,7 +139,6 @@ model ShopExternalLink {
   Shop      Shop?    @relation(fields: [shopId], references: [id])
   order     Int
   onBottom  Boolean
-  isShown   Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

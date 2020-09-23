@@ -76,6 +76,7 @@ export const ShopExternalLink = objectType({
     t.model.Shop();
     t.model.order();
     t.model.onBottom();
+    t.model.isShown();
     t.model.createdAt();
     t.model.updatedAt();
   },

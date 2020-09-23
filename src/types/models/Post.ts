@@ -1,7 +1,7 @@
-import { objectType } from '@nexus/schema';
+import { objectType } from "@nexus/schema";
 
 export const Post = objectType({
-  name: 'Post',
+  name: "Post",
   definition(t) {
     t.model.id();
     t.model.shopId();
@@ -32,7 +32,7 @@ export const Post = objectType({
 });
 
 export const PostExternalLink = objectType({
-  name: 'PostExternalLink',
+  name: "PostExternalLink",
   definition(t) {
     t.model.id();
     t.model.url();
@@ -40,13 +40,14 @@ export const PostExternalLink = objectType({
     t.model.linkType();
     t.model.postId();
     t.model.Post();
+    t.model.isShown();
     t.model.createdAt();
     t.model.updatedAt();
   },
 });
 
 export const PostImage = objectType({
-  name: 'PostImage',
+  name: "PostImage",
   definition(t) {
     t.model.id();
     t.model.postId();
@@ -59,7 +60,7 @@ export const PostImage = objectType({
 });
 
 export const PostVideo = objectType({
-  name: 'PostVideo',
+  name: "PostVideo",
   definition(t) {
     t.model.id();
     t.model.postId();
