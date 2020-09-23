@@ -13,6 +13,7 @@ export const Branch = objectType({
     t.model.googleMapUrl();
     t.model.longitude();
     t.model.latitude();
+    t.model.isMain();
     t.model.createdAt();
     t.model.updatedAt();
   },
