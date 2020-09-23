@@ -83,7 +83,7 @@ export const getShopDetail = queryField("getShopDetail", {
       }
       order = 0;
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Facebook" },
+        where: { onBottom: false, linkType: "Facebook", isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
@@ -96,7 +96,7 @@ export const getShopDetail = queryField("getShopDetail", {
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Instagram" },
+        where: { onBottom: false, linkType: "Instagram", isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
@@ -109,7 +109,7 @@ export const getShopDetail = queryField("getShopDetail", {
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Youtube" },
+        where: { onBottom: false, linkType: "Youtube", isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
@@ -122,7 +122,7 @@ export const getShopDetail = queryField("getShopDetail", {
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: true },
+        where: { onBottom: true, isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
