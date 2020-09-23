@@ -7,9 +7,9 @@ export const confirmUser = mutationField("confirmUser", {
   nullable: true,
   resolve: async (_, __, ctx) => {
     try {
-      const userId = Number(getUserId(ctx));
       let user;
       try {
+        const userId = Number(getUserId(ctx));
         user = await ctx.prisma.user.findOne({ where: { id: userId } });
       } catch (e) {
         console.log(e);
