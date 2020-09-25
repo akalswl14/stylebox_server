@@ -1,6 +1,6 @@
 import { arg, queryField } from "@nexus/schema";
 
-export const getClassList = queryField("getClassList", {
+export const getClassOptions = queryField("getClassOptions", {
   type: "idNameThumbnail",
   args: { category: arg({ type: "Category", required: true }) },
   nullable: true,
