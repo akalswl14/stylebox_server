@@ -77,3 +77,19 @@ export const IdOrderInputType = inputObjectType({
     t.int("order");
   },
 });
+
+export const PopularTagInputType = inputObjectType({
+  name: 'PopularTagInputType',
+  definition(t) {
+    t.int('order', { required: true });
+    t.int('tagId', { required: true });
+  },
+});
+
+export const QuestionInputType = inputObjectType({
+  name: 'QuestionInputType',
+  definition(t) {
+    t.int('order');
+    t.string('questionType');
+  },
+});

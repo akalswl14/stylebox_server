@@ -1,240 +1,244 @@
-import { objectType } from "@nexus/schema";
+import { objectType } from '@nexus/schema';
 
 export const AuthPayload = objectType({
-  name: "AuthPayload",
+  name: 'AuthPayload',
   definition(t) {
-    t.string("token", { nullable: true });
-    t.field("user", { type: "User", nullable: true });
+    t.string('token', { nullable: true });
+    t.field('user', { type: 'User', nullable: true });
   },
 });
 
 export const PostThumbnail = objectType({
-  name: "PostThumbnail",
+  name: 'PostThumbnail',
   definition(t) {
-    t.int("postId");
-    t.string("productName");
-    t.string("shopName");
-    t.string("postImage", { nullable: true });
-    t.int("price", { nullable: true });
-    t.boolean("isLikePost");
+    t.int('postId');
+    t.string('productName');
+    t.string('shopName');
+    t.string('postImage', { nullable: true });
+    t.int('price', { nullable: true });
+    t.boolean('isLikePost');
   },
 });
 
 export const PostList = objectType({
-  name: "PostList",
+  name: 'PostList',
   definition(t) {
-    t.int("totalPostNum");
-    t.field("posts", { type: "PostThumbnail", list: true });
+    t.int('totalPostNum');
+    t.field('posts', { type: 'PostThumbnail', list: true });
   },
 });
 
 export const ProductThumbnail = objectType({
-  name: "ProductThumbnail",
+  name: 'ProductThumbnail',
   definition(t) {
-    t.int("productId");
-    t.string("productName");
-    t.string("price");
-    t.field("productExternalLink", {
-      type: "ExternalLink",
+    t.int('productId');
+    t.string('productName');
+    t.string('price');
+    t.field('productExternalLink', {
+      type: 'ExternalLink',
       list: true,
     });
   },
 });
 
 export const PostDetail = objectType({
-  name: "PostDetail",
+  name: 'PostDetail',
   definition(t) {
-    t.int("postId");
-    t.boolean("isLikePost");
-    t.field("PostDate", { type: "DateTime", nullable: true });
-    t.int("price");
-    t.int("shopId");
-    t.string("shopName");
-    t.string("shopLogoUrl", { nullable: true });
-    t.string("description", { nullable: true });
-    t.string("YoutubeVideoUrl", { nullable: true });
-    t.int("mainProductId");
-    t.string("mainProductName");
-    t.field("postExternalLinks", {
-      type: "ExternalLink",
+    t.int('postId');
+    t.boolean('isLikePost');
+    t.field('PostDate', { type: 'DateTime', nullable: true });
+    t.int('price');
+    t.int('shopId');
+    t.string('shopName');
+    t.string('shopLogoUrl', { nullable: true });
+    t.string('description', { nullable: true });
+    t.string('YoutubeVideoUrl', { nullable: true });
+    t.int('mainProductId');
+    t.string('mainProductName');
+    t.field('postExternalLinks', {
+      type: 'ExternalLink',
       list: true,
     });
-    t.field("postImages", { type: "contentsThumbnail", list: true });
-    t.field("tags", { type: "ClassTagDetail", list: true });
-    t.field("products", { type: "ProductThumbnail", list: true });
+    t.field('postImages', { type: 'contentsThumbnail', list: true });
+    t.field('tags', { type: 'ClassTagDetail', list: true });
+    t.field('products', { type: 'ProductThumbnail', list: true });
   },
 });
 
 export const ShopThumbnail = objectType({
-  name: "ShopThumbnail",
+  name: 'ShopThumbnail',
   definition(t) {
-    t.int("shopId");
-    t.string("shopName");
-    t.string("logoUrl", { nullable: true });
-    t.boolean("isLikeShop");
-    t.string("tagNames", { nullable: true, list: true });
+    t.int('shopId');
+    t.string('shopName');
+    t.string('logoUrl', { nullable: true });
+    t.boolean('isLikeShop');
+    t.string('tagNames', { nullable: true, list: true });
   },
 });
 
 export const ShopList = objectType({
-  name: "ShopList",
+  name: 'ShopList',
   definition(t) {
-    t.int("totalShopNum");
-    t.field("shops", { type: "ShopThumbnail", nullable: false, list: true });
+    t.int('totalShopNum');
+    t.field('shops', { type: 'ShopThumbnail', nullable: false, list: true });
   },
 });
 
 export const ClassTagDetail = objectType({
-  name: "ClassTagDetail",
+  name: 'ClassTagDetail',
   definition(t) {
-    t.int("id");
-    t.string("tagName");
-    t.int("order");
-    t.string("tagImage", { nullable: true });
-    t.int("classId", { nullable: true });
-    t.boolean("isClass", { nullable: true });
-    t.field("Category", { type: "Category", nullable: true });
+    t.int('id');
+    t.string('tagName');
+    t.int('order');
+    t.string('tagImage', { nullable: true });
+    t.int('classId', { nullable: true });
+    t.string('className', { nullable: true });
+    t.boolean('isClass', { nullable: true });
+    t.field('Category', { type: 'Category', nullable: true });
   },
 });
 
 export const ShopDetail = objectType({
-  name: "ShopDetail",
+  name: 'ShopDetail',
   definition(t) {
-    t.int("shopId");
-    t.string("logoUrl", { nullable: true });
-    t.string("shopName");
-    t.boolean("isLikeShop");
-    t.field("lastUpdateDate", { type: "DateTime", nullable: true });
-    t.string("description", { nullable: true });
-    t.field("tags", { type: "ClassTagDetail", list: true });
-    t.field("TopExternalLinks", { type: "ExternalLink", list: true });
-    t.field("BottomExternalLinks", { type: "ExternalLink", list: true });
-    t.field("shopImages", { type: "contentsThumbnail", list: true });
-    t.field("shopVideos", { type: "contentsThumbnail", list: true });
-    t.field("Branches", { type: "branchThumbnail", list: true });
+    t.int('shopId');
+    t.string('logoUrl', { nullable: true });
+    t.string('shopName');
+    t.boolean('isLikeShop');
+    t.field('lastUpdateDate', { type: 'DateTime', nullable: true });
+    t.string('description', { nullable: true });
+    t.field('tags', { type: 'ClassTagDetail', list: true });
+    t.field('TopExternalLinks', { type: 'ExternalLink', list: true });
+    t.field('BottomExternalLinks', { type: 'ExternalLink', list: true });
+    t.field('shopImages', { type: 'contentsThumbnail', list: true });
+    t.field('shopVideos', { type: 'contentsThumbnail', list: true });
+    t.field('Branches', { type: 'branchThumbnail', list: true });
   },
 });
 
 export const ExternalLink = objectType({
-  name: "ExternalLink",
+  name: 'ExternalLink',
   definition(t) {
-    t.int("id");
-    t.int("order");
-    t.string("url");
-    t.field("linkType", { type: "LinkType" });
+    t.int('id');
+    t.int('order');
+    t.string('url');
+    t.field('linkType', { type: 'LinkType' });
   },
 });
 
 export const contentsThumbnail = objectType({
-  name: "contentsThumbnail",
+  name: 'contentsThumbnail',
   definition(t) {
-    t.int("id");
-    t.string("url");
-    t.int("order");
+    t.int('id');
+    t.string('url');
+    t.int('order');
   },
 });
 
 export const branchThumbnail = objectType({
-  name: "branchThumbnail",
+  name: 'branchThumbnail',
   definition(t) {
-    t.string("address");
-    t.int("googleMapUrl", { nullable: true });
+    t.string('address');
+    t.int('googleMapUrl', { nullable: true });
   },
 });
 
 export const TagThumbnail = objectType({
-  name: "TagThumbnail",
+  name: 'TagThumbnail',
   definition(t) {
-    t.int("id");
-    t.string("tagName");
-    t.int("order");
-    t.boolean("isClass", { nullable: true });
+    t.int('id');
+    t.string('tagName');
+    t.int('order');
+    t.boolean('isClass', { nullable: true });
   },
 });
 
 export const searchResultList = objectType({
-  name: "searchResultList",
+  name: 'searchResultList',
   definition(t) {
-    t.field("lastPostDate", { type: "DateTime", nullable: true });
-    t.int("totalPostNum");
-    t.field("tags", { type: "TagIdThumbnail", list: true });
-    t.field("posts", { type: "PostThumbnail", list: true });
+    t.field('lastPostDate', { type: 'DateTime', nullable: true });
+    t.int('totalPostNum');
+    t.field('tags', { type: 'TagIdThumbnail', list: true });
+    t.field('posts', { type: 'PostThumbnail', list: true });
   },
 });
 
 export const levelCategoryOption = objectType({
-  name: "levelCategoryOption",
+  name: 'levelCategoryOption',
   definition(t) {
-    t.int("classId");
-    t.string("className");
-    t.field("subTags", { type: "TagThumbnail", list: true });
+    t.int('classId');
+    t.string('className');
+    t.field('subTags', { type: 'TagThumbnail', list: true });
   },
 });
 
 export const EventDetail = objectType({
-  name: "EventDetail",
+  name: 'EventDetail',
   definition(t) {
-    t.string("eventTitle");
-    t.string("url", { nullable: true });
-    t.field("dueDate", { type: "DateTime" });
-    t.field("eventImages", { type: "contentsThumbnail", list: true });
-    t.field("eventVideos", { type: "contentsThumbnail", list: true });
-    t.field("eventContentsImages", { type: "contentsThumbnail", list: true });
-    t.field("detailTags", { type: "TagThumbnail", list: true });
+    t.string('eventTitle');
+    t.string('url', { nullable: true });
+    t.field('dueDate', { type: 'DateTime' });
+    t.field('eventImages', { type: 'contentsThumbnail', list: true });
+    t.field('eventVideos', { type: 'contentsThumbnail', list: true });
+    t.field('eventContentsImages', { type: 'contentsThumbnail', list: true });
+    t.field('detailTags', { type: 'TagThumbnail', list: true });
   },
 });
 
 export const priorityPostList = objectType({
-  name: "priorityPostList",
+  name: 'priorityPostList',
   definition(t) {
-    t.int("lastPostPriority");
-    t.field("posts", { type: "PostThumbnail", list: true });
+    t.int('lastPostPriority');
+    t.field('posts', { type: 'PostThumbnail', list: true });
   },
 });
 
 export const EventBanner = objectType({
-  name: "EventBanner",
+  name: 'EventBanner',
   definition(t) {
     t.int("eventId");
     t.string("bannerImage");
     t.int("order");
     t.string("title", { nullable: true });
+    t.int('eventId');
+    t.string('bannerImage');
+    t.int('order');
   },
 });
 
 export const EventThumbnail = objectType({
-  name: "EventThumbnail",
+  name: 'EventThumbnail',
   definition(t) {
-    t.int("eventId");
-    t.string("bannerImage");
-    t.boolean("isLikeEvent");
-    t.int("Dday");
+    t.int('eventId');
+    t.string('bannerImage');
+    t.boolean('isLikeEvent');
+    t.int('Dday');
   },
 });
 
 export const EventList = objectType({
-  name: "EventList",
+  name: 'EventList',
   definition(t) {
-    t.int("totalEventNum");
-    t.field("events", { type: "EventThumbnail", list: true });
+    t.int('totalEventNum');
+    t.field('events', { type: 'EventThumbnail', list: true });
   },
 });
 
 export const TagIdThumbnail = objectType({
-  name: "TagIdThumbnail",
+  name: 'TagIdThumbnail',
   definition(t) {
-    t.int("tagId");
-    t.int("classId", { nullable: true });
-    t.string("category");
-    t.boolean("isClass");
+    t.int('tagId');
+    t.int('classId', { nullable: true });
+    t.string('category');
+    t.boolean('isClass');
   },
 });
 
 export const ShopAndBranch = objectType({
-  name: "ShopAndBranch",
+  name: 'ShopAndBranch',
   definition(t) {
-    t.field("shop", { type: "Shop" });
-    t.field("branch", { type: "Branch", list: true });
+    t.field('shop', { type: 'Shop' });
+    t.field('branch', { type: 'Branch', list: true });
   },
 });
 
@@ -332,5 +336,76 @@ export const UserManagementThumbnail = objectType({
     t.int("PostLikeNum");
     t.int("ShopLikeNum");
     t.int("EventLikeNum");
+  },
+});
+
+export const AdminInfo = objectType({
+  name: 'AdminInfo',
+  definition(t) {
+    t.string('email');
+    t.string('pw');
+  },
+});
+
+export const QuestionOption = objectType({
+  name: 'QuestionOption',
+  definition(t) {
+    t.int('order');
+    t.string('questionType');
+  },
+});
+
+export const TagMapInfo = objectType({
+  name: 'TagMapInfo',
+  definition(t) {
+    t.int('tagId');
+    t.string('tagName');
+    t.int('postNum');
+  },
+});
+
+export const TagMapList = objectType({
+  name: 'TagMapList',
+  definition(t) {
+    t.string('className');
+    t.field('tags', { type: 'TagMapInfo', list: true });
+  },
+});
+
+export const MainFeedInfo = objectType({
+  name: 'MainFeedInfo',
+  definition(t) {
+    t.field('Period', { type: 'DateTime' });
+    t.int('postNum');
+  },
+});
+
+export const TagList = objectType({
+  name: 'TagList',
+  definition(t) {
+    t.int('tagId');
+    t.string('tagName');
+    t.field('category', { type: 'Category' });
+    t.string('className');
+    t.int('postNum');
+    t.int('shopNum');
+    t.int('productNum');
+  },
+});
+
+export const TagInfo = objectType({
+  name: 'TagInfo',
+  definition(t) {
+    t.int('tagId');
+    t.string('tagName');
+    t.field('category', { type: 'Category' });
+    t.string('tagImage');
+    t.string('className');
+    t.int('classId');
+    t.int('postNum');
+    t.int('shopNum');
+    t.int('productNum');
+    t.field('createdAt', { type: 'DateTime' });
+    t.field('updatedAt', { type: 'DateTime' });
   },
 });
