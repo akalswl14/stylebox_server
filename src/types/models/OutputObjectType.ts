@@ -198,6 +198,7 @@ export const EventBanner = objectType({
     t.int("eventId");
     t.string("bannerImage");
     t.int("order");
+    t.string("title", { nullable: true });
   },
 });
 
@@ -311,5 +312,14 @@ export const idNameThumbnail = objectType({
   definition(t) {
     t.int("id");
     t.string("name");
+  },
+});
+
+export const eventSearchResult = objectType({
+  name: "eventSearchResult",
+  definition(t) {
+    t.int("id");
+    t.string("bannerImage");
+    t.string("title");
   },
 });

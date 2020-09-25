@@ -6,3 +6,6 @@ export * from "./getSettingBestBubbles";
 export * from "./getSettingShopBubbles";
 export * from "./updateSettingBubbles";
 export * from "./getCategoryList";
+export * from "./getSettingEventBanner";
+export * from "./updateSettingEventBanner";
+export * from "./searchEvent";

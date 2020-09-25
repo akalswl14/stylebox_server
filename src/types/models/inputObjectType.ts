@@ -70,10 +70,10 @@ export const TagClassIdInputType = inputObjectType({
   },
 });
 
-export const TagOrderInputType = inputObjectType({
-  name: "TagOrderInputType",
+export const IdOrderInputType = inputObjectType({
+  name: "IdOrderInputType",
   definition(t) {
-    t.int("tagId");
+    t.int("id");
     t.int("order");
   },
 });
