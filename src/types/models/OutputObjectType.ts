@@ -236,3 +236,60 @@ export const ShopAndBranch = objectType({
     t.field("branch", { type: "Branch", list: true });
   },
 });
+
+export const DashboardBasicStatus = objectType({
+  name: "DashboardBasicStatus",
+  definition(t) {
+    t.int("ShopNum");
+    t.int("UserNum");
+    t.int("PostNum");
+    t.int("ProductNum");
+    t.int("AvgShopLikeNum");
+    t.int("AvgPostLikeNum");
+    t.int("AvgEventLikeNum");
+    t.int("AvgShopViewNum");
+    t.int("AvgPostViewNum");
+    t.int("AvgEventViewNum");
+    t.int("TotalShopLikeNum");
+    t.int("TotalPostLikeNum");
+    t.int("TotalEventLikeNum");
+    t.int("TotalShopViewNum");
+    t.int("TotalPostViewNum");
+    t.int("TotalEventViewNum");
+  },
+});
+
+export const ShopManagementThumbnail = objectType({
+  name: "ShopManagementThumbnail",
+  definition(t) {
+    t.int("No", { nullable: true });
+    t.int("shopId");
+    t.string("shopName");
+    t.string("phoneNumber");
+    t.string("address");
+    t.string("tagNames", { list: true });
+    t.int("rankNum");
+    t.int("weight");
+    t.int("postNum");
+    t.int("productNum");
+    t.int("likeNum");
+    t.int("viewNum");
+  },
+});
+
+export const PostManagementThumbnail = objectType({
+  name: "PostManagementThumbnail",
+  definition(t) {
+    t.int("No", { nullable: true });
+    t.int("postId");
+    t.string("mainProductName");
+    t.int("price");
+    t.int("shopId");
+    t.int("priority");
+    t.string("tagNames", { list: true });
+    t.int("subProductNum");
+    t.int("rankNum");
+    t.int("likeNum");
+    t.int("viewNum");
+  },
+});
