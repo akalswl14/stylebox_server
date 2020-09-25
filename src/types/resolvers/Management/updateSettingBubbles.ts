@@ -3,9 +3,9 @@ import { arg, mutationField } from "@nexus/schema";
 export const updateSettingBubbles = mutationField("updateSettingBubbles", {
   type: "Boolean",
   args: {
-    mainBubbleTags: arg({ type: "TagOrderInputType", list: true }),
-    bestBubbleTags: arg({ type: "TagOrderInputType", list: true }),
-    shopBubbleTags: arg({ type: "TagOrderInputType", list: true }),
+    mainBubbleTags: arg({ type: "IdOrderInputType", list: true }),
+    bestBubbleTags: arg({ type: "IdOrderInputType", list: true }),
+    shopBubbleTags: arg({ type: "IdOrderInputType", list: true }),
   },
   nullable: false,
   list: true,
@@ -23,23 +23,28 @@ export const updateSettingBubbles = mutationField("updateSettingBubbles", {
       while (mainBubbleTags.length != rtnMainBubbles.length) {
         for (const eachTag of mainBubbleTags) {
           if (num == eachTag.order) {
-            rtnMainBubbles.push(eachTag.tagId);
+            rtnMainBubbles.push(eachTag.id);
           }
         }
+        num++;
       }
+      num = 0;
       while (bestBubbleTags.length != rtnBestBubbles.length) {
         for (const eachTag of bestBubbleTags) {
           if (num == eachTag.order) {
-            rtnBestBubbles.push(eachTag.tagId);
+            rtnBestBubbles.push(eachTag.id);
           }
         }
+        num++;
       }
+      num = 0;
       while (shopBubbleTags.length != rtnShopBubbles.length) {
         for (const eachTag of shopBubbleTags) {
           if (num == eachTag.order) {
-            rtnShopBubbles.push(eachTag.tagId);
+            rtnShopBubbles.push(eachTag.id);
           }
         }
+        num++;
       }
       let queryResult = await ctx.prisma.setting.update({
         where: {
