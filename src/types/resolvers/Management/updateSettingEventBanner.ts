@@ -8,7 +8,6 @@ export const updateSettingEventBanner = mutationField(
       events: arg({ type: "IdOrderInputType", list: true }),
     },
     nullable: false,
-    list: true,
     resolve: async (_, args, ctx) => {
       try {
         const { events } = args;

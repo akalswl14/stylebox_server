@@ -4,6 +4,7 @@ export const searchEvent = queryField("searchEvent", {
   type: "eventSearchResult",
   args: { eventTitle: stringArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { eventTitle } = args;

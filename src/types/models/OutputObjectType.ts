@@ -323,3 +323,14 @@ export const eventSearchResult = objectType({
     t.string("title");
   },
 });
+
+export const UserManagementThumbnail = objectType({
+  name: "UserManagementThumbnail",
+  definition(t) {
+    t.int("userId");
+    t.field("installationDate", { type: "DateTime" });
+    t.int("PostLikeNum");
+    t.int("ShopLikeNum");
+    t.int("EventLikeNum");
+  },
+});
