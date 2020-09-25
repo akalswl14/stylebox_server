@@ -4,6 +4,7 @@ export const getTopPosts = queryField("getTopPosts", {
   type: "PostManagementThumbnail",
   args: { periodFilter: intArg({ nullable: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { peroidFilter = 1 } = args;

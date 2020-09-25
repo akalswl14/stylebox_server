@@ -3,6 +3,7 @@ import { queryField } from "@nexus/schema";
 export const getTopShops = queryField("getTopShops", {
   type: "ShopManagementThumbnail",
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       let branchResult,

@@ -293,3 +293,23 @@ export const PostManagementThumbnail = objectType({
     t.int("viewNum");
   },
 });
+
+export const TagManagementThumbnail = objectType({
+  name: "TagManagementThumbnail",
+  definition(t) {
+    t.int("tagId");
+    t.string("tagName", { nullable: true });
+    t.int("classId", { nullable: true });
+    t.string("className", { nullable: true });
+    t.field("category", { type: "Category", nullable: true });
+    t.int("order", { nullable: true });
+  },
+});
+
+export const idNameThumbnail = objectType({
+  name: "idNameThumbnail",
+  definition(t) {
+    t.int("id");
+    t.string("name");
+  },
+});
