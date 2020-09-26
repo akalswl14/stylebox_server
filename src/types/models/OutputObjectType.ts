@@ -453,3 +453,18 @@ export const UrlOrder = objectType({
     t.string('url');
   },
 });
+
+export const EventManagementList = objectType({
+  name: 'EventManagementList',
+  definition(t) {
+    t.int('eventId');
+    t.string('eventTitle');
+    t.field('eventStart', { type: 'DateTime' });
+    t.field('eventEnd', { type: 'DateTime' });
+    t.boolean('isOnList');
+    t.string('address');
+    t.string('link');
+    t.int('likesNum');
+    t.int('viewsNum');
+  },
+});
