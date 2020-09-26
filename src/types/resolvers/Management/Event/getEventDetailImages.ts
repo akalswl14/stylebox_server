@@ -1,0 +1,25 @@
+import { intArg, queryField } from "@nexus/schema";
+
+export const getEventDetailImages = queryField("getEventDetailImages", {
+  type: "UrlOrder",
+  args: { id: intArg({ required: true }) },
+  nullable: true,
+  resolve: async (_, args, ctx) => {
+    try {
+      const { id } = args;
+      let queryResult = await ctx.prisma.event.findOne({
+        where: { id },
+        select: {
+          contentsImages: {
+            select: { order: true, url: true },
+            orderBy: { order: "asc" },
+          },
+        },
+      });
+      return queryResult?.contentsImages;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  },
+});
