@@ -22,10 +22,23 @@ export const updateTagInfo = queryField('updateTagInfo', {
         classId,
       } = args;
 
+      let lang;
+      if (!lang) lang = 'VI';
+
       if (tagName) {
+        let originalTagName = await ctx.prisma.class.findOne({
+          where: { id: classId },
+          select: { names: { where: { lang }, select: { word: true } } },
+        });
+
         await ctx.prisma.tag.update({
           where: { id: tagId },
-          data: { names: { update: { data: { word: tagName } } } },
+          data: {
+            names: {
+              delete: { word: originalTagName?.names[0].word },
+              create: { lang, word: tagName },
+            },
+          },
         });
       }
 
