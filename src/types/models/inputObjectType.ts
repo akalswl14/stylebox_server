@@ -111,10 +111,10 @@ export const EventListInputType = inputObjectType({
   },
 });
 
-export const ProductListInputType = inputObjectType({
-  name: 'ProductListInputType',
+export const IdPriorityInputType = inputObjectType({
+  name: 'IdPriorityInputType',
   definition(t) {
-    t.int('productId', { required: true });
+    t.int('id', { required: true });
     t.int('priority', { required: true });
   },
 });

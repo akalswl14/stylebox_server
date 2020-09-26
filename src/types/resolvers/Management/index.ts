@@ -17,3 +17,4 @@ export * from './Class';
 export * from './EventList';
 export * from './ShopList';
 export * from './ProductList';
+export * from './PostList';

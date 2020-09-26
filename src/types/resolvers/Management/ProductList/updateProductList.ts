@@ -3,7 +3,7 @@ import { arg, mutationField } from '@nexus/schema';
 export const updateProductList = mutationField('updateProductList', {
   type: 'Boolean',
   args: {
-    products: arg({ type: 'ProductListInputType', list: true, required: true }),
+    products: arg({ type: 'IdPriorityInputType', list: true, required: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -11,7 +11,7 @@ export const updateProductList = mutationField('updateProductList', {
       const { products = [] } = args;
       for (const product of products) {
         await ctx.prisma.product.update({
-          where: { id: product.productId },
+          where: { id: product.id },
           data: { priority: product.priority },
         });
       }

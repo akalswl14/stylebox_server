@@ -479,3 +479,20 @@ export const ProductList = objectType({
     t.string('link');
   },
 });
+
+export const PostManagementList = objectType({
+  name: 'PostManagementList',
+  definition(t) {
+    t.int('postId');
+    t.string('mainProductName');
+    t.int('price');
+    t.string('shopName');
+    t.int('priority');
+    t.int('likesNum');
+    t.int('subProductsNum');
+    t.int('viewsNum');
+    t.int('linksClickNum');
+    t.int('linksNum');
+    t.int('rank');
+  },
+});
