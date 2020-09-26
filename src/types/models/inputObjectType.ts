@@ -79,26 +79,26 @@ export const IdOrderInputType = inputObjectType({
 });
 
 export const PopularTagInputType = inputObjectType({
-  name: "PopularTagInputType",
+  name: 'PopularTagInputType',
   definition(t) {
-    t.int("order", { required: true });
-    t.int("tagId", { required: true });
+    t.int('order', { required: true });
+    t.int('tagId', { required: true });
   },
 });
 
 export const QuestionInputType = inputObjectType({
-  name: "QuestionInputType",
+  name: 'QuestionInputType',
   definition(t) {
-    t.int("order");
-    t.string("questionType");
+    t.int('order');
+    t.string('questionType');
   },
 });
 
 export const IdValueInputType = inputObjectType({
-  name: "IdValueInputType",
+  name: 'IdValueInputType',
   definition(t) {
-    t.int("id");
-    t.int("value");
+    t.int('id');
+    t.int('value');
   },
 });
 
@@ -108,5 +108,13 @@ export const EventListInputType = inputObjectType({
     t.int('eventId', { required: true });
     t.field('eventStart', { type: 'DateTime', required: true });
     t.field('eventEnd', { type: 'DateTime', required: true });
+  },
+});
+
+export const ProductListInputType = inputObjectType({
+  name: 'ProductListInputType',
+  definition(t) {
+    t.int('productId', { required: true });
+    t.int('priority', { required: true });
   },
 });

@@ -468,3 +468,14 @@ export const EventManagementList = objectType({
     t.int('viewsNum');
   },
 });
+
+export const ProductList = objectType({
+  name: 'ProductList',
+  definition(t) {
+    t.int('productId');
+    t.string('productName');
+    t.int('price');
+    t.int('postNum');
+    t.string('link');
+  },
+});
