@@ -1,14 +1,14 @@
-import { queryField } from '@nexus/schema';
+import { mutationField } from '@nexus/schema';
 
-export const resetShopPriority = queryField('resetShopPriority', {
+export const resetShopPriority = mutationField('resetShopPriority', {
   type: 'Boolean',
   nullable: true,
   resolve: async (_, __, ctx) => {
     try {
-      await ctx.prisma.shop.updateMany({
+      let queryResult = await ctx.prisma.shop.updateMany({
         data: { priority: 1 },
       });
-      return true;
+      return queryResult ? true : false;
     } catch (e) {
       console.log(e);
       return false;

@@ -1,6 +1,6 @@
-import { arg, intArg, queryField } from '@nexus/schema';
+import { arg, intArg, mutationField } from '@nexus/schema';
 
-export const updateFeedSetting = queryField('updateFeedSetting', {
+export const updateFeedSetting = mutationField('updateFeedSetting', {
   type: 'Boolean',
   args: {
     TodaysStylesPeriod: arg({ type: 'DateTime', nullable: true }),
@@ -12,38 +12,38 @@ export const updateFeedSetting = queryField('updateFeedSetting', {
     postConstA: intArg({ nullable: true }),
     postConstB: intArg({ nullable: true }),
   },
-  nullable: true,
+  nullable: false,
   resolve: async (_, args, ctx) => {
-    const {
-      TodaysStylesPeriod,
-      SearchPeriod,
-      BestRankNum,
-      shopConstA,
-      shopConstB,
-      shopConstC,
-      postConstA,
-      postConstB,
-    } = args;
-
-    let QueryOption = {
-      where: { id: 1 },
-      data: {},
-    };
-
-    if (TodaysStylesPeriod)
-      QueryOption.data.TodaysStylesPeriod = TodaysStylesPeriod;
-    if (SearchPeriod) QueryOption.data.SearchPeriod = SearchPeriod;
-    if (BestRankNum) QueryOption.data.bestTotalPostNum = BestRankNum;
-    if (shopConstA) QueryOption.data.shopConstA = shopConstA;
-    if (shopConstB) QueryOption.data.shopConstB = shopConstB;
-    if (shopConstC) QueryOption.data.shopConstC = shopConstC;
-    if (postConstA) QueryOption.data.bestConstA = postConstA;
-    if (postConstB) QueryOption.data.bestConstB = postConstB;
-
-    await ctx.prisma.setting.update(QueryOption);
-
     try {
-      return true;
+      const {
+        TodaysStylesPeriod,
+        SearchPeriod,
+        BestRankNum,
+        shopConstA,
+        shopConstB,
+        shopConstC,
+        postConstA,
+        postConstB,
+      } = args;
+
+      let QueryOption = {
+        where: { id: 1 },
+        data: {},
+      };
+
+      if (TodaysStylesPeriod)
+        QueryOption.data.TodaysStylesPeriod = TodaysStylesPeriod;
+      if (SearchPeriod) QueryOption.data.SearchPeriod = SearchPeriod;
+      if (BestRankNum) QueryOption.data.bestTotalPostNum = BestRankNum;
+      if (shopConstA) QueryOption.data.shopConstA = shopConstA;
+      if (shopConstB) QueryOption.data.shopConstB = shopConstB;
+      if (shopConstC) QueryOption.data.shopConstC = shopConstC;
+      if (postConstA) QueryOption.data.bestConstA = postConstA;
+      if (postConstB) QueryOption.data.bestConstB = postConstB;
+
+      let queryResult = await ctx.prisma.setting.update(QueryOption);
+
+      return queryResult ? true : false;
     } catch (e) {
       console.log(e);
       return false;
