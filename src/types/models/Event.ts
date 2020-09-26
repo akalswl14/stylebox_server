@@ -1,7 +1,7 @@
-import { objectType } from '@nexus/schema';
+import { objectType } from "@nexus/schema";
 
 export const Event = objectType({
-  name: 'Event',
+  name: "Event",
   definition(t) {
     t.model.id();
     t.model.images();
@@ -14,7 +14,6 @@ export const Event = objectType({
     t.model.views();
     t.model.isOnList();
     t.model.title();
-    t.model.address();
     t.model.startDate();
     t.model.onDetailTagId();
     t.model.createdAt();
@@ -23,7 +22,7 @@ export const Event = objectType({
 });
 
 export const EventImage = objectType({
-  name: 'EventImage',
+  name: "EventImage",
   definition(t) {
     t.model.id();
     t.model.eventId();
@@ -36,7 +35,7 @@ export const EventImage = objectType({
 });
 
 export const EventVideo = objectType({
-  name: 'EventVideo',
+  name: "EventVideo",
   definition(t) {
     t.model.id();
     t.model.eventId();
@@ -49,7 +48,7 @@ export const EventVideo = objectType({
 });
 
 export const EventContentsImage = objectType({
-  name: 'EventContentsImage',
+  name: "EventContentsImage",
   definition(t) {
     t.model.id();
     t.model.eventId();

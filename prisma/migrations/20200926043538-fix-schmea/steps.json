@@ -1,0 +1,16 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "Shop",
+      "field": "phoneNumber",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Event",
+      "field": "address"
+    }
+  ]
+}

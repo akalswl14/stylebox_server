@@ -79,17 +79,25 @@ export const IdOrderInputType = inputObjectType({
 });
 
 export const PopularTagInputType = inputObjectType({
-  name: 'PopularTagInputType',
+  name: "PopularTagInputType",
   definition(t) {
-    t.int('order', { required: true });
-    t.int('tagId', { required: true });
+    t.int("order", { required: true });
+    t.int("tagId", { required: true });
   },
 });
 
 export const QuestionInputType = inputObjectType({
-  name: 'QuestionInputType',
+  name: "QuestionInputType",
   definition(t) {
-    t.int('order');
-    t.string('questionType');
+    t.int("order");
+    t.string("questionType");
+  },
+});
+
+export const IdValueInputType = inputObjectType({
+  name: "IdValueInputType",
+  definition(t) {
+    t.int("id");
+    t.int("value");
   },
 });
