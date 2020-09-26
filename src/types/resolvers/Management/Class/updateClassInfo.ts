@@ -1,13 +1,13 @@
-import { arg, booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
 
-export const updateClassInfo = queryField('updateClassInfo', {
+export const updateClassInfo = mutationField('updateClassInfo', {
   type: 'Boolean',
   args: {
     classId: intArg({ required: true }),
     className: stringArg({ nullable: true }),
     classCategory: arg({ type: 'Category', nullable: true }),
   },
-  nullable: true,
+  nullable: false,
   resolve: async (_, args, ctx) => {
     try {
       const { classId, className, classCategory } = args;

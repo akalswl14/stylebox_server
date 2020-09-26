@@ -1,6 +1,6 @@
-import { arg, intArg, queryField, stringArg } from '@nexus/schema';
+import { arg, mutationField, stringArg } from '@nexus/schema';
 
-export const updateSettingQuestion = queryField('updateSettingQuestion', {
+export const updateSettingQuestion = mutationField('updateSettingQuestion', {
   type: 'Boolean',
   args: {
     email: stringArg({ nullable: true }),
@@ -11,7 +11,7 @@ export const updateSettingQuestion = queryField('updateSettingQuestion', {
       list: true,
     }),
   },
-  nullable: true,
+  nullable: false,
   resolve: async (_, args, ctx) => {
     try {
       const { questionTypes = [], email, pw } = args;

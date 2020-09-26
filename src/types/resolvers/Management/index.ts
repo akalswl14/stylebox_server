@@ -14,3 +14,4 @@ export * from './TagList';
 export * from './Tag';
 export * from './Event';
 export * from './Class';
+export * from './EventList';

@@ -1,6 +1,6 @@
-import { arg, booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
 
-export const createTagInfo = queryField('createTagInfo', {
+export const createTagInfo = mutationField('createTagInfo', {
   type: 'Boolean',
   args: {
     tagName: stringArg({ required: true }),
@@ -8,14 +8,14 @@ export const createTagInfo = queryField('createTagInfo', {
     tagImage: stringArg({ nullable: true }),
     classId: intArg({ required: true }),
   },
-  nullable: true,
+  nullable: false,
   resolve: async (_, args, ctx) => {
     try {
       const { tagName, tagCategory, tagImage, classId } = args;
       let lang;
       if (!lang) lang = 'VI';
 
-      await ctx.prisma.tag.create({
+      let queryResult = await ctx.prisma.tag.create({
         data: {
           category: tagCategory,
           tagImage,
@@ -25,7 +25,8 @@ export const createTagInfo = queryField('createTagInfo', {
           names: { create: { lang, word: tagName } },
         },
       });
-      return true;
+
+      return queryResult ? true : false;
     } catch (e) {
       console.log(e);
       return false;

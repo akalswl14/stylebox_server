@@ -1,6 +1,12 @@
-import { arg, booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
+import {
+  arg,
+  booleanArg,
+  intArg,
+  mutationField,
+  stringArg,
+} from '@nexus/schema';
 
-export const updateTagInfo = queryField('updateTagInfo', {
+export const updateTagInfo = mutationField('updateTagInfo', {
   type: 'Boolean',
   args: {
     tagId: intArg({ required: true }),
@@ -10,7 +16,7 @@ export const updateTagInfo = queryField('updateTagInfo', {
     isTagImageChange: booleanArg({ required: true }),
     classId: intArg({ nullable: true }),
   },
-  nullable: true,
+  nullable: false,
   resolve: async (_, args, ctx) => {
     try {
       const {

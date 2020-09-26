@@ -1,16 +1,16 @@
 import { intArg, mutationField } from '@nexus/schema';
 
-export const deleteSelectedTags = mutationField('deleteSelectedTags', {
+export const deleteEventList = mutationField('deleteEventList', {
   type: 'Boolean',
   args: {
-    tagIds: intArg({ list: true, required: true }),
+    eventIds: intArg({ required: true, list: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
     try {
-      const { tagIds = [] } = args;
-      let queryResult = await ctx.prisma.tag.deleteMany({
-        where: { id: { in: tagIds } },
+      const { eventIds = [] } = args;
+      let queryResult = await ctx.prisma.event.deleteMany({
+        where: { id: { in: eventIds } },
       });
       return queryResult ? true : false;
     } catch (e) {
