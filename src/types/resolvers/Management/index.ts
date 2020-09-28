@@ -20,3 +20,4 @@ export * from './ProductList';
 export * from './PostList';
 export * from "./Shop";
 export * from "./getLinkType";
+export * from './Post';

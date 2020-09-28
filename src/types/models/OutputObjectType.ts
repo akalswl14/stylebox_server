@@ -552,3 +552,50 @@ export const PostManagementList = objectType({
     t.int('rank');
   },
 });
+
+export const PostBasicInfo = objectType({
+  name: 'PostBasicInfo',
+  definition(t) {
+    t.int('postId');
+    t.int('mainProductId');
+    t.string('mainProductName');
+    t.int('price');
+    t.int('shopId');
+    t.string('shopName');
+  },
+});
+
+export const PostBasicStatus = objectType({
+  name: 'PostBasicStatus',
+  definition(t) {
+    t.int('weeklyRank');
+    t.int('monthlyRank');
+    t.int('totalRank');
+    t.int('priority');
+    t.int('likesNum');
+    t.int('viewsNum');
+    t.field('createdAt', { type: 'DateTime' });
+    t.field('updatedAt', { type: 'DateTime' });
+  },
+});
+
+const PostExternalLink = objectType({
+  name: 'PostExternalLink',
+  definition(t) {
+    t.field('linkType', { type: 'LinkType' });
+    t.string('url');
+    t.boolean('isShown');
+    t.int('order');
+  },
+});
+
+export const SubProductList = objectType({
+  name: 'SubProductList',
+  definition(t) {
+    t.int('productId');
+    t.string('productName');
+    t.int('price');
+    t.string('link');
+    t.int('order');
+  },
+});
