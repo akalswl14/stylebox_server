@@ -511,45 +511,94 @@ export const branchManagementThumbnail = objectType({
 });
 
 export const EventManagementList = objectType({
-  name: 'EventManagementList',
+  name: "EventManagementList",
   definition(t) {
-    t.int('eventId');
-    t.string('eventTitle');
-    t.field('eventStart', { type: 'DateTime' });
-    t.field('eventEnd', { type: 'DateTime' });
-    t.boolean('isOnList');
-    t.string('address');
-    t.string('link');
-    t.int('likesNum');
-    t.int('viewsNum');
+    t.int("eventId");
+    t.string("eventTitle");
+    t.field("eventStart", { type: "DateTime" });
+    t.field("eventEnd", { type: "DateTime" });
+    t.boolean("isOnList");
+    t.string("address");
+    t.string("link");
+    t.int("likesNum");
+    t.int("viewsNum");
   },
 });
 
 export const ProductList = objectType({
-  name: 'ProductList',
+  name: "ProductList",
   definition(t) {
-    t.int('productId');
-    t.string('productName');
-    t.int('price');
-    t.int('postNum');
-    t.string('link');
+    t.int("productId");
+    t.string("productName");
+    t.int("price");
+    t.int("postNum");
+    t.string("link");
   },
 });
 
 export const PostManagementList = objectType({
-  name: 'PostManagementList',
+  name: "PostManagementList",
   definition(t) {
-    t.int('postId');
-    t.string('mainProductName');
-    t.int('price');
-    t.string('shopName');
-    t.int('priority');
-    t.int('likesNum');
-    t.int('subProductsNum');
-    t.int('viewsNum');
-    t.int('linksClickNum');
-    t.int('linksNum');
-    t.int('rank');
+    t.int("postId");
+    t.string("mainProductName");
+    t.int("price");
+    t.string("shopName");
+    t.int("priority");
+    t.int("likesNum");
+    t.int("subProductsNum");
+    t.int("viewsNum");
+    t.int("linksClickNum");
+    t.int("linksNum");
+    t.int("rank");
+  },
+});
+
+export const ProductBasicInfo = objectType({
+  name: "ProductBasicInfo",
+  definition(t) {
+    t.int("productId");
+    t.string("productName");
+    t.int("price");
+    t.string("productImage");
+  },
+});
+
+export const ProductBasicStatus = objectType({
+  name: "ProductBasicStatus",
+  definition(t) {
+    t.int("postNum");
+    t.field("createdAt", { type: "DateTime" });
+    t.field("updatedAt", { type: "DateTime" });
+  },
+});
+
+export const ShopOption = objectType({
+  name: "ShopOption",
+  definition(t) {
+    t.int("id");
+    t.string("shopName");
+    t.string("shopLink");
+  },
+});
+
+export const ProductToBranchThumbnail = objectType({
+  name: "ProductToBranchThumbnail",
+  definition(t) {
+    t.int("id");
+    t.string("branchName");
+    t.string("phoneNumber");
+    t.string("address");
+    t.boolean("isSelected");
+  },
+});
+
+export const ProductToShopBranchInfo = objectType({
+  name: "ProductToShopBranchInfo",
+  definition(t) {
+    t.int("id");
+    t.string("shopName");
+    t.string("shopLink");
+    t.field("branches", { type: "ProductToBranchThumbnail", list: true });
   },
 });
 

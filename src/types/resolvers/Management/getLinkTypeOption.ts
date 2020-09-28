@@ -1,6 +1,6 @@
 import { queryField } from "@nexus/schema";
 
-export const getLinkType = queryField("getLinkType", {
+export const getLinkTypeOption = queryField("getLinkTypeOption", {
   type: "LinkType",
   nullable: true,
   list: true,

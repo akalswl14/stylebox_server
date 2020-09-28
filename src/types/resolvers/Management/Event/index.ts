@@ -1,5 +1,5 @@
-export * from "./createEventManagement";
-export * from "./updateEventManagement";
+export * from "./createEvent";
+export * from "./updateEvent";
 export * from "./getEventBasicInfo";
 export * from "./getEventBasicStatus";
 export * from "./getEventTagInfo";

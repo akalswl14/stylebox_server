@@ -1,6 +1,6 @@
 import { arg, booleanArg, mutationField, stringArg } from "@nexus/schema";
 
-export const createEventManagement = mutationField("createEventManagement", {
+export const createEvent = mutationField("createEvent", {
   type: "Boolean",
   args: {
     title: stringArg({ required: true }),

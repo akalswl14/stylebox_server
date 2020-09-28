@@ -2,7 +2,6 @@ export * from "./Branch";
 export * from "./Class";
 export * from "./Event";
 export * from "./Post";
-export * from "./Product";
 export * from "./Question";
 export * from "./Server";
 export * from "./Setting";

@@ -4,6 +4,7 @@ export const getShopTagInfo = queryField("getShopTagInfo", {
   type: "TagManagementThumbnail",
   args: { id: intArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
