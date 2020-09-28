@@ -6,3 +6,4 @@ export * from './getPostImages';
 export * from './getPostVideo';
 export * from './getPostDescription';
 export * from './getPostSubProduct';
+export * from './createPost';
