@@ -1,7 +1,7 @@
 import { queryField } from "@nexus/schema";
 
 export const getCategoryOptions = queryField("getCategoryOptions", {
-  type: "String",
+  type: "Category",
   nullable: true,
   list: true,
   resolve: async (_, args, ctx) => {

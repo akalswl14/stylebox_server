@@ -3,10 +3,10 @@ import { inputObjectType } from '@nexus/schema';
 export const branchInputType = inputObjectType({
   name: 'branchInputType',
   definition(t) {
-    t.field('branchNames', { type: NameInputType, list: true, required: true });
-    t.string('branchPhoneNumbers', { required: true, list: true });
-    t.string('branchAddress', { required: true });
-    t.string('branchGoogleMapUrl', { required: true });
+    t.string("branchName", { required: true });
+    t.string("branchPhoneNumber", { required: true });
+    t.string("branchAddress", { required: true });
+    t.string("branchGoogleMapUrl", { required: true });
   },
 });
 
@@ -45,9 +45,10 @@ export const idDicInputType = inputObjectType({
 export const LinkInputType = inputObjectType({
   name: 'LinkInputType',
   definition(t) {
-    t.string('url', { required: true });
-    t.int('order', { required: true });
-    t.field('linkType', { type: 'LinkType', required: true });
+    t.string("url", { required: true });
+    t.int("order", { required: true });
+    t.field("linkType", { type: "LinkType", required: true });
+    t.boolean("isShown", { nullable: true });
   },
 });
 
@@ -116,5 +117,16 @@ export const IdPriorityInputType = inputObjectType({
   definition(t) {
     t.int('id', { required: true });
     t.int('priority', { required: true });
+  },
+});
+
+export const branchUpdateInputType = inputObjectType({
+  name: "branchUpdateInputType",
+  definition(t) {
+    t.int("id", { nullable: true });
+    t.string("branchName", { nullable: true });
+    t.string("branchPhoneNumber", { nullable: true });
+    t.string("branchAddress", { nullable: true });
+    t.string("branchGoogleMapUrl", { nullable: true });
   },
 });

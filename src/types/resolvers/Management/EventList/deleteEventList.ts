@@ -1,7 +1,7 @@
-import { intArg, mutationField } from '@nexus/schema';
+import { intArg, mutationField } from "@nexus/schema";
 
-export const deleteEventList = mutationField('deleteEventList', {
-  type: 'Boolean',
+export const deleteEventList = mutationField("deleteEventList", {
+  type: "Boolean",
   args: {
     eventIds: intArg({ required: true, list: true }),
   },
