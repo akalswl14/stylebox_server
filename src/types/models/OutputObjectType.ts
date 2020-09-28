@@ -453,3 +453,46 @@ export const UrlOrder = objectType({
     t.string('url');
   },
 });
+
+export const EventManagementList = objectType({
+  name: 'EventManagementList',
+  definition(t) {
+    t.int('eventId');
+    t.string('eventTitle');
+    t.field('eventStart', { type: 'DateTime' });
+    t.field('eventEnd', { type: 'DateTime' });
+    t.boolean('isOnList');
+    t.string('address');
+    t.string('link');
+    t.int('likesNum');
+    t.int('viewsNum');
+  },
+});
+
+export const ProductList = objectType({
+  name: 'ProductList',
+  definition(t) {
+    t.int('productId');
+    t.string('productName');
+    t.int('price');
+    t.int('postNum');
+    t.string('link');
+  },
+});
+
+export const PostManagementList = objectType({
+  name: 'PostManagementList',
+  definition(t) {
+    t.int('postId');
+    t.string('mainProductName');
+    t.int('price');
+    t.string('shopName');
+    t.int('priority');
+    t.int('likesNum');
+    t.int('subProductsNum');
+    t.int('viewsNum');
+    t.int('linksClickNum');
+    t.int('linksNum');
+    t.int('rank');
+  },
+});

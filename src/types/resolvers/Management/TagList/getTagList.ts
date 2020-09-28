@@ -1,12 +1,12 @@
-import { arg, booleanArg, intArg, queryField, stringArg } from "@nexus/schema";
+import { arg, booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
 
-export const getTagList = queryField("getTagList", {
-  type: "TagList",
+export const getTagList = queryField('getTagList', {
+  type: 'TagList',
   args: {
     pageNum: intArg({ nullable: true }),
     tagId: intArg({ nullable: true }),
     tagName: stringArg({ nullable: true }),
-    category: arg({ type: "Category", nullable: true }),
+    category: arg({ type: 'Category', nullable: true }),
     className: stringArg({ nullable: true }),
     tagIdAsc: booleanArg({ nullable: true }),
     tagNameAsc: booleanArg({ nullable: true }),
@@ -27,7 +27,7 @@ export const getTagList = queryField("getTagList", {
         categoryAsc = true,
       } = args;
 
-      let lang = "VI",
+      let lang = 'VI',
         tags = [],
         rtn = [];
 
@@ -48,9 +48,9 @@ export const getTagList = queryField("getTagList", {
       if (tagName) QueryOption.where.names.some.word = tagName;
       if (category) QueryOption.where.category = category;
       if (className) QueryOption.where.Class.names.some.word = className;
-      if (!tagIdAsc) QueryOption.orderBy.id = "desc";
-      if (!tagNameAsc) QueryOption.select.names.orderBy.word = "desc";
-      if (!categoryAsc) QueryOption.orderBy.category = "desc";
+      if (!tagIdAsc) QueryOption.orderBy.id = 'desc';
+      if (!tagNameAsc) QueryOption.select.names.orderBy.word = 'desc';
+      if (!categoryAsc) QueryOption.orderBy.category = 'desc';
 
       let tagResult = await ctx.prisma.tag.findMany(QueryOption);
 
