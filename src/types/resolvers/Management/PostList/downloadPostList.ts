@@ -44,7 +44,7 @@ export const downloadPostList = queryField('downloadPostList', {
 
         posts.push({
           postId: post.id,
-          mainProductName: productName.names[0].word,
+          mainProductName: productName?.names[0].word,
           price: post.mainProductPrice,
           shopName: post.Shop?.names[0].word,
           priority: post.priority,
