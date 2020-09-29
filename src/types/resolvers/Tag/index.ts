@@ -1,4 +1,3 @@
-export * from "./createTag";
 export * from "./getMainBubbles";
 export * from "./getShopBubbles";
 export * from "./getSearchTagLogs";

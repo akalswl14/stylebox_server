@@ -1,6 +1,4 @@
-export * from "./createPost";
 export * from "./toggleLikePost";
-export * from "./updatePost";
 export * from "./getPostsbyShop";
 export * from "./getPostDetail";
 export * from "./getSimilarPosts";
