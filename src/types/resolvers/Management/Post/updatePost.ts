@@ -115,9 +115,9 @@ export const updatePostManage = mutationField('updatePostManage', {
         for (const tag of tags) {
           tagsId.push({ id: tag.id });
         }
-        tags.sort((tag: { order: number }) => {
-          return tag.order - tag.order;
-        });
+        tags.sort((a, b) =>
+          a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+        );
         for (const tag of tags) {
           onDetailTagId.push(tag.id);
         }
