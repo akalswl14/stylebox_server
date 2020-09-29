@@ -12,12 +12,14 @@ export const getSettingAdminEmail = queryField('getSettingAdminEmail', {
         select: { adminEmail: true, adminEmailPW: true },
       });
 
+      if (!AdminSetting) return null;
+
       let AdminInfo = {
-        email: AdminSetting?.adminEmail,
-        pw: AdminSetting?.adminEmailPW,
+        email: AdminSetting.adminEmail,
+        pw: AdminSetting.adminEmailPW,
       };
 
-      return AdminInfo ? AdminInfo : null;
+      return AdminInfo;
     } catch (e) {
       console.log(e);
       return null;

@@ -15,6 +15,10 @@ export const updateSettingPopularTags = mutationField(
     resolve: async (_, args, ctx) => {
       try {
         const { popularTags = [] } = args;
+        await ctx.prisma.tag.updateMany({
+          where: { isRecommendation: { gte: 1 } },
+          data: { isRecommendation: 0 },
+        });
         for (const popularTag of popularTags) {
           await ctx.prisma.tag.update({
             where: { id: popularTag.tagId },

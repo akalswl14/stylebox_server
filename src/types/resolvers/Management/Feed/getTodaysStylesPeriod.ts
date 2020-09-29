@@ -11,11 +11,11 @@ export const getTodaysStylesPeriod = queryField('getTodaysStylesPeriod', {
         select: { TodaysStylesPeriod: true },
       });
 
-      if (TodaysStylesPeriod) {
-        postNum = await ctx.prisma.post.count({
-          where: { createdAt: { gte: TodaysStylesPeriod } },
-        });
-      }
+      if (!TodaysStylesPeriod) return null;
+
+      postNum = await ctx.prisma.post.count({
+        where: { createdAt: { gte: TodaysStylesPeriod.TodaysStylesPeriod } },
+      });
 
       let rtn = {
         period: TodaysStylesPeriod,

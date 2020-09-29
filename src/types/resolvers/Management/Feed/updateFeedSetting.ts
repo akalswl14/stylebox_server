@@ -26,23 +26,56 @@ export const updateFeedSetting = mutationField('updateFeedSetting', {
         postConstB,
       } = args;
 
-      let QueryOption = {
-        where: { id: 1 },
-        data: {},
-      };
+      let queryResult;
 
-      if (TodaysStylesPeriod)
-        QueryOption.data.TodaysStylesPeriod = TodaysStylesPeriod;
-      if (SearchPeriod) QueryOption.data.SearchPeriod = SearchPeriod;
-      if (BestRankNum) QueryOption.data.bestTotalPostNum = BestRankNum;
-      if (shopConstA) QueryOption.data.shopConstA = shopConstA;
-      if (shopConstB) QueryOption.data.shopConstB = shopConstB;
-      if (shopConstC) QueryOption.data.shopConstC = shopConstC;
-      if (postConstA) QueryOption.data.bestConstA = postConstA;
-      if (postConstB) QueryOption.data.bestConstB = postConstB;
-
-      let queryResult = await ctx.prisma.setting.update(QueryOption);
-
+      if (TodaysStylesPeriod) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { TodaysStylesPeriod },
+        });
+      }
+      if (SearchPeriod) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { SearchPeriod },
+        });
+      }
+      if (BestRankNum) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { bestTotalPostNum: BestRankNum },
+        });
+      }
+      if (shopConstA) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { shopConstA },
+        });
+      }
+      if (shopConstB) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { shopConstB },
+        });
+      }
+      if (shopConstC) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { shopConstC },
+        });
+      }
+      if (postConstA) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { bestConstA: postConstA },
+        });
+      }
+      if (postConstB) {
+        queryResult = await ctx.prisma.setting.update({
+          where: { id: 1 },
+          data: { bestConstB: postConstB },
+        });
+      }
       return queryResult ? true : false;
     } catch (e) {
       console.log(e);

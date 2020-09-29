@@ -15,7 +15,7 @@ export const getSettingQuestionOption = queryField('getSettingQuestionOption', {
         select: { QuestionOption: true },
       });
 
-      if (!QuestionSetting) return [];
+      if (!QuestionSetting) return null;
 
       for (const question of QuestionSetting.QuestionOption) {
         questionTypes.push({
@@ -26,7 +26,7 @@ export const getSettingQuestionOption = queryField('getSettingQuestionOption', {
         order++;
       }
 
-      return questionTypes ? questionTypes : null;
+      return questionTypes;
     } catch (e) {
       console.log(e);
       return null;
