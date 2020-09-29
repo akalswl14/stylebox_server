@@ -7,3 +7,6 @@ export * from './getPostVideo';
 export * from './getPostDescription';
 export * from './getPostSubProduct';
 export * from './createPost';
+export * from './updatePost';
+export * from './getProductByName';
+export * from './getShopByProductName';
