@@ -20,7 +20,7 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
         queryResult = await ctx.prisma.searchTagLog.findMany({
           where: { userId, createdAt: { gte: filterDate } },
           orderBy: { createdAt: "desc" },
-          take: 5,
+          take: 10,
           select: {
             Tag: {
               select: {

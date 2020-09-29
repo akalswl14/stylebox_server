@@ -2,7 +2,7 @@ import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
 
 export const getBestPosts = queryField("getBestPosts", {
-  type: "PostThumbnail",
+  type: "postNumPostList",
   args: {
     lang: stringArg({ nullable: true }),
     periodFilter: intArg({ nullable: true }),
@@ -11,7 +11,6 @@ export const getBestPosts = queryField("getBestPosts", {
     cursorId: intArg({ nullable: true }),
     pageNum: intArg({ required: true }),
   },
-  list: true,
   nullable: true,
   description:
     "About filter, 1 means this week, 2 means this month and 3 means life time. Field pageNum has to start from 1.",
@@ -107,7 +106,10 @@ export const getBestPosts = queryField("getBestPosts", {
           posts.push(tmp);
         }
       }
-      return posts;
+      return {
+        postNum: posts.length,
+        posts,
+      };
     } catch (e) {
       console.log(e);
       return null;

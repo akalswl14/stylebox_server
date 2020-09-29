@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getPostDetail = queryField('getPostDetail', {
-  type: 'PostDetail',
+export const getPostDetail = queryField("getPostDetail", {
+  type: "PostDetail",
   args: {
     lang: stringArg({ nullable: true }),
     postId: intArg({ required: true }),
@@ -24,7 +24,7 @@ export const getPostDetail = queryField('getPostDetail', {
         mainProduct,
         tagResult;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       await ctx.prisma.view.create({
         data: {
@@ -46,6 +46,7 @@ export const getPostDetail = queryField('getPostDetail', {
             select: {
               names: { where: { lang }, select: { word: true } },
               logoUrl: true,
+              onDetailTagId: true,
             },
           },
           videos: { select: { isYoutube: true, url: true, order: true } },
@@ -127,6 +128,16 @@ export const getPostDetail = queryField('getPostDetail', {
         (item) => item.isYoutube === true
       );
 
+      let shopTags = [];
+      for (const eachTag of postPrismaResult.Shop?.onDetailTagId) {
+        let queryResult = await ctx.prisma.tagName.findMany({
+          where: { tagId: eachTag, lang: "VI" },
+          select: { word: true },
+        });
+        if (queryResult.length > 0) shopTags.push(queryResult[0].word);
+        if (shopTags.length == 3) break;
+      }
+
       let rtn = {
         postId,
         isLikePost,
@@ -135,6 +146,7 @@ export const getPostDetail = queryField('getPostDetail', {
         shopId: postPrismaResult.shopId,
         shopName: postPrismaResult.Shop?.names[0].word,
         shopLogoUrl: postPrismaResult.Shop?.logoUrl,
+        shopTags,
         description: postPrismaResult.text,
         YoutubeVideoUrl: YoutubeVideoUrl[0].url,
         mainProductId: postPrismaResult.mainProductId,

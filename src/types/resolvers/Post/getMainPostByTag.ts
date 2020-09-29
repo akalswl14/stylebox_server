@@ -88,6 +88,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
       }
       let rtn = {
         lastPostPriority: rtnLastPostPriority,
+        postNum: posts.length,
         posts,
       };
 

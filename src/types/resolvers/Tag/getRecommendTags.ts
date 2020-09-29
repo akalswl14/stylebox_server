@@ -11,7 +11,7 @@ export const getRecommendTags = queryField("getRecommendTags", {
   resolve: async (_, args, ctx) => {
     try {
       const { word, lang = "VI" } = args;
-      const take = 3;
+      const take = 20;
       let tags = [];
       let queryResult = await ctx.prisma.tag.findMany({
         where: {

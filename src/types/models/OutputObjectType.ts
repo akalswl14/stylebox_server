@@ -51,6 +51,7 @@ export const PostDetail = objectType({
     t.int("shopId");
     t.string("shopName");
     t.string("shopLogoUrl", { nullable: true });
+    t.string("shopTags", { list: true });
     t.string("description", { nullable: true });
     t.string("YoutubeVideoUrl", { nullable: true });
     t.int("mainProductId");
@@ -148,7 +149,7 @@ export const TagThumbnail = objectType({
   definition(t) {
     t.int("id");
     t.string("tagName");
-    t.int("order");
+    t.int("order", { nullable: true });
     t.boolean("isClass", { nullable: true });
   },
 });
@@ -189,6 +190,7 @@ export const priorityPostList = objectType({
   name: "priorityPostList",
   definition(t) {
     t.int("lastPostPriority");
+    t.int("postNum", { nullable: true });
     t.field("posts", { type: "PostThumbnail", list: true });
   },
 });
@@ -603,48 +605,56 @@ export const ProductToShopBranchInfo = objectType({
 });
 
 export const PostBasicInfo = objectType({
-  name: 'PostBasicInfo',
+  name: "PostBasicInfo",
   definition(t) {
-    t.int('postId');
-    t.int('mainProductId');
-    t.string('mainProductName');
-    t.int('price');
-    t.int('shopId');
-    t.string('shopName');
+    t.int("postId");
+    t.int("mainProductId");
+    t.string("mainProductName");
+    t.int("price");
+    t.int("shopId");
+    t.string("shopName");
   },
 });
 
 export const PostBasicStatus = objectType({
-  name: 'PostBasicStatus',
+  name: "PostBasicStatus",
   definition(t) {
-    t.int('weeklyRank');
-    t.int('monthlyRank');
-    t.int('totalRank');
-    t.int('priority');
-    t.int('likesNum');
-    t.int('viewsNum');
-    t.field('createdAt', { type: 'DateTime' });
-    t.field('updatedAt', { type: 'DateTime' });
+    t.int("weeklyRank");
+    t.int("monthlyRank");
+    t.int("totalRank");
+    t.int("priority");
+    t.int("likesNum");
+    t.int("viewsNum");
+    t.field("createdAt", { type: "DateTime" });
+    t.field("updatedAt", { type: "DateTime" });
   },
 });
 
 const PostExternalLink = objectType({
-  name: 'PostExternalLink',
+  name: "PostExternalLink",
   definition(t) {
-    t.field('linkType', { type: 'LinkType' });
-    t.string('url');
-    t.boolean('isShown');
-    t.int('order');
+    t.field("linkType", { type: "LinkType" });
+    t.string("url");
+    t.boolean("isShown");
+    t.int("order");
   },
 });
 
 export const SubProductList = objectType({
-  name: 'SubProductList',
+  name: "SubProductList",
   definition(t) {
-    t.int('productId');
-    t.string('productName');
-    t.int('price');
-    t.string('link');
-    t.int('order');
+    t.int("productId");
+    t.string("productName");
+    t.int("price");
+    t.string("link");
+    t.int("order");
+  },
+});
+
+export const postNumPostList = objectType({
+  name: "postNumPostList",
+  definition(t) {
+    t.int("postNum");
+    t.field("posts", { type: "PostThumbnail", list: true });
   },
 });
