@@ -21,6 +21,8 @@ export const getClassInfo = queryField('getClassInfo', {
         },
       });
 
+      if (!classResult) return null;
+
       let postNum = await ctx.prisma.post.count({
         where: { tags: { some: { classId: id } } },
       });
@@ -34,17 +36,17 @@ export const getClassInfo = queryField('getClassInfo', {
       });
 
       let classInfo = {
-        classId: classResult?.id,
-        className: classResult?.names[0].word,
-        category: classResult?.category,
+        classId: classResult.id,
+        className: classResult.names[0].word,
+        category: classResult.category,
         postNum,
         shopNum,
         productNum,
-        createdAt: classResult?.createdAt,
-        updatedAt: classResult?.updatedAt,
+        createdAt: classResult.createdAt,
+        updatedAt: classResult.updatedAt,
       };
 
-      return classInfo ? classInfo : null;
+      return classInfo;
     } catch (e) {
       console.log(e);
       return null;

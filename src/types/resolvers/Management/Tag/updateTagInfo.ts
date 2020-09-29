@@ -32,16 +32,16 @@ export const updateTagInfo = mutationField('updateTagInfo', {
       if (!lang) lang = 'VI';
 
       if (tagName) {
-        let originalTagName = await ctx.prisma.class.findOne({
-          where: { id: classId },
+        let originalTag = await ctx.prisma.tag.findOne({
+          where: { id: tagId },
           select: { names: { where: { lang }, select: { word: true } } },
         });
-
+        if (!originalTag) return null;
         await ctx.prisma.tag.update({
           where: { id: tagId },
           data: {
             names: {
-              delete: { word: originalTagName?.names[0].word },
+              delete: { word: originalTag.names[0].word },
               create: { lang, word: tagName },
             },
           },
@@ -57,21 +57,43 @@ export const updateTagInfo = mutationField('updateTagInfo', {
 
       if (!tagCategory) {
         if (classId) {
-          await ctx.prisma.tag.update({
+          let originalClassId = await ctx.prisma.tag.findOne({
+            where: { id: tagId },
+            select: { classId: true },
+          });
+          if (!originalClassId) return null;
+          let deleteClassId = await ctx.prisma.class.update({
+            where: { id: originalClassId.classId },
+            data: { tags: { disconnect: { id: tagId } } },
+          });
+          if (!deleteClassId) return null;
+          let connectNewTag = await ctx.prisma.tag.update({
             where: { id: tagId },
             data: {
               Class: { connect: { id: classId } },
             },
           });
+          if (!connectNewTag) return null;
         }
       } else {
-        await ctx.prisma.tag.update({
+        let originalClassId = await ctx.prisma.tag.findOne({
+          where: { id: tagId },
+          select: { classId: true },
+        });
+        if (!originalClassId) return null;
+        let deleteClassId = await ctx.prisma.class.update({
+          where: { id: originalClassId.classId },
+          data: { tags: { disconnect: { id: tagId } } },
+        });
+        if (!deleteClassId) return null;
+        let connectNewTag = await ctx.prisma.tag.update({
           where: { id: tagId },
           data: {
             category: tagCategory,
             Class: { connect: { id: classId } },
           },
         });
+        if (!connectNewTag) return null;
       }
 
       return true;

@@ -7,12 +7,11 @@ export const getPriceTagList = queryField('getPriceTagList', {
   resolve: async (_, __, ctx) => {
     try {
       let tags = [],
-        lang,
-        priceTags;
+        lang;
 
       if (!lang) lang = 'VI';
 
-      priceTags = await ctx.prisma.tag.findMany({
+      let priceTags = await ctx.prisma.tag.findMany({
         where: { category: 'Price' },
         select: {
           id: true,
@@ -32,7 +31,7 @@ export const getPriceTagList = queryField('getPriceTagList', {
         });
       }
 
-      return tags ? tags : null;
+      return tags;
     } catch (e) {
       console.log(e);
       return null;

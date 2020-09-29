@@ -26,6 +26,8 @@ export const getTagInfo = queryField('getTagInfo', {
         },
       });
 
+      if (!tagResult) return null;
+
       let postNum = await ctx.prisma.post.count({
         where: { tags: { some: { id } } },
       });
@@ -39,20 +41,20 @@ export const getTagInfo = queryField('getTagInfo', {
       });
 
       let tagInfo = {
-        tagId: tagResult?.id,
-        tagName: tagResult?.names[0].word,
-        category: tagResult?.category,
-        tagImage: tagResult?.tagImage,
-        className: tagResult?.Class.names[0].word,
-        classId: tagResult?.classId,
+        tagId: tagResult.id,
+        tagName: tagResult.names[0].word,
+        category: tagResult.category,
+        tagImage: tagResult.tagImage,
+        className: tagResult.Class.names[0].word,
+        classId: tagResult.classId,
         postNum,
         shopNum,
         productNum,
-        createdAt: tagResult?.createdAt,
-        updatedAt: tagResult?.updatedAt,
+        createdAt: tagResult.createdAt,
+        updatedAt: tagResult.updatedAt,
       };
 
-      return tagInfo ? tagInfo : null;
+      return tagInfo;
     } catch (e) {
       console.log(e);
       return null;

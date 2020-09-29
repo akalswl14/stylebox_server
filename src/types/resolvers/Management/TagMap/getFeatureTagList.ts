@@ -2,17 +2,16 @@ import { queryField } from '@nexus/schema';
 
 export const getFeatureTagList = queryField('getFeatureTagList', {
   type: 'TagMapInfo',
-  nullable: true,
+  nullable: false,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
       let tags = [],
-        lang,
-        featureTags;
+        lang;
 
       if (!lang) lang = 'VI';
 
-      featureTags = await ctx.prisma.tag.findMany({
+      let featureTags = await ctx.prisma.tag.findMany({
         where: { category: 'Feature' },
         select: {
           id: true,
@@ -32,7 +31,7 @@ export const getFeatureTagList = queryField('getFeatureTagList', {
         });
       }
 
-      return tags ? tags : null;
+      return tags;
     } catch (e) {
       console.log(e);
       return null;

@@ -2,19 +2,17 @@ import { queryField } from '@nexus/schema';
 
 export const getLocationTagList = queryField('getLocationTagList', {
   type: 'TagMapList',
-  nullable: true,
+  nullable: false,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
       let tags = [],
         tagList = [],
-        lang,
-        locationClasses,
-        loactionTags;
+        lang;
 
       if (!lang) lang = 'VI';
 
-      locationClasses = await ctx.prisma.class.findMany({
+      let locationClasses = await ctx.prisma.class.findMany({
         where: { category: 'Location' },
         select: {
           id: true,
@@ -23,7 +21,7 @@ export const getLocationTagList = queryField('getLocationTagList', {
       });
 
       for (const locationClass of locationClasses) {
-        loactionTags = await ctx.prisma.tag.findMany({
+        let loactionTags = await ctx.prisma.tag.findMany({
           where: { category: 'Location', classId: locationClass.id },
           select: {
             id: true,
@@ -49,7 +47,7 @@ export const getLocationTagList = queryField('getLocationTagList', {
         });
       }
 
-      return tagList ? tagList : null;
+      return tagList;
     } catch (e) {
       console.log(e);
       return null;

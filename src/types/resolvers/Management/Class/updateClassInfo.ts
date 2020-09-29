@@ -20,12 +20,12 @@ export const updateClassInfo = mutationField('updateClassInfo', {
           where: { id: classId },
           select: { names: { where: { lang }, select: { word: true } } },
         });
-
+        if (!originalClassName) return null;
         await ctx.prisma.class.update({
           where: { id: classId },
           data: {
             names: {
-              delete: { word: originalClassName?.names[0].word },
+              delete: { word: originalClassName.names[0].word },
               create: { lang, word: className },
             },
           },

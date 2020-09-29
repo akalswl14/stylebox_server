@@ -2,19 +2,17 @@ import { queryField } from '@nexus/schema';
 
 export const getProductClassTagList = queryField('getProductClassTagList', {
   type: 'TagMapList',
-  nullable: true,
+  nullable: false,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
       let tags = [],
         tagList = [],
-        lang,
-        productClasses,
-        productTags;
+        lang;
 
       if (!lang) lang = 'VI';
 
-      productClasses = await ctx.prisma.class.findMany({
+      let productClasses = await ctx.prisma.class.findMany({
         where: { category: 'ProductClass' },
         select: {
           id: true,
@@ -23,7 +21,7 @@ export const getProductClassTagList = queryField('getProductClassTagList', {
       });
 
       for (const productClass of productClasses) {
-        productTags = await ctx.prisma.tag.findMany({
+        let productTags = await ctx.prisma.tag.findMany({
           where: { category: 'ProductClass', classId: productClass.id },
           select: {
             id: true,
@@ -49,7 +47,7 @@ export const getProductClassTagList = queryField('getProductClassTagList', {
         });
       }
 
-      return tagList ? tagList : null;
+      return tagList;
     } catch (e) {
       console.log(e);
       return null;

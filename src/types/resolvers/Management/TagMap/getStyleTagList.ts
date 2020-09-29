@@ -2,17 +2,16 @@ import { queryField } from '@nexus/schema';
 
 export const getStyleTagList = queryField('getStyleTagList', {
   type: 'TagMapInfo',
-  nullable: true,
+  nullable: false,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
       let tags = [],
-        lang,
-        styleTags;
+        lang;
 
       if (!lang) lang = 'VI';
 
-      styleTags = await ctx.prisma.tag.findMany({
+      let styleTags = await ctx.prisma.tag.findMany({
         where: { category: 'Style' },
         select: {
           id: true,
@@ -32,7 +31,7 @@ export const getStyleTagList = queryField('getStyleTagList', {
         });
       }
 
-      return tags ? tags : null;
+      return tags;
     } catch (e) {
       console.log(e);
       return null;
