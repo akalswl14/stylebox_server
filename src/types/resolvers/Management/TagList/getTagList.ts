@@ -22,37 +22,66 @@ export const getTagList = queryField('getTagList', {
         tagName,
         category,
         className,
-        tagIdAsc = true,
-        tagNameAsc = true,
-        categoryAsc = true,
+        tagIdAsc,
+        tagNameAsc,
+        categoryAsc,
       } = args;
 
-      let lang = 'VI',
-        tags = [],
-        rtn = [];
+      const loadingNum = 13;
+      let skipNum = loadingNum * (pageNum - 1);
 
-      let QueryOption = {
-        where: {},
-        orderBy: {},
+      let lang = 'VI',
+        tags = [];
+
+      let orderByOption = {},
+        whereOption = {},
+        tagOrderByOption = {};
+
+      if (tagId) {
+        whereOption = { id: { contains: tagId } };
+      }
+      if (tagName) {
+        whereOption = { names: { some: { word: { contains: tagName } } } };
+      }
+      if (category) {
+        whereOption = { category: { contains: category } };
+      }
+      if (className) {
+        whereOption = {
+          Class: { names: { some: { word: { contains: className } } } },
+        };
+      }
+      if (typeof tagIdAsc === 'boolean') {
+        orderByOption = tagIdAsc ? { id: 'asc' } : { id: 'desc' };
+      } else if (typeof tagNameAsc === 'boolean') {
+        tagOrderByOption = tagNameAsc ? { word: 'asc' } : { word: 'desc' };
+      } else if (typeof categoryAsc === 'boolean') {
+        orderByOption = categoryAsc
+          ? { category: 'asc' }
+          : { category: 'desc' };
+      } else {
+        orderByOption = [{ id: 'asc' }, { word: 'asc' }];
+        tagOrderByOption = { word: ' asc' };
+      }
+
+      let tagResult = await ctx.prisma.tag.findMany({
+        where: whereOption,
+        orderBy: orderByOption,
+        skip: skipNum,
+        take: loadingNum,
         select: {
           id: true,
-          names: { where: { lang }, select: { word: true }, orderBy: {} },
+          names: {
+            where: { lang },
+            select: { word: true },
+            orderBy: tagOrderByOption,
+          },
           category: true,
           Class: {
             select: { names: { where: { lang }, select: { word: true } } },
           },
         },
-      };
-
-      if (tagId) QueryOption.where.id = tagId;
-      if (tagName) QueryOption.where.names.some.word = tagName;
-      if (category) QueryOption.where.category = category;
-      if (className) QueryOption.where.Class.names.some.word = className;
-      if (!tagIdAsc) QueryOption.orderBy.id = 'desc';
-      if (!tagNameAsc) QueryOption.select.names.orderBy.word = 'desc';
-      if (!categoryAsc) QueryOption.orderBy.category = 'desc';
-
-      let tagResult = await ctx.prisma.tag.findMany(QueryOption);
+      });
 
       for (const tag of tagResult) {
         let shopNum = await ctx.prisma.shop.count({
@@ -75,13 +104,8 @@ export const getTagList = queryField('getTagList', {
           productNum,
         });
       }
-      let Num = 13;
 
-      for (let i = pageNum * Num - Num; i < pageNum * Num; i++) {
-        rtn.push(tags[i]);
-      }
-
-      return rtn ? rtn : null;
+      return tags;
     } catch (e) {
       console.log(e);
       return null;

@@ -19,37 +19,53 @@ export const getEventManageList = queryField('getEventManageList', {
         pageNum = 1,
         eventId,
         eventTitle,
-        eventIdAsc = true,
-        eventTitleAsc = true,
-        eventStartAsc = true,
-        eventEndAsc = true,
+        eventIdAsc,
+        eventTitleAsc,
+        eventStartAsc,
+        eventEndAsc,
       } = args;
 
-      let events = [],
-        rtn = [];
+      const loadingNum = 13;
+      let skipNum = loadingNum * (pageNum - 1);
+      let events = [];
 
-      let queryOption = {
-        where: {},
-        orderBy: {},
+      let whereOption = {},
+        orderByOption = {};
+
+      if (eventId) {
+        whereOption = { id: { contains: eventId } };
+      }
+      if (eventTitle) {
+        whereOption = { title: { contains: eventTitle } };
+      }
+      if (typeof eventIdAsc === 'boolean') {
+        orderByOption = eventIdAsc ? { id: 'asc' } : { id: 'desc' };
+      } else if (typeof eventTitleAsc === 'boolean') {
+        orderByOption = eventTitleAsc ? { title: 'asc' } : { title: 'desc' };
+      } else if (typeof eventStartAsc === 'boolean') {
+        orderByOption = eventStartAsc
+          ? { startDate: 'asc' }
+          : { startDate: 'desc' };
+      } else if (typeof eventEndAsc === 'boolean') {
+        orderByOption = eventEndAsc ? { dueDate: 'asc' } : { dueDate: 'desc' };
+      } else {
+        orderByOption = {};
+      }
+
+      let eventResult = await ctx.prisma.event.findMany({
+        where: whereOption,
+        orderBy: orderByOption,
+        skip: skipNum,
+        take: loadingNum,
         select: {
           id: true,
           title: true,
           startDate: true,
           dueDate: true,
           isOnList: true,
-          address: true,
           url: true,
         },
-      };
-
-      if (eventId) queryOption.where.id = eventId;
-      if (eventTitle) queryOption.where.title = eventTitle;
-      if (!eventIdAsc) queryOption.orderBy.id = 'desc';
-      if (!eventTitleAsc) queryOption.orderBy.title = 'desc';
-      if (!eventStartAsc) queryOption.orderBy.startDate = 'desc';
-      if (!eventEndAsc) queryOption.orderBy.dueDate = 'desc';
-
-      let eventResult = await ctx.prisma.event.findMany(queryOption);
+      });
 
       for (const event of eventResult) {
         let viewsNum = await ctx.prisma.view.count({
@@ -65,19 +81,12 @@ export const getEventManageList = queryField('getEventManageList', {
           eventStart: event.startDate,
           eventEnd: event.dueDate,
           isOnList: event.isOnList,
-          address: event.address,
           link: event.url,
           likesNum,
           viewsNum,
         });
       }
-      let Num = 13;
-
-      for (let i = pageNum * Num - Num; i < pageNum * Num; i++) {
-        rtn.push(events[i]);
-      }
-
-      return rtn ? rtn : null;
+      return events;
     } catch (e) {
       console.log(e);
       return null;

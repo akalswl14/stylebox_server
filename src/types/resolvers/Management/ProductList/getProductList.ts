@@ -18,35 +18,54 @@ export const getProductList = queryField('getProductList', {
         pageNum = 1,
         productId,
         productName,
-        productIdAsc = true,
-        productNameAsc = true,
-        priceAsc = true,
+        productIdAsc,
+        productNameAsc,
+        priceAsc,
       } = args;
 
       let products = [],
-        rtn = [],
-        lang;
+        lang = 'VI';
 
-      if (!lang) lang = 'VI';
+      const loadingNum = 13;
+      let skipNum = loadingNum * (pageNum - 1);
 
-      let queryOption = {
-        where: {},
-        orderBy: {},
+      let orderByOption = {},
+        whereOption = {},
+        nameOrderByOption = {};
+
+      if (productId) {
+        whereOption = { id: { contains: { productId } } };
+      }
+      if (productName) {
+        whereOption = { names: { some: { word: { contains: productName } } } };
+      }
+      if (typeof productIdAsc === 'boolean') {
+        orderByOption = productIdAsc ? { id: 'asc' } : { id: 'desc' };
+      } else if (typeof productNameAsc === 'boolean') {
+        nameOrderByOption = productNameAsc ? { word: 'asc' } : { word: 'desc' };
+      } else if (typeof priceAsc === 'boolean') {
+        orderByOption = priceAsc ? { price: 'asc' } : { price: 'desc' };
+      } else {
+        orderByOption = [{ id: 'asc' }, { price: 'asc' }];
+        nameOrderByOption = { word: 'asc' };
+      }
+
+      let productResult = await ctx.prisma.product.findMany({
+        where: whereOption,
+        orderBy: orderByOption,
+        skip: skipNum,
+        take: loadingNum,
         select: {
           id: true,
-          names: { where: { lang }, select: { word: true } },
+          names: {
+            where: { lang },
+            select: { word: true },
+            orderBy: nameOrderByOption,
+          },
           price: true,
           externalLink: { select: { url: true } },
         },
-      };
-
-      if (productId) queryOption.where.id = productId;
-      if (productName) queryOption.where.names.some.word = productName;
-      if (!productIdAsc) queryOption.orderBy.id = 'desc';
-      if (!productNameAsc) queryOption.select.names.orderBy.word = 'desc';
-      if (!priceAsc) queryOption.orderBy.price = 'desc';
-
-      let productResult = await ctx.prisma.product.findMany(queryOption);
+      });
 
       for (const product of productResult) {
         let postNum = await ctx.prisma.post.count({
@@ -62,12 +81,7 @@ export const getProductList = queryField('getProductList', {
         });
       }
 
-      let Num = 13;
-      for (let i = pageNum * Num - Num; i < pageNum * Num; i++) {
-        rtn.push(products[i]);
-      }
-
-      return rtn ? rtn : null;
+      return products;
     } catch (e) {
       console.log(e);
       return null;
