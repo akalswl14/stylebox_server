@@ -19,7 +19,7 @@ export const getPostVideo = queryField('getPostVideo', {
 
       if (!videoResult) return null;
 
-      for (const video of videoResult?.videos) {
+      for (const video of videoResult.videos) {
         videos.push({
           order: video.order,
           url: video.url,

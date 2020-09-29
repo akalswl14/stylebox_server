@@ -27,6 +27,8 @@ export const downloadPostList = queryField('downloadPostList', {
         },
       });
 
+      if (!postResult) return null;
+
       for (const post of postResult) {
         let productName = await ctx.prisma.product.findOne({
           where: { id: post.mainProductId },

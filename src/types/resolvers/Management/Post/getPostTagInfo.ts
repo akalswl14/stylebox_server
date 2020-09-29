@@ -35,12 +35,14 @@ export const getPostTagInfo = queryField('getPostTagInfo', {
           },
         });
 
+        if (!tagResult) return null;
+
         tags.push({
-          tagId: tagResult?.id,
-          tagName: tagResult?.names[0].word,
-          classId: tagResult?.classId,
-          className: tagResult?.Class.names[0].word,
-          category: tagResult?.category,
+          tagId: tagResult.id,
+          tagName: tagResult.names[0].word,
+          classId: tagResult.classId,
+          className: tagResult.Class.names[0].word,
+          category: tagResult.category,
           order,
         });
 

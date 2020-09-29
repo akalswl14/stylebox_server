@@ -3,7 +3,7 @@ import { intArg, queryField } from '@nexus/schema';
 export const getPostBasicInfo = queryField('getPostBasicInfo', {
   type: 'PostBasicInfo',
   args: { id: intArg({ required: true }) },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -23,18 +23,22 @@ export const getPostBasicInfo = queryField('getPostBasicInfo', {
         },
       });
 
+      if (!postResult) return null;
+
       let productName = await ctx.prisma.product.findOne({
-        where: { id: postResult?.mainProductId },
+        where: { id: postResult.mainProductId },
         select: { names: { where: { lang }, select: { word: true } } },
       });
 
+      if (!productName) return null;
+
       let postInfo = {
-        postId: postResult?.id,
-        mainProductId: postResult?.mainProductId,
-        mainProductName: productName?.names[0].word,
-        price: postResult?.mainProductPrice,
-        shopId: postResult?.shopId,
-        shopName: postResult?.Shop?.names[0].word,
+        postId: postResult.id,
+        mainProductId: postResult.mainProductId,
+        mainProductName: productName.names[0].word,
+        price: postResult.mainProductPrice,
+        shopId: postResult.shopId,
+        shopName: postResult.Shop?.names[0].word,
       };
 
       return postInfo ? postInfo : null;

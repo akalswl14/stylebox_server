@@ -6,7 +6,7 @@ export const getShopByProductName = queryField('getShopByProductName', {
     productName: stringArg({ required: true }),
   },
   list: true,
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { productName } = args;
@@ -26,11 +26,12 @@ export const getShopByProductName = queryField('getShopByProductName', {
           where: { id: branch.shopId },
           select: { names: { where: { lang }, select: { word: true } } },
         });
+        if (!shopInfo) return null;
         shop.push({
           productId: branch.products[0].id,
           productName,
           shopId: branch.shopId,
-          shopName: shopInfo?.names[0].word,
+          shopName: shopInfo.names[0].word,
         });
       }
 

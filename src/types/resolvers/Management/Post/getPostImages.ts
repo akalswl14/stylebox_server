@@ -17,7 +17,7 @@ export const getPostImages = queryField('getPostImages', {
 
       if (!imageResult) return null;
 
-      for (const image of imageResult?.images) {
+      for (const image of imageResult.images) {
         images.push({
           order: image.order,
           url: image.url,

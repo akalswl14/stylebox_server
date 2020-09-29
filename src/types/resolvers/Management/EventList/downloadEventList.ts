@@ -1,6 +1,6 @@
 import { queryField } from '@nexus/schema';
 
-export const getEventList = queryField('getEventList', {
+export const downloadEventList = queryField('downloadEventList', {
   type: 'EventManagementList',
   list: true,
   nullable: true,
@@ -15,7 +15,6 @@ export const getEventList = queryField('getEventList', {
           startDate: true,
           dueDate: true,
           isOnList: true,
-          address: true,
           url: true,
         },
       });
@@ -34,7 +33,6 @@ export const getEventList = queryField('getEventList', {
           eventStart: event.startDate,
           eventEnd: event.dueDate,
           isOnList: event.isOnList,
-          address: event.address,
           link: event.url,
           likesNum,
           viewsNum,

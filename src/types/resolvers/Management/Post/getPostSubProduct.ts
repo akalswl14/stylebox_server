@@ -3,7 +3,7 @@ import { intArg, queryField } from '@nexus/schema';
 export const getPostSubProduct = queryField('getPostSubProduct', {
   type: 'SubProductList',
   args: { id: intArg({ required: true }) },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;

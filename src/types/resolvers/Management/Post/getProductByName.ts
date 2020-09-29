@@ -6,7 +6,7 @@ export const getProductByName = queryField('getProductByName', {
     productName: stringArg({ required: true }),
   },
   list: true,
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { productName } = args;

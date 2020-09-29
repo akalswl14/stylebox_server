@@ -3,7 +3,7 @@ import { intArg, queryField } from '@nexus/schema';
 export const getPostBasicStatus = queryField('getPostBasicStatus', {
   type: 'PostBasicStatus',
   args: { id: intArg({ required: true }) },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -19,6 +19,8 @@ export const getPostBasicStatus = queryField('getPostBasicStatus', {
         },
       });
 
+      if (!postResult) return null;
+
       let likesNum = await ctx.prisma.like.count({
         where: { postId: id },
       });
@@ -27,14 +29,14 @@ export const getPostBasicStatus = queryField('getPostBasicStatus', {
       });
 
       let postBasicStatus = {
-        weeklyRank: postResult?.weeklyRankNum,
-        monthlyRank: postResult?.monthlyRankNum,
-        totalRank: postResult?.lifeTimeRankNum,
-        priority: postResult?.priority,
+        weeklyRank: postResult.weeklyRankNum,
+        monthlyRank: postResult.monthlyRankNum,
+        totalRank: postResult.lifeTimeRankNum,
+        priority: postResult.priority,
         likesNum,
         viewsNum,
-        createdAt: postResult?.createdAt,
-        updatedAt: postResult?.updatedAt,
+        createdAt: postResult.createdAt,
+        updatedAt: postResult.updatedAt,
       };
 
       return postBasicStatus ? postBasicStatus : null;
