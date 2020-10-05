@@ -12,7 +12,7 @@ export const createEvent = mutationField("createEvent", {
     images: arg({ type: "ImageInputType", list: true, required: true }),
     contentsImages: arg({ type: "ImageInputType", list: true, required: true }),
     videos: arg({ type: "ImageInputType", list: true, required: true }),
-    tags: arg({ type: "IdOrderInputType", nullable: true }),
+    tags: arg({ type: "IdOrderInputType", nullable: true, list: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
