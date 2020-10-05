@@ -19,7 +19,7 @@ export const updateEvent = mutationField("updateEvent", {
     images: arg({ type: "ImageInputType", list: true, nullable: true }),
     contentsImages: arg({ type: "ImageInputType", list: true, nullable: true }),
     videos: arg({ type: "ImageInputType", list: true, nullable: true }),
-    tags: arg({ type: "IdOrderInputType", nullable: true }),
+    tags: arg({ type: "IdOrderInputType", nullable: true, list: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -110,10 +110,18 @@ export const updateEvent = mutationField("updateEvent", {
           where: { id: eventId },
           data: { images: { delete: eventResult.videos } },
         });
+        let videoList = [];
+        for (const eachVideo of videos) {
+          videoList.push({
+            order: eachVideo.order,
+            url: eachVideo.url,
+            isYoutube: true,
+          });
+        }
         connectResult = await ctx.prisma.event.update({
           where: { id: eventId },
           data: {
-            videos: { create: videos },
+            videos: { create: videoList },
           },
         });
         if (!disconnectResult || !connectResult) return false;
