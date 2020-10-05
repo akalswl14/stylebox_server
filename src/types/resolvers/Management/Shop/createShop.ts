@@ -13,7 +13,7 @@ export const createShop = mutationField("createShop", {
     FacebookLink: stringArg({ nullable: true }),
     InstagramLink: stringArg({ nullable: true }),
     YoutubeLink: stringArg({ nullable: true }),
-    externalLinks: arg({ type: "LinkInputType" }),
+    externalLinks: arg({ type: "LinkInputType", list: true }),
     shopImages: arg({ type: "ImageInputType", list: true }),
     shopVideos: arg({ type: "ImageInputType", list: true }),
     description: stringArg({ nullable: true }),
