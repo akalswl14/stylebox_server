@@ -43,6 +43,14 @@ export const createEvent = mutationField("createEvent", {
       for (const eachTagId of tagIdList) {
         tagIdDicList.push({ id: eachTagId });
       }
+      let videoList = [];
+      for (const eachVideo of videos) {
+        videoList.push({
+          order: eachVideo.order,
+          url: eachVideo.url,
+          isYoutube: true,
+        });
+      }
       let queryResult = await ctx.prisma.event.create({
         data: {
           title,
@@ -52,7 +60,7 @@ export const createEvent = mutationField("createEvent", {
           bannerImage,
           images: { create: images },
           contentsImages: { create: contentsImages },
-          videos: { create: videos },
+          videos: { create: videoList },
           onDetailTagId: { set: tagIdList },
           tags: { connect: tagIdDicList },
           isOnList,
