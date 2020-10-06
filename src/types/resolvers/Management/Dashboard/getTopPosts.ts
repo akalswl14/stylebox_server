@@ -7,7 +7,7 @@ export const getTopPosts = queryField("getTopPosts", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { peroidFilter = 1 } = args;
+      const { periodFilter = 1 } = args;
       let postResult,
         postList,
         No = 1,
@@ -69,9 +69,9 @@ export const getTopPosts = queryField("getTopPosts", {
           if (tagNames.length == 5) break;
         }
         rankNum =
-          peroidFilter == 1
+          periodFilter == 1
             ? postResult.weeklyRankNum
-            : peroidFilter == 2
+            : periodFilter == 2
             ? postResult.monthlyRankNum
             : postResult.lifeTimeRankNum;
         rtn.push({
@@ -83,7 +83,7 @@ export const getTopPosts = queryField("getTopPosts", {
           priority: postResult.priority,
           tagNames,
           subProductNum,
-          rankNum,
+          rankNum: rankNum ? rankNum : 0,
           likeNum,
           viewNum,
         });

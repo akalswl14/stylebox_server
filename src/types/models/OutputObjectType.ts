@@ -250,12 +250,12 @@ export const DashboardBasicStatus = objectType({
     t.int("UserNum");
     t.int("PostNum");
     t.int("ProductNum");
-    t.int("AvgShopLikeNum");
-    t.int("AvgPostLikeNum");
-    t.int("AvgEventLikeNum");
-    t.int("AvgShopViewNum");
-    t.int("AvgPostViewNum");
-    t.int("AvgEventViewNum");
+    t.float("AvgShopLikeNum");
+    t.float("AvgPostLikeNum");
+    t.float("AvgEventLikeNum");
+    t.float("AvgShopViewNum");
+    t.float("AvgPostViewNum");
+    t.float("AvgEventViewNum");
     t.int("TotalShopLikeNum");
     t.int("TotalPostLikeNum");
     t.int("TotalEventLikeNum");
@@ -289,9 +289,9 @@ export const PostManagementThumbnail = objectType({
     t.int("No", { nullable: true });
     t.int("postId");
     t.string("mainProductName");
-    t.int("price");
-    t.int("shopId");
-    t.int("priority");
+    t.int("price", { nullable: true });
+    t.int("shopId", { nullable: true });
+    t.int("priority", { nullable: true });
     t.string("tagNames", { list: true });
     t.int("subProductNum");
     t.int("rankNum");
@@ -668,18 +668,18 @@ export const ShopByProductName = objectType({
 });
 
 export const ShopRankConst = objectType({
-  name: 'ShopRankConst',
+  name: "ShopRankConst",
   definition(t) {
-    t.int('shopConstA');
-    t.int('shopConstB');
-    t.int('shopConstC');
+    t.int("shopConstA");
+    t.int("shopConstB");
+    t.int("shopConstC");
   },
 });
 
 export const PostRankConst = objectType({
-  name: 'PostRankConst',
+  name: "PostRankConst",
   definition(t) {
-    t.int('bestConstA');
-    t.int('bestConstB');
+    t.int("bestConstA");
+    t.int("bestConstB");
   },
 });

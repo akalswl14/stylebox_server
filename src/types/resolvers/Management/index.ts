@@ -1,4 +1,4 @@
-export * from "./getCategoryOptions";
+export * from "./getManageCategoryOptions";
 export * from "./getClassOptions";
 export * from "./getTagOptions";
 export * from "./searchEvent";
@@ -20,6 +20,6 @@ export * from "./ProductList";
 export * from "./PostList";
 export * from "./Shop";
 export * from "./getLinkTypeOption";
-export * from './Post';
+export * from "./Post";
 export * from "./Product";
 export * from "./getShopOption";

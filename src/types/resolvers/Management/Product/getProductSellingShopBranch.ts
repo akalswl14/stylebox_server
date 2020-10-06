@@ -6,7 +6,7 @@ export const getProductSellingShopBranch = queryField(
     type: "ProductToShopBranchInfo",
     args: {
       shopId: intArg({ required: true }),
-      productId: intArg({ required: true }),
+      productId: intArg({ nullable: true }),
     },
     nullable: true,
     resolve: async (_, args, ctx) => {
@@ -40,9 +40,17 @@ export const getProductSellingShopBranch = queryField(
               address: true,
             },
           });
-          let isExist = await ctx.prisma.branch.count({
-            where: { id: eachBranch.id, products: { some: { id: productId } } },
-          });
+          let isExist;
+          if (productId) {
+            isExist = await ctx.prisma.branch.count({
+              where: {
+                id: eachBranch.id,
+                products: { some: { id: productId } },
+              },
+            });
+          } else {
+            isExist = 0;
+          }
           if (!branchResult) continue;
           branches.push({
             id: eachBranch.id,
@@ -53,7 +61,7 @@ export const getProductSellingShopBranch = queryField(
           });
         }
         return {
-          shopId: shopResult.id,
+          id: shopResult.id,
           shopName: shopResult.names[0].word,
           shopLink: shopResult.externalLinks[0].url,
           branches,

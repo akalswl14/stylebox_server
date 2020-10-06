@@ -5,10 +5,10 @@ export const updateProduct = mutationField("updateProduct", {
   args: {
     productId: intArg({ required: true }),
     productName: stringArg({ nullable: true }),
-    price: booleanArg({ nullable: true }),
-    isProductImageChange: stringArg({ required: true }),
+    price: intArg({ nullable: true }),
+    isProductImageChange: booleanArg({ required: true }),
     productImage: stringArg({ nullable: true }),
-    isDescriptionChange: stringArg({ required: true }),
+    isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
     tags: intArg({ list: true, nullable: true }),
     branchIds: intArg({ list: true, nullable: true }),

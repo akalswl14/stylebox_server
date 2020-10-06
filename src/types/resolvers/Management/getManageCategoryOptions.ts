@@ -1,6 +1,6 @@
 import { queryField } from "@nexus/schema";
 
-export const getCategoryOptions = queryField("getCategoryOptions", {
+export const getManageCategoryOptions = queryField("getManageCategoryOptions", {
   type: "Category",
   nullable: true,
   list: true,
