@@ -189,10 +189,16 @@ export const updateShop = mutationField("updateShop", {
           where: { shopId, onBottom: false, linkType: "Facebook" },
         });
         if (isExist > 0) {
-          queryResult = await ctx.prisma.shopExternalLink.updateMany({
-            where: { shopId, onBottom: false, linkType: "Facebook" },
-            data: { url: FacebookLink },
-          });
+          if (FacebookLink) {
+            queryResult = await ctx.prisma.shopExternalLink.updateMany({
+              where: { shopId, onBottom: false, linkType: "Facebook" },
+              data: { url: FacebookLink },
+            });
+          } else {
+            queryResult = await ctx.prisma.shopExternalLink.deleteMany({
+              where: { shopId, onBottom: false, linkType: "Facebook" },
+            });
+          }
           if (!queryResult) return false;
         } else {
           let topLinks = await ctx.prisma.shopExternalLink.findMany({
@@ -225,10 +231,16 @@ export const updateShop = mutationField("updateShop", {
           where: { shopId, onBottom: false, linkType: "Instagram" },
         });
         if (isExist > 0) {
-          queryResult = await ctx.prisma.shopExternalLink.updateMany({
-            where: { shopId, onBottom: false, linkType: "Instagram" },
-            data: { url: InstagramLink },
-          });
+          if (InstagramLink) {
+            queryResult = await ctx.prisma.shopExternalLink.updateMany({
+              where: { shopId, onBottom: false, linkType: "Instagram" },
+              data: { url: InstagramLink },
+            });
+          } else {
+            queryResult = await ctx.prisma.shopExternalLink.deleteMany({
+              where: { shopId, onBottom: false, linkType: "Instagram" },
+            });
+          }
           if (!queryResult) return false;
         } else {
           let facebookExist = await ctx.prisma.shopExternalLink.count({
@@ -262,10 +274,16 @@ export const updateShop = mutationField("updateShop", {
           where: { shopId, onBottom: false, linkType: "Youtube" },
         });
         if (isExist > 0) {
-          queryResult = await ctx.prisma.shopExternalLink.updateMany({
-            where: { shopId, onBottom: false, linkType: "Youtube" },
-            data: { url: YoutubeLink },
-          });
+          if (YoutubeLink) {
+            queryResult = await ctx.prisma.shopExternalLink.updateMany({
+              where: { shopId, onBottom: false, linkType: "Youtube" },
+              data: { url: YoutubeLink },
+            });
+          } else {
+            queryResult = await ctx.prisma.shopExternalLink.deleteMany({
+              where: { shopId, onBottom: false, linkType: "Youtube" },
+            });
+          }
           if (!queryResult) return false;
         } else {
           let toplinkExist = await ctx.prisma.shopExternalLink.count({
