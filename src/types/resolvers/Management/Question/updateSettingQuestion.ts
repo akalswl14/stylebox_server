@@ -38,7 +38,10 @@ export const updateSettingQuestion = mutationField('updateSettingQuestion', {
           return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
         });
         let questionOptions = [];
-        questionOptions.push(questionTypes.questionType);
+        for (const type of questionTypes) {
+          questionOptions.push(type.questionType);
+        }
+        console.log(questionOptions);
         await ctx.prisma.setting.update({
           where: { id: 1 },
           data: { QuestionOption: { set: questionOptions } },

@@ -666,3 +666,20 @@ export const ShopByProductName = objectType({
     t.string("shopName");
   },
 });
+
+export const ShopRankConst = objectType({
+  name: 'ShopRankConst',
+  definition(t) {
+    t.int('shopConstA');
+    t.int('shopConstB');
+    t.int('shopConstC');
+  },
+});
+
+export const PostRankConst = objectType({
+  name: 'PostRankConst',
+  definition(t) {
+    t.int('bestConstA');
+    t.int('bestConstB');
+  },
+});
