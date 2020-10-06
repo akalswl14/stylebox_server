@@ -13,7 +13,7 @@ export const updateShop = mutationField("updateShop", {
     shopName: stringArg({ nullable: true }),
     isLogoUrlChange: booleanArg({ required: true }),
     logoUrl: stringArg({ nullable: true }),
-    phoneNumber: stringArg({ required: true }),
+    phoneNumber: stringArg({ nullable: true }),
     weight: intArg({ required: true }),
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
