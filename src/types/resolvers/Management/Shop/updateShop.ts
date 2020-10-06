@@ -14,11 +14,11 @@ export const updateShop = mutationField("updateShop", {
     isLogoUrlChange: booleanArg({ required: true }),
     logoUrl: stringArg({ nullable: true }),
     phoneNumber: stringArg({ nullable: true }),
-    weight: intArg({ required: true }),
+    weight: intArg({ nullable: true }),
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
     tags: arg({ type: "IdOrderInputType", list: true }),
-    externalLinks: arg({ type: "LinkInputType" }),
+    externalLinks: arg({ type: "LinkInputType", list: true }),
     isFacebookLinkChage: booleanArg({ required: true }),
     FacebookLink: stringArg({ nullable: true }),
     isInstagramLinkChage: booleanArg({ required: true }),
@@ -28,8 +28,8 @@ export const updateShop = mutationField("updateShop", {
     shopImages: arg({ type: "ImageInputType", list: true }),
     shopVideos: arg({ type: "ImageInputType", list: true }),
     branches: arg({ type: "branchUpdateInputType", list: true }),
-    mainBranchAddress: stringArg({ required: true }),
-    mainBranchMapUrl: stringArg({ required: true }),
+    mainBranchAddress: stringArg({ nullable: true }),
+    mainBranchMapUrl: stringArg({ nullable: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -69,7 +69,7 @@ export const updateShop = mutationField("updateShop", {
             word: shopName,
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         let tagResult = await ctx.prisma.tag.findMany({
           where: { category: "ShopName", shops: { some: { id: shopId } } },
           select: {
@@ -82,7 +82,7 @@ export const updateShop = mutationField("updateShop", {
             word: shopName,
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         let branchResult = await ctx.prisma.branch.findMany({
           where: { shopId, isMain: true },
           select: { names: { select: { id: true } } },
@@ -93,7 +93,7 @@ export const updateShop = mutationField("updateShop", {
             word: shopName,
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       if (mainBranchAddress) {
         let branchResult = await ctx.prisma.branch.findMany({
@@ -106,7 +106,7 @@ export const updateShop = mutationField("updateShop", {
             address: mainBranchAddress,
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       if (mainBranchMapUrl) {
         let branchResult = await ctx.prisma.branch.findMany({
@@ -119,7 +119,7 @@ export const updateShop = mutationField("updateShop", {
             googleMapUrl: mainBranchMapUrl,
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       if (branches) {
         let originalBranches = await ctx.prisma.branch.findMany({
@@ -138,17 +138,21 @@ export const updateShop = mutationField("updateShop", {
                     word: inputBranch.branchName,
                   },
                 });
-                if (!queryResult) return null;
+                if (!queryResult) return false;
               }
               queryResult = await ctx.prisma.branch.update({
                 where: { id: eachOriginalBranch.id },
                 data: {
-                  phoneNumbers: inputBranch.branchPhoneNumber,
-                  address: inputBranch.branchAddress,
+                  phoneNumbers: inputBranch.branchPhoneNumber
+                    ? { set: [inputBranch.branchPhoneNumber] }
+                    : null,
+                  address: inputBranch.branchAddress
+                    ? { set: inputBranch.branchAddress }
+                    : null,
                   googleMapUrl: inputBranch.branchGoogleMapUrl,
                 },
               });
-              if (!queryResult) return null;
+              if (!queryResult) return false;
               branches.splice(i, 1);
               isExist = true;
             }
@@ -157,7 +161,7 @@ export const updateShop = mutationField("updateShop", {
             queryResult = await ctx.prisma.branch.delete({
               where: { id: eachOriginalBranch.id },
             });
-            if (!queryResult) return null;
+            if (!queryResult) return false;
           }
         }
         for (const eachBranch of branches) {
@@ -166,9 +170,10 @@ export const updateShop = mutationField("updateShop", {
               names: { create: { word: eachBranch.branchName, lang: "VI" } },
               address: eachBranch.branchAddress,
               isMain: false,
+              Shop: { connect: { id: shopId } },
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         }
       }
       if (isFacebookLinkChage) {
@@ -180,7 +185,7 @@ export const updateShop = mutationField("updateShop", {
             where: { shopId, onBottom: false, linkType: "Facebook" },
             data: { url: FacebookLink },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         } else {
           let topLinks = await ctx.prisma.shopExternalLink.findMany({
             where: { shopId, onBottom: false },
@@ -197,13 +202,13 @@ export const updateShop = mutationField("updateShop", {
               order: 0,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
           for (const eachLink of topLinks) {
             queryResult = await ctx.prisma.shopExternalLink.update({
               where: { id: eachLink.id },
               data: { order: eachLink.order + 1 },
             });
-            if (!queryResult) return null;
+            if (!queryResult) return false;
           }
         }
       }
@@ -216,7 +221,7 @@ export const updateShop = mutationField("updateShop", {
             where: { shopId, onBottom: false, linkType: "Instagram" },
             data: { url: InstagramLink },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         } else {
           let facebookExist = await ctx.prisma.shopExternalLink.count({
             where: { shopId, onBottom: false, linkType: "Facebook" },
@@ -231,7 +236,7 @@ export const updateShop = mutationField("updateShop", {
               order: facebookExist,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
           let youtubeExist = await ctx.prisma.shopExternalLink.findMany({
             where: { shopId, onBottom: true, linkType: "Youtube" },
           });
@@ -240,7 +245,7 @@ export const updateShop = mutationField("updateShop", {
               where: { id: eachLink.id },
               data: { order: eachLink.order + 1 },
             });
-            if (!queryResult) return null;
+            if (!queryResult) return false;
           }
         }
       }
@@ -253,7 +258,7 @@ export const updateShop = mutationField("updateShop", {
             where: { shopId, onBottom: false, linkType: "Youtube" },
             data: { url: YoutubeLink },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         } else {
           let toplinkExist = await ctx.prisma.shopExternalLink.count({
             where: {
@@ -272,14 +277,14 @@ export const updateShop = mutationField("updateShop", {
               order: toplinkExist,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         }
       }
       if (externalLinks) {
         queryResult = await ctx.prisma.shopExternalLink.deleteMany({
           where: { shopId, onBottom: true },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         for (const eachLink of externalLinks) {
           queryResult = await ctx.prisma.shopExternalLink.create({
             data: {
@@ -291,14 +296,14 @@ export const updateShop = mutationField("updateShop", {
               isShown: eachLink.isShown ? eachLink.isShown : false,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         }
       }
       if (shopImages) {
         queryResult = await ctx.prisma.shopImage.deleteMany({
           where: { shopId },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         for (const eachImage of shopImages) {
           queryResult = await ctx.prisma.shopImage.create({
             data: {
@@ -307,14 +312,14 @@ export const updateShop = mutationField("updateShop", {
               order: eachImage.order,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         }
       }
       if (shopVideos) {
         queryResult = await ctx.prisma.shopVideo.deleteMany({
           where: { shopId },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         for (const eachVideo of shopVideos) {
           queryResult = await ctx.prisma.shopVideo.create({
             data: {
@@ -324,7 +329,7 @@ export const updateShop = mutationField("updateShop", {
               isYoutube: true,
             },
           });
-          if (!queryResult) return null;
+          if (!queryResult) return false;
         }
       }
       if (tags) {
@@ -343,13 +348,17 @@ export const updateShop = mutationField("updateShop", {
         for (const eachTag of tags) {
           tagIdList.push(eachTag.id);
         }
+        let originalTags = await ctx.prisma.tag.findMany({
+          where: { shops: { some: { id: shopId } } },
+          select: { id: true },
+        });
         queryResult = await ctx.prisma.shop.update({
           where: { id: shopId },
           data: {
-            tags: { disconnect: tagIdDicList },
+            tags: { disconnect: originalTags },
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
         queryResult = await ctx.prisma.shop.update({
           where: { id: shopId },
           data: {
@@ -357,7 +366,7 @@ export const updateShop = mutationField("updateShop", {
             onDetailTagId: { set: tagIdList },
           },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       queryResult = await ctx.prisma.shop.update({
         where: { id: shopId },
