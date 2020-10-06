@@ -4,6 +4,7 @@ export const getShopImages = queryField("getShopImages", {
   type: "UrlOrder",
   args: { id: intArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -16,7 +17,8 @@ export const getShopImages = queryField("getShopImages", {
           },
         },
       });
-      return queryResult?.images;
+      if (!queryResult) return null;
+      return queryResult.images;
     } catch (e) {
       console.log(e);
       return null;
