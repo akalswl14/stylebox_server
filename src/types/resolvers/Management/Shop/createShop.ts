@@ -96,7 +96,7 @@ export const createShop = mutationField("createShop", {
           linkType: eachLink.linkType,
           order: eachLink.order,
           onBottom: true,
-          isShown: eachLink.isShown,
+          isShown: eachLink.isShown ? eachLink.isShown : true,
         });
       }
       for (var i = 0; i < shopVideos.length; i++) {
@@ -113,6 +113,7 @@ export const createShop = mutationField("createShop", {
             cnt++;
           }
         }
+        cnt++;
       }
       let queryResult = await ctx.prisma.shop.create({
         data: {
