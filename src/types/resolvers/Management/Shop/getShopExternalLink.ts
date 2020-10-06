@@ -4,6 +4,7 @@ export const getShopExternalLink = queryField("getShopExternalLink", {
   type: "linkManagementThumbnail",
   args: { id: intArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -17,7 +18,8 @@ export const getShopExternalLink = queryField("getShopExternalLink", {
           },
         },
       });
-      return queryResult?.externalLinks;
+      if (!queryResult) return null;
+      return queryResult.externalLinks;
     } catch (e) {
       console.log(e);
       return null;
