@@ -19,17 +19,23 @@ export const updateClassInfo = mutationField('updateClassInfo', {
         let originalClass = await ctx.prisma.class.findOne({
           where: { id: classId },
           select: {
-            names: { where: { lang }, select: { word: true } },
-            tags: { where: { isClass: true }, select: { id: true } },
+            names: { where: { lang }, select: { id: true } },
+            tags: {
+              where: { isClass: true },
+              select: {
+                id: true,
+                names: { where: { lang }, select: { id: true } },
+              },
+            },
           },
         });
-        if (!originalClass) return null;
+        if (!originalClass) return false;
 
         classUpdate = await ctx.prisma.class.update({
           where: { id: classId },
           data: {
             names: {
-              delete: { word: originalClass.names[0].word },
+              delete: { id: originalClass.names[0].id },
               create: { lang, word: className },
             },
           },
@@ -39,7 +45,7 @@ export const updateClassInfo = mutationField('updateClassInfo', {
           where: { id: originalClass.tags[0].id },
           data: {
             names: {
-              delete: { word: originalClass.names[0].word },
+              delete: { id: originalClass.tags[0].names[0].id },
               create: { lang, word: className },
             },
           },

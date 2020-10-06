@@ -34,25 +34,27 @@ export const updateTagInfo = mutationField('updateTagInfo', {
       if (tagName) {
         let originalTag = await ctx.prisma.tag.findOne({
           where: { id: tagId },
-          select: { names: { where: { lang }, select: { word: true } } },
+          select: { names: { where: { lang }, select: { id: true } } },
         });
         if (!originalTag) return null;
-        await ctx.prisma.tag.update({
+        let tagNameUpdate = await ctx.prisma.tag.update({
           where: { id: tagId },
           data: {
             names: {
-              delete: { word: originalTag.names[0].word },
+              delete: { id: originalTag.names[0].id },
               create: { lang, word: tagName },
             },
           },
         });
+        if (!tagNameUpdate) return false;
       }
 
       if (isTagImageChange) {
-        await ctx.prisma.tag.update({
+        let tagImageUpdate = await ctx.prisma.tag.update({
           where: { id: tagId },
           data: { tagImage },
         });
+        if (!tagImageUpdate) return false;
       }
 
       if (!tagCategory) {
@@ -61,41 +63,34 @@ export const updateTagInfo = mutationField('updateTagInfo', {
             where: { id: tagId },
             select: { classId: true },
           });
-          if (!originalClassId) return null;
-          let deleteClassId = await ctx.prisma.class.update({
-            where: { id: originalClassId.classId },
-            data: { tags: { disconnect: { id: tagId } } },
-          });
-          if (!deleteClassId) return null;
+          if (!originalClassId) return false;
+
           let connectNewTag = await ctx.prisma.tag.update({
             where: { id: tagId },
             data: {
               Class: { connect: { id: classId } },
             },
           });
-          if (!connectNewTag) return null;
+          if (!connectNewTag) return false;
         }
       } else {
-        let originalClassId = await ctx.prisma.tag.findOne({
-          where: { id: tagId },
-          select: { classId: true },
-        });
-        if (!originalClassId) return null;
-        let deleteClassId = await ctx.prisma.class.update({
-          where: { id: originalClassId.classId },
-          data: { tags: { disconnect: { id: tagId } } },
-        });
-        if (!deleteClassId) return null;
-        let connectNewTag = await ctx.prisma.tag.update({
-          where: { id: tagId },
-          data: {
-            category: tagCategory,
-            Class: { connect: { id: classId } },
-          },
-        });
-        if (!connectNewTag) return null;
-      }
+        if (classId) {
+          let originalClassId = await ctx.prisma.tag.findOne({
+            where: { id: tagId },
+            select: { classId: true },
+          });
+          if (!originalClassId) return false;
 
+          let connectNewTag = await ctx.prisma.tag.update({
+            where: { id: tagId },
+            data: {
+              category: tagCategory,
+              Class: { connect: { id: classId } },
+            },
+          });
+          if (!connectNewTag) return false;
+        }
+      }
       return true;
     } catch (e) {
       console.log(e);
