@@ -12,36 +12,52 @@ export const updateClassInfo = mutationField('updateClassInfo', {
     try {
       const { classId, className, classCategory } = args;
 
-      let lang;
+      let lang, classUpdate, tagUpdate;
       if (!lang) lang = 'VI';
 
       if (className) {
-        let originalClassName = await ctx.prisma.class.findOne({
+        let originalClass = await ctx.prisma.class.findOne({
           where: { id: classId },
-          select: { names: { where: { lang }, select: { word: true } } },
+          select: {
+            names: { where: { lang }, select: { word: true } },
+            tags: { where: { isClass: true }, select: { id: true } },
+          },
         });
-        if (!originalClassName) return null;
-        await ctx.prisma.class.update({
+        if (!originalClass) return null;
+
+        classUpdate = await ctx.prisma.class.update({
           where: { id: classId },
           data: {
             names: {
-              delete: { word: originalClassName.names[0].word },
+              delete: { word: originalClass.names[0].word },
               create: { lang, word: className },
             },
           },
         });
+
+        tagUpdate = await ctx.prisma.tag.update({
+          where: { id: originalClass.tags[0].id },
+          data: {
+            names: {
+              delete: { word: originalClass.names[0].word },
+              create: { lang, word: className },
+            },
+          },
+        });
+        if (!tagUpdate || !classUpdate) return false;
       }
 
       if (classCategory) {
-        await ctx.prisma.class.update({
+        classUpdate = await ctx.prisma.class.update({
           where: { id: classId },
           data: { category: classCategory },
         });
 
-        await ctx.prisma.tag.updateMany({
+        tagUpdate = await ctx.prisma.tag.updateMany({
           where: { classId },
           data: { category: classCategory },
         });
+        if (!tagUpdate || !classUpdate) return false;
       }
 
       return true;

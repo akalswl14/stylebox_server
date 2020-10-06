@@ -10,7 +10,7 @@ export const getSearchPeriod = queryField('getSearchPeriod', {
         select: { SearchPeriod: true },
       });
 
-      return searchPeriod ? searchPeriod : null;
+      return searchPeriod ? searchPeriod.SearchPeriod : null;
     } catch (e) {
       console.log(e);
       return null;

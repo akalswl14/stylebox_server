@@ -1,7 +1,7 @@
 import { queryField } from '@nexus/schema';
 
 export const getPostAlgorithm = queryField('getPostAlgorithm', {
-  type: 'Int',
+  type: 'PostRankConst',
   nullable: true,
   resolve: async (_, __, ctx) => {
     try {

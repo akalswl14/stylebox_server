@@ -14,7 +14,7 @@ export const downloadTagList = queryField('downloadTagList', {
       let tagResult = await ctx.prisma.tag.findMany({
         select: {
           id: true,
-          names: { where: { lang }, select: { word: true }, orderBy: {} },
+          names: { where: { lang }, select: { word: true } },
           category: true,
           Class: {
             select: { names: { where: { lang }, select: { word: true } } },
@@ -44,7 +44,7 @@ export const downloadTagList = queryField('downloadTagList', {
         });
       }
 
-      return tags;
+      return tags ? tags : null;
     } catch (e) {
       console.log(e);
       return null;

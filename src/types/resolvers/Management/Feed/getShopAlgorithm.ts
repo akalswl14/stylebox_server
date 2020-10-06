@@ -1,7 +1,7 @@
 import { queryField } from '@nexus/schema';
 
 export const getShopAlgorithm = queryField('getShopAlgorithm', {
-  type: 'Int',
+  type: 'ShopRankConst',
   nullable: true,
   resolve: async (_, __, ctx) => {
     try {

@@ -10,7 +10,7 @@ export const getBestFeedNum = queryField('getBestFeedNum', {
         select: { bestTotalPostNum: true },
       });
 
-      return bestFeedNum ? bestFeedNum : 14;
+      return bestFeedNum ? bestFeedNum.bestTotalPostNum : 14;
     } catch (e) {
       console.log(e);
       return null;

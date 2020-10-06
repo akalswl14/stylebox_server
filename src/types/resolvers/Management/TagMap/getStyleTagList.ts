@@ -2,7 +2,7 @@ import { queryField } from '@nexus/schema';
 
 export const getStyleTagList = queryField('getStyleTagList', {
   type: 'TagMapInfo',
-  nullable: false,
+  nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
@@ -31,7 +31,7 @@ export const getStyleTagList = queryField('getStyleTagList', {
         });
       }
 
-      return tags;
+      return tags ? tags : null;
     } catch (e) {
       console.log(e);
       return null;

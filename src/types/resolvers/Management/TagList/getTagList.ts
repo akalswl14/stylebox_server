@@ -38,13 +38,13 @@ export const getTagList = queryField('getTagList', {
         tagOrderByOption = {};
 
       if (tagId) {
-        whereOption = { id: { contains: tagId } };
+        whereOption = { id: tagId };
       }
       if (tagName) {
         whereOption = { names: { some: { word: { contains: tagName } } } };
       }
       if (category) {
-        whereOption = { category: { contains: category } };
+        whereOption = { category: category };
       }
       if (className) {
         whereOption = {
@@ -60,8 +60,8 @@ export const getTagList = queryField('getTagList', {
           ? { category: 'asc' }
           : { category: 'desc' };
       } else {
-        orderByOption = [{ id: 'asc' }, { word: 'asc' }];
-        tagOrderByOption = { word: ' asc' };
+        orderByOption = [{ id: 'asc' }, { category: 'asc' }];
+        tagOrderByOption = { word: 'asc' };
       }
 
       let tagResult = await ctx.prisma.tag.findMany({
@@ -105,7 +105,7 @@ export const getTagList = queryField('getTagList', {
         });
       }
 
-      return tags;
+      return tags ? tags : null;
     } catch (e) {
       console.log(e);
       return null;
