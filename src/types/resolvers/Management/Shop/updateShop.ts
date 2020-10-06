@@ -165,9 +165,17 @@ export const updateShop = mutationField("updateShop", {
           }
         }
         for (const eachBranch of branches) {
+          if (
+            !eachBranch.branchName ||
+            !eachBranch.branchPhoneNumber ||
+            !eachBranch.branchAddress ||
+            !eachBranch.branchGoogleMapUrl
+          )
+            continue;
           queryResult = await ctx.prisma.branch.create({
             data: {
               names: { create: { word: eachBranch.branchName, lang: "VI" } },
+              phoneNumbers: { set: [eachBranch.branchPhoneNumber] },
               address: eachBranch.branchAddress,
               isMain: false,
               Shop: { connect: { id: shopId } },
