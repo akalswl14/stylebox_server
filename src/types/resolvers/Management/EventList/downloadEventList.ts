@@ -39,7 +39,7 @@ export const downloadEventList = queryField('downloadEventList', {
         });
       }
 
-      return events;
+      return events ? events : null;
     } catch (e) {
       console.log(e);
       return null;

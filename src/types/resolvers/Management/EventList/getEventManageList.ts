@@ -33,7 +33,7 @@ export const getEventManageList = queryField('getEventManageList', {
         orderByOption = {};
 
       if (eventId) {
-        whereOption = { id: { contains: eventId } };
+        whereOption = { id: eventId };
       }
       if (eventTitle) {
         whereOption = { title: { contains: eventTitle } };
@@ -49,7 +49,12 @@ export const getEventManageList = queryField('getEventManageList', {
       } else if (typeof eventEndAsc === 'boolean') {
         orderByOption = eventEndAsc ? { dueDate: 'asc' } : { dueDate: 'desc' };
       } else {
-        orderByOption = {};
+        orderByOption = [
+          { id: 'asc' },
+          { title: 'asc' },
+          { startDate: 'asc' },
+          { dueDate: 'asc' },
+        ];
       }
 
       let eventResult = await ctx.prisma.event.findMany({
@@ -86,7 +91,7 @@ export const getEventManageList = queryField('getEventManageList', {
           viewsNum,
         });
       }
-      return events;
+      return events ? events : null;
     } catch (e) {
       console.log(e);
       return null;

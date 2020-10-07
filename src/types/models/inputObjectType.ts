@@ -130,3 +130,11 @@ export const branchUpdateInputType = inputObjectType({
     t.string('branchGoogleMapUrl', { nullable: true });
   },
 });
+
+export const ProductListInputType = inputObjectType({
+  name: 'ProductListInputType',
+  definition(t) {
+    t.int('id', { required: true });
+    t.int('price', { required: true });
+  },
+});
