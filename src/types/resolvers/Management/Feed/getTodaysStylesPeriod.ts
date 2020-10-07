@@ -18,7 +18,7 @@ export const getTodaysStylesPeriod = queryField('getTodaysStylesPeriod', {
       });
 
       let rtn = {
-        period: TodaysStylesPeriod,
+        period: TodaysStylesPeriod.TodaysStylesPeriod,
         postNum,
       };
 
