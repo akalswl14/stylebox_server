@@ -74,6 +74,8 @@ export const createPostManage = mutationField('createPostManage', {
         onDetailTagId.push(tag.id);
       }
 
+      if (!shopId) return false;
+
       let postResult = await ctx.prisma.post.create({
         data: {
           mainProductId,

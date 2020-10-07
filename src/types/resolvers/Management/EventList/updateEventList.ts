@@ -12,7 +12,10 @@ export const updateEventList = mutationField('updateEventList', {
       for (const event of events) {
         await ctx.prisma.event.update({
           where: { id: event.eventId },
-          data: { startDate: event.eventStart, dueDate: event.eventEnd },
+          data: {
+            startDate: { set: event.eventStart },
+            dueDate: { set: event.eventEnd },
+          },
         });
       }
       return true;
