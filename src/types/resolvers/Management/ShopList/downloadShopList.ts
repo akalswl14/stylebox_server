@@ -49,6 +49,7 @@ export const downloadShopList = queryField("downloadShopList", {
           address: eachShop.branches[0].address,
           tagNames,
           rankNum: eachShop.monthlyRankNum,
+          weight: eachShop.priority ? eachShop.priority : 0,
           postNum,
           productNum,
           likeNum,

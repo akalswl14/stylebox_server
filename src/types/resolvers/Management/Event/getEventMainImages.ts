@@ -3,6 +3,7 @@ import { intArg, queryField } from "@nexus/schema";
 export const getEventMainImages = queryField("getEventMainImages", {
   type: "UrlOrder",
   args: { id: intArg({ required: true }) },
+  list: true,
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
@@ -16,7 +17,8 @@ export const getEventMainImages = queryField("getEventMainImages", {
           },
         },
       });
-      return queryResult?.images;
+      if (!queryResult) return null;
+      return queryResult.images;
     } catch (e) {
       console.log(e);
       return null;
