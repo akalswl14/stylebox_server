@@ -13,6 +13,7 @@ export const getProductBasicInfo = queryField("getProductBasicInfo", {
           names: { where: { lang: "VI" }, select: { word: true } },
           price: true,
           images: { select: { url: true } },
+          externalLink: { select: { url: true } },
         },
       });
       if (!queryResult) return null;
@@ -21,6 +22,7 @@ export const getProductBasicInfo = queryField("getProductBasicInfo", {
         productName: queryResult.names[0].word,
         price: queryResult.price,
         productImage: queryResult.images[0].url,
+        externalLink: queryResult.externalLink.url,
       };
     } catch (e) {
       console.log(e);

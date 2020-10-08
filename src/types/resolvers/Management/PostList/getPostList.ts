@@ -88,36 +88,52 @@ export const getPostList = queryField("getPostList", {
             }
           }
           if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
+            let forLimit =
+              skip + take < totalPostList.length
+                ? skip + take
+                : totalPostList.length;
+            for (var i = skip; i < forLimit; i++) {
               postIdList.push(totalPostList[i]);
               if (postIdList.length == take) break;
             }
           } else postIdList = [];
         } else if (typeof shopNameAsc === "boolean") {
-          let totalPostList = [];
-          let shopNameResult = await ctx.prisma.shopName.findMany({
-            where: { shopId: { gte: 0 } },
-            select: { shopId: true },
+          let queryResult;
+          queryResult = await ctx.prisma.shopName.findMany({
             orderBy: { word: shopNameAsc ? "asc" : "desc" },
-          });
-          for (const eachShop of shopNameResult) {
-            let queryResult = await ctx.prisma.post.findMany({
-              where: {
-                shopId: eachShop.shopId,
-                mainProductId: { in: productIdList },
+            select: {
+              Shop: {
+                select: {
+                  posts: {
+                    where: { mainProductId: { in: productIdList } },
+                    orderBy: { id: "asc" },
+                    select: { id: true },
+                  },
+                },
               },
-              select: selectOption,
-              orderBy: { id: "asc" },
-            });
-            console.log(queryResult);
-            if (queryResult) {
-              totalPostList.push(...queryResult);
+            },
+          });
+          let AllPostId = [];
+          for (const eachShopName of queryResult) {
+            if (!eachShopName.Shop) continue;
+            for (const eachPost of eachShopName.Shop.posts) {
+              AllPostId.push(eachPost.id);
             }
           }
-          if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
-              postIdList.push(totalPostList[i]);
-              if (postIdList.length == take) break;
+          let queryPostId = [];
+          if (AllPostId.length > skip) {
+            let forLimit =
+              skip + take < AllPostId.length ? skip + take : AllPostId.length;
+            for (var i = skip; i < forLimit; i++) {
+              queryPostId.push(AllPostId[i]);
+              if (queryPostId.length == take) break;
+            }
+            for (const eachPostId of queryPostId) {
+              queryResult = await ctx.prisma.post.findOne({
+                where: { id: eachPostId },
+                select: selectOption,
+              });
+              if (queryResult) postIdList.push(queryResult);
             }
           } else postIdList = [];
         } else {
@@ -149,7 +165,13 @@ export const getPostList = queryField("getPostList", {
           });
           for (const eachProduct of productNameResult) {
             let queryResult = await ctx.prisma.post.findMany({
-              where: { mainProductId: eachProduct.productId },
+              where: {
+                mainProductId: eachProduct.productId,
+                Shop: shopName
+                  ? { names: { some: { word: { contains: shopName } } } }
+                  : {},
+                id: postId,
+              },
               select: selectOption,
               orderBy: { id: "asc" },
             });
@@ -162,24 +184,47 @@ export const getPostList = queryField("getPostList", {
             }
           } else postIdList = [];
         } else if (typeof shopNameAsc === "boolean") {
-          let totalPostList = [];
-          let shopNameResult = await ctx.prisma.shopName.findMany({
-            where: { shopId: { gte: 0 } },
-            select: { shopId: true },
+          let queryResult;
+          queryResult = await ctx.prisma.shopName.findMany({
             orderBy: { word: shopNameAsc ? "asc" : "desc" },
+            select: {
+              Shop: {
+                select: {
+                  posts: {
+                    where: {
+                      Shop: shopName
+                        ? { names: { some: { word: { contains: shopName } } } }
+                        : {},
+                      id: postId,
+                    },
+                    orderBy: { id: "asc" },
+                    select: { id: true },
+                  },
+                },
+              },
+            },
           });
-          for (const eachShop of shopNameResult) {
-            let queryResult = await ctx.prisma.post.findMany({
-              where: { shopId: eachShop.shopId },
-              select: selectOption,
-              orderBy: { id: "asc" },
-            });
-            totalPostList.push(...queryResult);
+          let AllPostId = [];
+          for (const eachShopName of queryResult) {
+            if (!eachShopName.Shop) continue;
+            for (const eachPost of eachShopName.Shop.posts) {
+              AllPostId.push(eachPost.id);
+            }
           }
-          if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
-              postIdList.push(totalPostList[i]);
-              if (postIdList.length == take) break;
+          let queryPostId = [];
+          if (AllPostId.length > skip) {
+            let forLimit =
+              skip + take < AllPostId.length ? skip + take : AllPostId.length;
+            for (var i = skip; i < forLimit; i++) {
+              queryPostId.push(AllPostId[i]);
+              if (queryPostId.length == take) break;
+            }
+            for (const eachPostId of queryPostId) {
+              queryResult = await ctx.prisma.post.findOne({
+                where: { id: eachPostId },
+                select: selectOption,
+              });
+              if (queryResult) postIdList.push(queryResult);
             }
           } else postIdList = [];
         } else {
@@ -205,7 +250,6 @@ export const getPostList = queryField("getPostList", {
           });
         }
       }
-      console.log(postIdList);
       for (const eachPost of postIdList) {
         let likesNum = await ctx.prisma.like.count({
           where: { postId: eachPost.id },

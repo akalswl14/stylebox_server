@@ -10,6 +10,7 @@ export const updateProduct = mutationField("updateProduct", {
     productImage: stringArg({ nullable: true }),
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
+    externalLink: stringArg({ nullable: true }),
     tags: intArg({ list: true, nullable: true }),
     branchIds: intArg({ list: true, nullable: true }),
   },
@@ -24,6 +25,7 @@ export const updateProduct = mutationField("updateProduct", {
         productImage,
         isDescriptionChange,
         description,
+        externalLink,
         tags,
         branchIds,
       } = args;
@@ -37,7 +39,7 @@ export const updateProduct = mutationField("updateProduct", {
           where: { id: nameResult[0].id },
           data: { word: productName },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       if (isProductImageChange) {
         let deleteResult = await ctx.prisma.productImage.deleteMany({
@@ -50,14 +52,14 @@ export const updateProduct = mutationField("updateProduct", {
             order: 1,
           },
         });
-        if (!queryResult || !deleteResult) return null;
+        if (!queryResult || !deleteResult) return false;
       }
       if (isDescriptionChange) {
         queryResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: { description },
         });
-        if (!queryResult) return null;
+        if (!queryResult) return false;
       }
       if (tags) {
         let originalTags = await ctx.prisma.tag.findMany({
@@ -76,7 +78,7 @@ export const updateProduct = mutationField("updateProduct", {
           where: { id: productId },
           data: { tags: { connect: tagList } },
         });
-        if (!disconnectResult || !queryResult) return null;
+        if (!disconnectResult || !queryResult) return false;
       }
       if (branchIds) {
         let originalBranches = await ctx.prisma.branch.findMany({
@@ -95,7 +97,19 @@ export const updateProduct = mutationField("updateProduct", {
           where: { id: productId },
           data: { branches: { connect: branchList } },
         });
-        if (!disconnectResult || !queryResult) return null;
+        if (!disconnectResult || !queryResult) return false;
+      }
+      if (externalLink) {
+        queryResult = await ctx.prisma.productExternalLink.findMany({
+          where: { productId },
+          select: { id: true, productId: true },
+        });
+        if (queryResult.length == 0) return false;
+        queryResult = await ctx.prisma.productExternalLink.update({
+          where: { id: queryResult[0].id },
+          data: { url: externalLink },
+        });
+        if (!queryResult) return false;
       }
       queryResult = await ctx.prisma.product.update({
         where: { id: productId },

@@ -7,6 +7,7 @@ export const createProduct = mutationField("createProduct", {
     price: intArg({ required: true }),
     productImage: stringArg({ nullable: true }),
     description: stringArg({ nullable: true }),
+    externalLink: stringArg({ required: true }),
     tags: intArg({ list: true }),
     branchIds: intArg({ list: true }),
   },
@@ -18,6 +19,7 @@ export const createProduct = mutationField("createProduct", {
         price,
         productImage,
         description,
+        externalLink,
         tags = [],
         branchIds = [],
       } = args;
@@ -35,6 +37,9 @@ export const createProduct = mutationField("createProduct", {
           price,
           images: { create: { url: productImage, order: 0 } },
           description,
+          externalLink: {
+            create: { url: externalLink, linkType: "OnlineShop", order: 1 },
+          },
           tags: { connect: tagList },
           branches: { connect: branchList },
         },
