@@ -12,27 +12,32 @@ export const getShopByProductName = queryField('getShopByProductName', {
       const { productName } = args;
       let shop = [],
         lang = 'VI';
-      let branches = await ctx.prisma.branch.findMany({
-        where: {
-          products: {
-            some: { names: { some: { word: { contains: productName } } } },
-          },
+
+      let branches = await ctx.prisma.product.findMany({
+        where: { names: { some: { word: { contains: productName } } } },
+        select: {
+          id: true,
+          names: { where: { lang }, select: { word: true } },
+          branches: { select: { shopId: true } },
         },
-        select: { shopId: true, products: { select: { id: true } } },
       });
 
+      if (!branches) return null;
+
       for (const branch of branches) {
-        let shopInfo = await ctx.prisma.shop.findOne({
-          where: { id: branch.shopId },
-          select: { names: { where: { lang }, select: { word: true } } },
-        });
-        if (!shopInfo) return null;
-        shop.push({
-          productId: branch.products[0].id,
-          productName,
-          shopId: branch.shopId,
-          shopName: shopInfo.names[0].word,
-        });
+        if (branch.branches[0].shopId) {
+          let shopInfo = await ctx.prisma.shop.findOne({
+            where: { id: branch.branches[0].shopId },
+            select: { names: { where: { lang }, select: { word: true } } },
+          });
+          if (!shopInfo) return null;
+          shop.push({
+            productId: branch.id,
+            productName: branch.names[0].word,
+            shopId: branch.branches[0].shopId,
+            shopName: shopInfo.names[0].word,
+          });
+        }
       }
 
       return shop ? shop : null;
