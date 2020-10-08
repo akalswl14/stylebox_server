@@ -59,7 +59,7 @@ export const downloadPostList = queryField('downloadPostList', {
         });
       }
 
-      return posts;
+      return posts ? posts : null;
     } catch (e) {
       console.log(e);
       return null;
