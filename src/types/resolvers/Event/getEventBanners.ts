@@ -24,12 +24,12 @@ export const getEventBanners = queryField('getEventBanners', {
               where: { id: eachId },
               select: { bannerImage: true, id: true },
             });
-            order++;
             rtn.push({
               eventId: prismaResult?.id,
               bannerImage: prismaResult?.bannerImage,
               order,
             });
+            order++;
           }
         }
         return rtn ? rtn : null;

@@ -34,10 +34,7 @@ export const ProductThumbnail = objectType({
     t.int('productId');
     t.string('productName');
     t.string('price');
-    t.field('productExternalLink', {
-      type: 'ExternalLink',
-      list: true,
-    });
+    t.field('productExternalLink', { type: 'ExternalLink' });
   },
 });
 
@@ -61,6 +58,7 @@ export const PostDetail = objectType({
     });
     t.field('postImages', { type: 'contentsThumbnail', list: true });
     t.field('tags', { type: 'ClassTagDetail', list: true });
+    t.string('shopTags', { list: true });
     t.field('products', { type: 'ProductThumbnail', list: true });
   },
 });

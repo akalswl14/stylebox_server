@@ -34,7 +34,7 @@ export const downloadProductList = queryField('downloadProductList', {
         });
       }
 
-      return products;
+      return products ? products : null;
     } catch (e) {
       console.log(e);
       return null;

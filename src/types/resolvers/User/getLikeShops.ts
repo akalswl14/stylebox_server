@@ -1,7 +1,7 @@
 import { queryField, stringArg, intArg } from '@nexus/schema';
 import { getUserId } from '../../../utils';
 
-export const getLikeShops = queryField('getLikeShos', {
+export const getLikeShops = queryField('getLikeShops', {
   type: 'ShopList',
   args: {
     lang: stringArg({ nullable: true }),
@@ -17,24 +17,11 @@ export const getLikeShops = queryField('getLikeShos', {
         shops = [],
         settingQueryResult,
         loadingPostNum,
-        tagResult,
-        QueryOption,
-        styleTag = [];
+        tagResult;
 
       const userId = Number(getUserId(ctx));
 
-      if (!lang) lang = 'ENG';
-
-      QueryOption = {
-        take: loadingPostNum,
-        where: { preferrers: { some: { userId } } },
-        select: {
-          id: true,
-          logoUrl: true,
-          names: { where: { lang }, select: { word: true } },
-          onShopListTagId: true,
-        },
-      };
+      if (!lang) lang = 'VI';
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -46,11 +33,29 @@ export const getLikeShops = queryField('getLikeShos', {
         : 20;
 
       if (!cursorId) {
-        QueryResult = await ctx.prisma.shop.findMany(QueryOption);
+        QueryResult = await ctx.prisma.shop.findMany({
+          take: loadingPostNum,
+          where: { preferrers: { some: { userId } } },
+          select: {
+            id: true,
+            logoUrl: true,
+            names: { where: { lang }, select: { word: true } },
+            onDetailTagId: true,
+          },
+        });
       } else {
-        QueryOption.skip = 1;
-        QueryOption.cursor = { id: cursorId };
-        QueryResult = await ctx.prisma.shop.findMany(QueryOption);
+        QueryResult = await ctx.prisma.shop.findMany({
+          take: loadingPostNum,
+          skip: 1,
+          cursor: { id: cursorId },
+          where: { preferrers: { some: { userId } } },
+          select: {
+            id: true,
+            logoUrl: true,
+            names: { where: { lang }, select: { word: true } },
+            onDetailTagId: true,
+          },
+        });
       }
 
       if (!QueryResult) return null;
@@ -62,7 +67,9 @@ export const getLikeShops = queryField('getLikeShos', {
       if (!totalShopNum) totalShopNum = 0;
 
       for (const eachLike of QueryResult) {
-        for (const eachTagId of eachLike.onShopListTagId) {
+        let check = 0;
+        let styleTag = [];
+        for (const eachTagId of eachLike.onDetailTagId) {
           tagResult = await ctx.prisma.tag.findOne({
             where: {
               id: eachTagId,
@@ -72,14 +79,17 @@ export const getLikeShops = queryField('getLikeShos', {
             },
           });
 
-          styleTag.push(tagResult?.names[0].word);
+          if (check < 3) {
+            styleTag.push(tagResult?.names[0].word);
+          }
+          check++;
         }
 
         shops.push({
           shopId: eachLike.id,
           shopName: eachLike.names[0].word,
           logoUrl: eachLike.logoUrl,
-          styleTagName: styleTag,
+          tagNames: styleTag,
         });
       }
 

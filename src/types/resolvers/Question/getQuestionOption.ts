@@ -1,7 +1,7 @@
-import { queryField } from "@nexus/schema";
+import { queryField } from '@nexus/schema';
 
-export const getQuestionOption = queryField("getQuestionOption", {
-  type: "String",
+export const getQuestionOption = queryField('getQuestionOption', {
+  type: 'String',
   nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
@@ -17,7 +17,7 @@ export const getQuestionOption = queryField("getQuestionOption", {
         ? settingQueryResult.QuestionOption
         : null;
 
-      return QuestionOption;
+      return QuestionOption ? QuestionOption : null;
     } catch (e) {
       console.log(e);
       return null;
