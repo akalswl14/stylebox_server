@@ -4,11 +4,13 @@ export const getPostSubProduct = queryField('getPostSubProduct', {
   type: 'SubProductList',
   args: { id: intArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
       let products = [],
-        lang;
+        lang,
+        order = 0;
 
       if (!lang) lang = 'VI';
 
@@ -28,17 +30,27 @@ export const getPostSubProduct = queryField('getPostSubProduct', {
 
       if (!subProductResult) return null;
 
-      for (const subProduct of subProductResult?.products) {
-        products.push({
-          productId: subProduct.id,
-          productName: subProduct.names[0].word,
-          price: subProduct.price,
-          link: subProduct.externalLink.url,
-          order: subProduct.externalLink.order,
-        });
+      let mainProduct = await ctx.prisma.post.findOne({
+        where: { id },
+        select: { mainProductId: true },
+      });
+
+      if (!mainProduct) return null;
+
+      for (const subProduct of subProductResult.products) {
+        if (subProduct.id !== mainProduct.mainProductId) {
+          products.push({
+            productId: subProduct.id,
+            productName: subProduct.names[0].word,
+            price: subProduct.price,
+            link: subProduct.externalLink.url,
+            order,
+          });
+          order++;
+        }
       }
 
-      return products;
+      return products ? products : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -32,6 +32,15 @@ export const getLikeShops = queryField('getLikeShops', {
         ? settingQueryResult.loadingPostNum
         : 20;
 
+      let likeIds = await ctx.prisma.like.findMany({
+        where: { userId },
+        select: { shopId: true },
+      });
+
+      if (!likeIds) {
+        return { totalShopNum: 0, shops: [] };
+      }
+
       if (!cursorId) {
         QueryResult = await ctx.prisma.shop.findMany({
           take: loadingPostNum,
@@ -63,8 +72,6 @@ export const getLikeShops = queryField('getLikeShops', {
       totalShopNum = await ctx.prisma.shop.count({
         where: { preferrers: { some: { userId } } },
       });
-
-      if (!totalShopNum) totalShopNum = 0;
 
       for (const eachLike of QueryResult) {
         let check = 0;
