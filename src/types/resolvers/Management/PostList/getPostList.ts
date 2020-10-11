@@ -22,11 +22,11 @@ export const getPostList = queryField("getPostList", {
         postId,
         mainProductName,
         shopName,
-        postIdAsc = true,
-        mainProductNameAsc = true,
-        priceAsc = true,
-        shopNameAsc = true,
-        priorityAsc = true,
+        postIdAsc,
+        mainProductNameAsc,
+        priceAsc,
+        shopNameAsc,
+        priorityAsc,
       } = args;
 
       const take = 13;
@@ -88,12 +88,63 @@ export const getPostList = queryField("getPostList", {
             }
           }
           if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
+            let forLimit =
+              skip + take < totalPostList.length
+                ? skip + take
+                : totalPostList.length;
+            for (var i = skip; i < forLimit; i++) {
               postIdList.push(totalPostList[i]);
               if (postIdList.length == take) break;
             }
           } else postIdList = [];
+        } else if (typeof shopNameAsc === "boolean") {
+          let queryResult;
+          queryResult = await ctx.prisma.shopName.findMany({
+            orderBy: { word: shopNameAsc ? "asc" : "desc" },
+            select: {
+              Shop: {
+                select: {
+                  posts: {
+                    where: { mainProductId: { in: productIdList } },
+                    orderBy: { id: "asc" },
+                    select: { id: true },
+                  },
+                },
+              },
+            },
+          });
+          let AllPostId = [];
+          for (const eachShopName of queryResult) {
+            if (!eachShopName.Shop) continue;
+            for (const eachPost of eachShopName.Shop.posts) {
+              AllPostId.push(eachPost.id);
+            }
+          }
+          let queryPostId = [];
+          if (AllPostId.length > skip) {
+            let forLimit =
+              skip + take < AllPostId.length ? skip + take : AllPostId.length;
+            for (var i = skip; i < forLimit; i++) {
+              queryPostId.push(AllPostId[i]);
+              if (queryPostId.length == take) break;
+            }
+            for (const eachPostId of queryPostId) {
+              queryResult = await ctx.prisma.post.findOne({
+                where: { id: eachPostId },
+                select: selectOption,
+              });
+              if (queryResult) postIdList.push(queryResult);
+            }
+          } else postIdList = [];
         } else {
+          if (typeof postIdAsc === "boolean")
+            orderByOption = { id: postIdAsc ? "asc" : "desc" };
+          if (typeof priceAsc === "boolean") {
+            orderByOption = { mainProductPrice: priceAsc ? "asc" : "desc" };
+          }
+          if (typeof priorityAsc === "boolean") {
+            orderByOption = { priority: priorityAsc ? "asc" : "desc" };
+          }
           postIdList = await ctx.prisma.post.findMany({
             where: {
               mainProductId: { in: productIdList },
@@ -114,7 +165,13 @@ export const getPostList = queryField("getPostList", {
           });
           for (const eachProduct of productNameResult) {
             let queryResult = await ctx.prisma.post.findMany({
-              where: { mainProductId: eachProduct.productId },
+              where: {
+                mainProductId: eachProduct.productId,
+                Shop: shopName
+                  ? { names: { some: { word: { contains: shopName } } } }
+                  : {},
+                id: postId,
+              },
               select: selectOption,
               orderBy: { id: "asc" },
             });
@@ -127,43 +184,67 @@ export const getPostList = queryField("getPostList", {
             }
           } else postIdList = [];
         } else if (typeof shopNameAsc === "boolean") {
-          let totalPostList = [];
-          let shopNameResult = await ctx.prisma.shopName.findMany({
-            where: { shopId: { gte: 0 } },
-            select: { shopId: true },
+          let queryResult;
+          queryResult = await ctx.prisma.shopName.findMany({
             orderBy: { word: shopNameAsc ? "asc" : "desc" },
+            select: {
+              Shop: {
+                select: {
+                  posts: {
+                    where: {
+                      Shop: shopName
+                        ? { names: { some: { word: { contains: shopName } } } }
+                        : {},
+                      id: postId,
+                    },
+                    orderBy: { id: "asc" },
+                    select: { id: true },
+                  },
+                },
+              },
+            },
           });
-          for (const eachShop of shopNameResult) {
-            let queryResult = await ctx.prisma.post.findMany({
-              where: { shopId: eachShop.shopId },
-              select: selectOption,
-              orderBy: { id: "asc" },
-            });
-            totalPostList.push(...queryResult);
+          let AllPostId = [];
+          for (const eachShopName of queryResult) {
+            if (!eachShopName.Shop) continue;
+            for (const eachPost of eachShopName.Shop.posts) {
+              AllPostId.push(eachPost.id);
+            }
           }
-          if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
-              postIdList.push(totalPostList[i]);
-              if (postIdList.length == take) break;
+          let queryPostId = [];
+          if (AllPostId.length > skip) {
+            let forLimit =
+              skip + take < AllPostId.length ? skip + take : AllPostId.length;
+            for (var i = skip; i < forLimit; i++) {
+              queryPostId.push(AllPostId[i]);
+              if (queryPostId.length == take) break;
+            }
+            for (const eachPostId of queryPostId) {
+              queryResult = await ctx.prisma.post.findOne({
+                where: { id: eachPostId },
+                select: selectOption,
+              });
+              if (queryResult) postIdList.push(queryResult);
             }
           } else postIdList = [];
         } else {
-          if (typeof postIdAsc === "boolean") orderByOption = { id: "asc" };
+          if (typeof postIdAsc === "boolean")
+            orderByOption = { id: postIdAsc ? "asc" : "desc" };
           if (typeof priceAsc === "boolean") {
-            orderByOption = { mainProductPrice: "asc" };
+            orderByOption = { mainProductPrice: priceAsc ? "asc" : "desc" };
           }
           if (typeof priorityAsc === "boolean") {
-            orderByOption = { priority: "asc" };
+            orderByOption = { priority: priorityAsc ? "asc" : "desc" };
           }
-          await ctx.prisma.post.findMany({
+          postIdList = await ctx.prisma.post.findMany({
             where: {
               Shop: shopName
                 ? { names: { some: { word: { contains: shopName } } } }
-                : null,
-              id: postId ? postId : null,
+                : {},
+              id: postId,
             },
             select: selectOption,
-            orderBy: { priority: "asc" },
+            orderBy: orderByOption,
             take,
             skip,
           });

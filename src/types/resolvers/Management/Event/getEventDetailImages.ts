@@ -4,6 +4,7 @@ export const getEventDetailImages = queryField("getEventDetailImages", {
   type: "UrlOrder",
   args: { id: intArg({ required: true }) },
   nullable: true,
+  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
@@ -16,7 +17,8 @@ export const getEventDetailImages = queryField("getEventDetailImages", {
           },
         },
       });
-      return queryResult?.contentsImages;
+      if (!queryResult) return null;
+      return queryResult.contentsImages;
     } catch (e) {
       console.log(e);
       return null;
