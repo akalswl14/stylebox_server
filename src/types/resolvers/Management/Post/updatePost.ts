@@ -33,11 +33,11 @@ export const updatePostManage = mutationField('updatePostManage', {
         isDescriptionChange,
         priority,
         description,
-        tags = [],
-        externalLinks = [],
-        images = [],
-        videos = [],
-        subProducts = [],
+        tags,
+        externalLinks,
+        images,
+        videos,
+        subProducts,
       } = args;
 
       let onDetailTagId = [],
@@ -73,12 +73,16 @@ export const updatePostManage = mutationField('updatePostManage', {
           where: { id },
           data: { videos: { create: videos } },
         });
+        if (!queryResult) return null;
       }
 
       if (subProducts) {
         let Products = await ctx.prisma.post.findOne({
           where: { id },
-          select: { products: { select: { id: true } } },
+          select: {
+            products: { select: { id: true } },
+            mainProductId: true,
+          },
         });
 
         if (!Products) return null;
@@ -87,6 +91,8 @@ export const updatePostManage = mutationField('updatePostManage', {
           where: { id },
           data: { products: { disconnect: Products.products } },
         });
+
+        subProducts.push({ id: Products.mainProductId });
 
         queryResult = await ctx.prisma.post.update({
           where: { id },
@@ -103,6 +109,7 @@ export const updatePostManage = mutationField('updatePostManage', {
         });
         if (!queryResult) return null;
       }
+
       if (isDescriptionChange) {
         queryResult = await ctx.prisma.post.update({
           where: { id },
@@ -110,6 +117,7 @@ export const updatePostManage = mutationField('updatePostManage', {
         });
         if (!queryResult) return null;
       }
+
       if (tags) {
         let tagsId = [];
         for (const tag of tags) {
@@ -171,7 +179,7 @@ export const updatePostManage = mutationField('updatePostManage', {
 
         let disconnectResult = await ctx.prisma.post.update({
           where: { id },
-          data: { Shop: { disconnect: shopOriginalId.shopId } },
+          data: { Shop: { disconnect: true } },
         });
 
         let shopQueryResult = await ctx.prisma.post.update({

@@ -1,17 +1,17 @@
-import { queryField, intArg, stringArg, arg } from "@nexus/schema";
-import { getUserId } from "../../../utils";
+import { queryField, intArg, stringArg, arg } from '@nexus/schema';
+import { getUserId } from '../../../utils';
 
-export const getSimilarPosts = queryField("getSimilarPosts", {
-  type: "PostList",
+export const getSimilarPosts = queryField('getSimilarPosts', {
+  type: 'PostList',
   args: {
-    LocationTagId: arg({ type: "idDicInputType", list: true, required: true }),
+    LocationTagId: arg({ type: 'idDicInputType', list: true, required: true }),
     lang: stringArg({ nullable: true }),
     productClassTagId: arg({
-      type: "idDicInputType",
+      type: 'idDicInputType',
       list: true,
       required: true,
     }),
-    styleTagId: arg({ type: "idDicInputType", list: true, required: true }),
+    styleTagId: arg({ type: 'idDicInputType', list: true, required: true }),
     cursorId: intArg({ nullable: true }),
   },
   nullable: true,
@@ -29,7 +29,8 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         mainProductName,
         filterArrayOne = [],
         filterArrayTwo = [],
-        QueryOption;
+        skipNum,
+        cursorOption;
 
       if (!lang) lang = 'VI';
 
@@ -44,14 +45,14 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
 
       let result1 = await ctx.prisma.post.findMany({
         where: {
-          tags: { some: { OR: LocationTagId, category: "Location" } },
+          tags: { some: { OR: LocationTagId, category: 'Location' } },
         },
         select: { id: true },
       });
 
       let result2 = await ctx.prisma.post.findMany({
         where: {
-          tags: { some: { OR: productClassTagId, category: "ProductClass" } },
+          tags: { some: { OR: productClassTagId, category: 'ProductClass' } },
         },
         select: { id: true },
       });
@@ -63,7 +64,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
       }
 
       let result3 = await ctx.prisma.post.findMany({
-        where: { tags: { some: { OR: styleTagId, category: "Style" } } },
+        where: { tags: { some: { OR: styleTagId, category: 'Style' } } },
         select: { id: true },
       });
 
@@ -73,14 +74,22 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         );
       }
 
-      QueryOption = {
-        orderBy: { createdAt: "desc" },
+      if (!filterArrayTwo) return { totalPostNum: 0, posts: [] };
+
+      if (cursorId) {
+        skipNum = 1;
+        cursorOption = { id: cursorId };
+      }
+
+      similarPostPrismaResult = await ctx.prisma.post.findMany({
+        orderBy: { createdAt: 'desc' },
         take: loadingPostNum,
+        skip: skipNum,
+        cursor: cursorOption,
         where: {
           OR: filterArrayTwo,
         },
         select: {
-          preferrers: { select: { userId: true } },
           mainProductPrice: true,
           id: true,
           images: { select: { url: true } },
@@ -88,21 +97,8 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
           Shop: {
             select: { names: { where: { lang }, select: { word: true } } },
           },
-          products: {
-            select: {
-              names: { where: { lang }, select: { word: true } },
-            },
-          },
         },
-      };
-
-      if (!cursorId) {
-        similarPostPrismaResult = await ctx.prisma.post.findMany(QueryOption);
-      } else {
-        QueryOption.skip = 1;
-        QueryOption.cursor = { id: cursorId };
-        similarPostPrismaResult = await ctx.prisma.post.findMany(QueryOption);
-      }
+      });
 
       if (!similarPostPrismaResult) return null;
 
@@ -114,11 +110,12 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
           },
         });
 
-        isLikePost = item.preferrers.filter(
-          (preferrer) => preferrer.userId === userId
-        )
-          ? true
-          : false;
+        isLikePost =
+          (await ctx.prisma.like.count({
+            where: { userId, postId: item.id },
+          })) > 0
+            ? true
+            : false;
 
         posts.push({
           postId: item.id,
@@ -140,7 +137,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         totalPostNum,
         posts,
       };
-      return rtn;
+      return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
       return null;
