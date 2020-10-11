@@ -29,9 +29,7 @@ export const getProductList = queryField('getProductList', {
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
 
-      let orderByOption = {},
-        whereOption = {},
-        nameOrderByOption = {};
+      let orderByOption, whereOption, nameOrderByOption;
 
       if (productId) {
         whereOption = { id: { contains: { productId } } };
@@ -81,7 +79,7 @@ export const getProductList = queryField('getProductList', {
         });
       }
 
-      return products;
+      return products ? products : null;
     } catch (e) {
       console.log(e);
       return null;

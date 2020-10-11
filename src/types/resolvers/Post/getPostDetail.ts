@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from "@nexus/schema";
-import { getUserId } from "../../../utils";
+import { queryField, stringArg, intArg } from '@nexus/schema';
+import { getUserId } from '../../../utils';
 
-export const getPostDetail = queryField("getPostDetail", {
-  type: "PostDetail",
+export const getPostDetail = queryField('getPostDetail', {
+  type: 'PostDetail',
   args: {
     lang: stringArg({ nullable: true }),
     postId: intArg({ required: true }),
@@ -24,7 +24,7 @@ export const getPostDetail = queryField("getPostDetail", {
         mainProduct,
         tagResult;
 
-      if (!lang) lang = "VI";
+      if (!lang) lang = 'VI';
 
       await ctx.prisma.view.create({
         data: {
@@ -36,7 +36,6 @@ export const getPostDetail = queryField("getPostDetail", {
       postPrismaResult = await ctx.prisma.post.findOne({
         where: { id: postId },
         select: {
-          preferrers: { select: { userId: true } },
           createdAt: true,
           updatedAt: true,
           mainProductPrice: true,
@@ -63,9 +62,13 @@ export const getPostDetail = queryField("getPostDetail", {
           },
           postExternalLinks: {
             where: { isShown: true },
+            orderBy: { order: 'asc' },
             select: { url: true, linkType: true, id: true, order: true },
           },
-          images: { select: { id: true, order: true, url: true } },
+          images: {
+            orderBy: { order: 'asc' },
+            select: { id: true, order: true, url: true },
+          },
           onDetailTagId: true,
         },
       });
@@ -107,11 +110,12 @@ export const getPostDetail = queryField("getPostDetail", {
         });
       }
 
-      isLikePost = postPrismaResult.preferrers.filter(
-        (preferrer) => preferrer.userId === userId
-      )
-        ? true
-        : false;
+      isLikePost =
+        (await ctx.prisma.like.count({
+          where: { userId, postId },
+        })) > 0
+          ? true
+          : false;
 
       PostDate = postPrismaResult.updatedAt
         ? postPrismaResult.updatedAt
@@ -131,7 +135,7 @@ export const getPostDetail = queryField("getPostDetail", {
       let shopTags = [];
       for (const eachTag of postPrismaResult.Shop?.onDetailTagId) {
         let queryResult = await ctx.prisma.tagName.findMany({
-          where: { tagId: eachTag, lang: "VI" },
+          where: { tagId: eachTag, lang: 'VI' },
           select: { word: true },
         });
         if (queryResult.length > 0) shopTags.push(queryResult[0].word);
@@ -151,7 +155,7 @@ export const getPostDetail = queryField("getPostDetail", {
         YoutubeVideoUrl: YoutubeVideoUrl[0].url,
         mainProductId: postPrismaResult.mainProductId,
         mainProductName: mainProduct.names[0].word,
-        mainProductExternalLinks: postPrismaResult.postExternalLinks,
+        postExternalLinks: postPrismaResult.postExternalLinks,
         postImages,
         tags,
         products,

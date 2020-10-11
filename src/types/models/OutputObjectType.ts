@@ -31,13 +31,10 @@ export const PostList = objectType({
 export const ProductThumbnail = objectType({
   name: "ProductThumbnail",
   definition(t) {
-    t.int("productId");
-    t.string("productName");
-    t.string("price");
-    t.field("productExternalLink", {
-      type: "ExternalLink",
-      list: true,
-    });
+    t.int('productId');
+    t.string('productName');
+    t.string('price');
+    t.field('productExternalLink', { type: 'ExternalLink' });
   },
 });
 
@@ -59,9 +56,10 @@ export const PostDetail = objectType({
       type: "ExternalLink",
       list: true,
     });
-    t.field("postImages", { type: "contentsThumbnail", list: true });
-    t.field("tags", { type: "ClassTagDetail", list: true });
-    t.field("products", { type: "ProductThumbnail", list: true });
+    t.field('postImages', { type: 'contentsThumbnail', list: true });
+    t.field('tags', { type: 'ClassTagDetail', list: true });
+    t.string('shopTags', { list: true });
+    t.field('products', { type: 'ProductThumbnail', list: true });
   },
 });
 
