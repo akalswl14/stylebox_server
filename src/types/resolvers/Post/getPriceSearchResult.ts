@@ -23,7 +23,6 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         rtnLastPostDate,
         queryOption,
         tagIds = [],
-        classTags = [],
         tagNumList = [],
         posts = [];
       const userId = Number(getUserId(ctx));
@@ -43,17 +42,18 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
           });
           if (ClassResult) {
             let tmpTags = ClassResult.tags;
-            classTags.push(...tmpTags);
+            let tmpTagIds = [];
+            for (const eachTag of tmpTags) {
+              if (eachTag.id) {
+                tagNumList.push(eachTag.id);
+                tmpTagIds.push({ id: eachTag.id });
+              }
+            }
+            tagIds.push({ tags: { some: { OR: tmpTagIds } } });
           }
         } else if (eachTag.tagId) {
           tagIds.push({ tags: { some: { id: eachTag.tagId } } });
           tagNumList.push(eachTag.tagId);
-        }
-      }
-      for (const eachTag of classTags) {
-        if (eachTag.id) {
-          tagIds.push({ tags: { some: eachTag } });
-          tagNumList.push(eachTag.id);
         }
       }
       queryOption = {
@@ -64,12 +64,7 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         take: loadingPostNum,
         select: {
           id: true,
-          Shop: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
-          products: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
+          shopId: true,
           mainProductPrice: true,
           mainProductId: true,
           images: { select: { url: true }, take: 1 },
@@ -79,12 +74,12 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
       if (filter == 2) {
         queryOption.orderBy = [
           { isOnline: "asc" },
-          { mainProductPrice: "asc" },
+          { mainProductPrice: "desc" },
         ];
       } else {
         queryOption.orderBy = [
           { isOnline: "desc" },
-          { mainProductPrice: "desc" },
+          { mainProductPrice: "asc" },
         ];
       }
       if (cursorId) {
@@ -92,7 +87,8 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         queryOption.skip = 1;
       }
       PostResult = await ctx.prisma.post.findMany(queryOption);
-
+      // console.log(PostResult);
+      // return;
       totalPostNum = await ctx.prisma.post.count({
         where: {
           AND: tagIds,
@@ -114,19 +110,24 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
           });
         }
         for (const eachPost of PostResult) {
-          queryResult = await ctx.prisma.like.count({
+          let shopResult = await ctx.prisma.shopName.findMany({
+            where: { shopId: eachPost.shopId, lang },
+            select: { word: true },
+          });
+          let likeResult = await ctx.prisma.like.count({
             where: { userId, postId: eachPost.id },
           });
-          let isLikePost = queryResult > 0 ? true : false;
-          queryResult = await ctx.prisma.productName.findMany({
+          let isLikePost = likeResult > 0 ? true : false;
+          let productResult = await ctx.prisma.productName.findMany({
             where: { productId: eachPost.mainProductId, lang },
             select: { word: true },
           });
-          let productName = queryResult[0].word;
+          if (!shopResult || !productResult) return false;
+          let productName = productResult[0].word;
           posts.push({
             postId: eachPost.id,
             productName,
-            shopName: eachPost.Shop.names[0].word,
+            shopName: shopResult[0].word,
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost,

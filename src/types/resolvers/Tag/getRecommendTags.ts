@@ -1,7 +1,7 @@
 import { queryField, stringArg } from "@nexus/schema";
 
 export const getRecommendTags = queryField("getRecommendTags", {
-  type: "TagThumbnail",
+  type: "RecommendTagThumbnail",
   args: {
     word: stringArg({ required: true }),
     lang: stringArg({ nullable: true }),

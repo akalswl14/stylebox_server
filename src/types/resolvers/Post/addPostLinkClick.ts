@@ -15,12 +15,15 @@ export const addPostLinkClick = mutationField("addPostLinkClick", {
           where: { id },
           select: { externalLinkClickNum: true },
         });
-        externalLinkClickNum = queryResult ? externalLinkClickNum : 0;
+        externalLinkClickNum =
+          queryResult && queryResult.externalLinkClickNum
+            ? queryResult.externalLinkClickNum
+            : 0;
         externalLinkClickNum++;
         result = await ctx.prisma.post.update({
           where: { id },
           data: {
-            externalLinkClickNum,
+            externalLinkClickNum: { set: externalLinkClickNum },
           },
         });
       } catch (e) {

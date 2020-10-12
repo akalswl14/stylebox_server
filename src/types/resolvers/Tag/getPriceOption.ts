@@ -18,13 +18,16 @@ export const getPriceOption = queryField("getPriceOption", {
         orderBy: { word: "asc" },
       });
       if (!nameResult) return null;
+      let order = 0;
       for (const eachName of nameResult) {
         if (eachName.tagId) {
           tags.push({
             id: eachName.tagId,
             tagName: eachName.word,
             isClass: true,
+            order,
           });
+          order++;
         }
       }
       return tags ? tags : null;

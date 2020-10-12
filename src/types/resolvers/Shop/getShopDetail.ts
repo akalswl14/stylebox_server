@@ -83,53 +83,58 @@ export const getShopDetail = queryField("getShopDetail", {
       }
       order = 0;
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Facebook", isShown: true },
+        where: { shopId, onBottom: false, linkType: "Facebook", isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
         TopExternalLinks.push({
           id: eachLink.id,
           url: eachLink.url,
-          linkResult: eachLink.linkType,
+          linkType: eachLink.linkType,
           order: order,
         });
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Instagram", isShown: true },
+        where: {
+          shopId,
+          onBottom: false,
+          linkType: "Instagram",
+          isShown: true,
+        },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
         TopExternalLinks.push({
           id: eachLink.id,
           url: eachLink.url,
-          linkResult: eachLink.linkType,
+          linkType: eachLink.linkType,
           order: order,
         });
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: false, linkType: "Youtube", isShown: true },
+        where: { shopId, onBottom: false, linkType: "Youtube", isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
         TopExternalLinks.push({
           id: eachLink.id,
           url: eachLink.url,
-          linkResult: eachLink.linkType,
+          linkType: eachLink.linkType,
           order: order,
         });
         order++;
       }
       linkResult = await ctx.prisma.shopExternalLink.findMany({
-        where: { onBottom: true, isShown: true },
+        where: { shopId, onBottom: true, isShown: true },
         orderBy: { order: "asc" },
       });
       for (const eachLink of linkResult) {
         BottomExternalLinks.push({
           id: eachLink.id,
           url: eachLink.url,
-          linkResult: eachLink.linkType,
+          linkType: eachLink.linkType,
           order: eachLink.order,
         });
       }

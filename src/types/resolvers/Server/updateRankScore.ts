@@ -1,5 +1,4 @@
 import { mutationField } from "@nexus/schema";
-import { or } from "graphql-shield";
 
 export const updateRankScore = mutationField("updateRankScore", {
   type: "Boolean",

@@ -15,12 +15,15 @@ export const addShopLinkClick = mutationField("addShopLinkClick", {
           where: { id },
           select: { externalLinkClickNum: true },
         });
-        externalLinkClickNum = queryResult ? externalLinkClickNum : 0;
+        externalLinkClickNum =
+          queryResult && queryResult.externalLinkClickNum
+            ? queryResult.externalLinkClickNum
+            : 0;
         externalLinkClickNum++;
         result = await ctx.prisma.shop.update({
           where: { id },
           data: {
-            externalLinkClickNum,
+            externalLinkClickNum: { set: externalLinkClickNum },
           },
         });
       } catch (e) {

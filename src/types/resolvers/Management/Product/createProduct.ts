@@ -35,16 +35,24 @@ export const createProduct = mutationField("createProduct", {
         data: {
           names: { create: { lang: "VI", word: productName } },
           price,
-          images: { create: { url: productImage, order: 0 } },
+          images: productImage
+            ? { create: { url: productImage, order: 0 } }
+            : null,
           description,
-          externalLink: {
-            create: { url: externalLink, linkType: "OnlineShop", order: 1 },
-          },
           tags: { connect: tagList },
           branches: { connect: branchList },
         },
+        select: { id: true },
       });
-      return queryResult ? true : false;
+      let linkResult = await ctx.prisma.productExternalLink.create({
+        data: {
+          url: externalLink,
+          linkType: "OnlineShop",
+          order: 1,
+          Product: { connect: { id: queryResult.id } },
+        },
+      });
+      return queryResult && linkResult ? true : false;
     } catch (e) {
       console.log(e);
       return false;

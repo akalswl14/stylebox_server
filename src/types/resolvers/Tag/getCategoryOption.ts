@@ -32,13 +32,16 @@ export const getCategoryOption = queryField("getCategoryOption", {
             orderBy: { word: "asc" },
           });
           let subTags = [];
+          let order = 1;
           for (const eachtagName of tagResult) {
             if (eachtagName.tagId) {
               subTags.push({
                 id: eachtagName.tagId,
                 tagName: eachtagName.word,
                 isClass: eachtagName.Tag.isClass,
+                order: eachtagName.Tag.isClass ? 0 : order,
               });
+              if (!eachtagName.Tag.isClass) order++;
             }
           }
           options.push({

@@ -24,7 +24,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         inputLastDate,
         rtnLastPostDate,
         functionOption = {},
-        classTags = [],
         tagIds = [],
         tagNumList = [],
         posts = [];
@@ -40,7 +39,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       queryLoadingPostNum = loadingPostNum;
       let queryDate = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDateTomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
-      inputLastDate = Date.parse(lastPostDate);
+      inputLastDate = lastPostDate ? Date.parse(lastPostDate) : new Date();
       for (const eachTag of tags) {
         if (eachTag.isClass && eachTag.classId) {
           ClassResult = await ctx.prisma.class.findOne({
@@ -49,17 +48,18 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           });
           if (ClassResult) {
             let tmpTags = ClassResult.tags;
-            classTags.push(...tmpTags);
+            let tmpTagIds = [];
+            for (const eachTag of tmpTags) {
+              if (eachTag.id) {
+                tagNumList.push(eachTag.id);
+                tmpTagIds.push({ id: eachTag.id });
+              }
+            }
+            tagIds.push({ tags: { some: { OR: tmpTagIds } } });
           }
         } else if (eachTag.tagId) {
           tagIds.push({ tags: { some: { id: eachTag.tagId } } });
           tagNumList.push(eachTag.tagId);
-        }
-      }
-      for (const eachTag of classTags) {
-        if (eachTag.id) {
-          tagIds.push({ tags: { some: eachTag } });
-          tagNumList.push(eachTag.id);
         }
       }
       if (cursorId && lastPostDate) {
@@ -76,7 +76,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         queryResult = await getResult(
           ctx,
           queryLoadingPostNum,
-          lang,
           tagIds,
           queryDate,
           queryDateTomorrow,
@@ -118,15 +117,20 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
             where: { userId, postId: eachPost.id },
           });
           let isLikePost = queryResult > 0 ? true : false;
-          queryResult = await ctx.prisma.productName.findMany({
+          let shopResult = await ctx.prisma.shopName.findMany({
+            where: { shopId: eachPost.shopId, lang },
+            select: { word: true },
+          });
+          let productResult = await ctx.prisma.productName.findMany({
             where: { productId: eachPost.mainProductId, lang },
             select: { word: true },
           });
-          let productName = queryResult[0].word;
+          if (!shopResult || !productResult) return false;
+          let productName = productResult[0].word;
           posts.push({
             postId: eachPost.id,
             productName,
-            shopName: eachPost.Shop.names[0].word,
+            shopName: shopResult[0].word,
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
             isLikePost,
@@ -150,7 +154,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
 const getResult = async (
   ctx: Context,
   loadingPostNum: number,
-  lang: String,
   tagIds: { tags: { some: { id: number } } }[],
   queryDate: Date,
   queryDateTomorrow: Date,
@@ -164,15 +167,10 @@ const getResult = async (
       createdAt: { gte: queryDate, lt: queryDateTomorrow },
     },
     take: loadingPostNum,
-    orderBy: { priority: "desc" },
+    orderBy: [{ priority: "desc" }, { createdAt: "desc" }],
     select: {
       id: true,
-      Shop: {
-        select: { names: { where: { lang }, select: { word: true } } },
-      },
-      products: {
-        select: { names: { where: { lang }, select: { word: true } } },
-      },
+      shopId: true,
       mainProductPrice: true,
       mainProductId: true,
       images: { select: { url: true }, take: 1 },

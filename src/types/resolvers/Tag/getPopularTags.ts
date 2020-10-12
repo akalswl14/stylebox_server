@@ -17,6 +17,7 @@ export const getPopularTags = queryField("getPopularTags", {
         select: {
           id: true,
           names: { where: { lang }, select: { word: true } },
+          isRecommendation: true,
         },
         orderBy: { isRecommendation: "asc" },
       });

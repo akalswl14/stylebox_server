@@ -73,11 +73,28 @@ export const updateShop = mutationField("updateShop", {
         let tagResult = await ctx.prisma.tag.findMany({
           where: { category: "ShopName", shops: { some: { id: shopId } } },
           select: {
+            id: true,
             names: { select: { id: true } },
           },
         });
         queryResult = await ctx.prisma.tagName.update({
           where: { id: tagResult[0].names[0].id },
+          data: {
+            word: shopName,
+          },
+        });
+        if (!queryResult) return false;
+        let classResult = await ctx.prisma.class.findMany({
+          where: {
+            category: "ShopName",
+            tags: { some: { id: tagResult[0].id } },
+          },
+          select: {
+            names: { select: { id: true } },
+          },
+        });
+        queryResult = await ctx.prisma.className.update({
+          where: { id: classResult[0].names[0].id },
           data: {
             word: shopName,
           },
