@@ -16,6 +16,7 @@ export const getTopShops = queryField("getTopShops", {
         select: {
           id: true,
         },
+        take: 5,
       });
       for (const eachShop of shopList) {
         let postNum, productNum, likeNum, viewNum, branchList;

@@ -12,11 +12,18 @@ export const getTopPosts = queryField("getTopPosts", {
         postList,
         No = 1,
         rtn = [];
-
+      let orderByOption =
+        periodFilter == 1
+          ? { weeklyRankScore: "desc" }
+          : periodFilter == 2
+          ? { monthlyRankScore: "desc" }
+          : { lifeTimeRankScore: "desc" };
       postList = await ctx.prisma.post.findMany({
         select: {
           id: true,
         },
+        take: 5,
+        orderBy: orderByOption,
       });
       for (const eachPost of postList) {
         let mainProductName,
@@ -44,7 +51,6 @@ export const getTopPosts = queryField("getTopPosts", {
             lifeTimeRankNum: true,
           },
         });
-
         likeNum = await ctx.prisma.like.count({
           where: {
             postId: eachPost.id,
@@ -89,7 +95,6 @@ export const getTopPosts = queryField("getTopPosts", {
         });
         No++;
       }
-
       return rtn;
     } catch (e) {
       console.log(e);
