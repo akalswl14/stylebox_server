@@ -319,8 +319,16 @@ export const TagManagementThumbnail = objectType({
   },
 });
 
-export const idNameThumbnail = objectType({
-  name: "idNameThumbnail",
+export const idNameTagThumbnail = objectType({
+  name: "idNameTagThumbnail",
+  definition(t) {
+    t.int("id");
+    t.string("name");
+  },
+});
+
+export const idNameClassThumbnail = objectType({
+  name: "idNameClassThumbnail",
   definition(t) {
     t.int("id");
     t.string("name");

@@ -1,7 +1,7 @@
 import { intArg, queryField } from "@nexus/schema";
 
 export const getTagOptions = queryField("getTagOptions", {
-  type: "idNameThumbnail",
+  type: "idNameTagThumbnail",
   args: { classId: intArg({ required: true }) },
   nullable: true,
   list: true,
