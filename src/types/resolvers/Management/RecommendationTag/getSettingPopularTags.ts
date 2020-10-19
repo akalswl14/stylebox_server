@@ -8,12 +8,14 @@ export const getSettingPopularTags = queryField('getSettingPopularTags', {
     try {
       let popularTags,
         lang,
-        tags = [];
+        tags = [],
+        order = 1;
 
       if (!lang) lang = 'VI';
 
       popularTags = await ctx.prisma.tag.findMany({
         where: { isRecommendation: { gte: 1 } },
+        orderBy: { isRecommendation: 'asc' },
         select: {
           id: true,
           category: true,
@@ -30,13 +32,14 @@ export const getSettingPopularTags = queryField('getSettingPopularTags', {
 
       for (const eachPopularTag of popularTags) {
         tags.push({
-          order: eachPopularTag.isRecommendation,
+          order,
           Category: eachPopularTag.category,
           classId: eachPopularTag.classId,
           className: eachPopularTag.Class.names[0].word,
           id: eachPopularTag.id,
           tagName: eachPopularTag.names[0].word,
         });
+        order++;
       }
 
       return tags ? tags : null;

@@ -1,14 +1,14 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
 
-export const getSettingQuestionOption = queryField('getSettingQuestionOption', {
-  type: 'QuestionOption',
+export const getSettingQuestionOption = queryField("getSettingQuestionOption", {
+  type: "QuestionOption",
   nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
     try {
       let QuestionSetting,
         questionTypes = [],
-        order = 0;
+        order = 1;
 
       QuestionSetting = await ctx.prisma.setting.findOne({
         where: { id: 1 },
