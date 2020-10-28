@@ -344,14 +344,22 @@ export const eventSearchResult = objectType({
   },
 });
 
-export const UserManagementThumbnail = objectType({
-  name: "UserManagementThumbnail",
+export const UserManagementUsers = objectType({
+  name: "UserManagementUsers",
   definition(t) {
     t.int("userId");
     t.field("installationDate", { type: "DateTime" });
     t.int("PostLikeNum");
     t.int("ShopLikeNum");
     t.int("EventLikeNum");
+  },
+});
+
+export const UserManagementThumbnail = objectType({
+  name: "UserManagementThumbnail",
+  definition(t) {
+    t.int("totalUserNum");
+    t.field("users", { type: "UserManagementUsers", list: true });
   },
 });
 

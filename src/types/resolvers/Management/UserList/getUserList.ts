@@ -9,7 +9,6 @@ export const getUserList = queryField("getUserList", {
     installationDateAsc: booleanArg({ nullable: true }),
   },
   nullable: true,
-  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const { pageNum = 1, userId, userIdAsc, installationDateAsc } = args;
@@ -60,7 +59,13 @@ export const getUserList = queryField("getUserList", {
           EventLikeNum,
         });
       }
-      return users;
+      let totalUserNum = await ctx.prisma.user.count({
+        where: whereOption,
+      });
+      return {
+        totalUserNum,
+        users,
+      };
     } catch (e) {
       console.log(e);
       return null;
