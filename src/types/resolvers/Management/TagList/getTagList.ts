@@ -1,18 +1,17 @@
-import { arg, booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
+import { arg, booleanArg, intArg, queryField, stringArg } from "@nexus/schema";
 
-export const getTagList = queryField('getTagList', {
-  type: 'TagList',
+export const getTagList = queryField("getTagList", {
+  type: "TagListThumbnail",
   args: {
     pageNum: intArg({ nullable: true }),
     tagId: intArg({ nullable: true }),
     tagName: stringArg({ nullable: true }),
-    category: arg({ type: 'Category', nullable: true }),
+    category: arg({ type: "Category", nullable: true }),
     className: stringArg({ nullable: true }),
     tagIdAsc: booleanArg({ nullable: true }),
     tagNameAsc: booleanArg({ nullable: true }),
     categoryAsc: booleanArg({ nullable: true }),
   },
-  list: true,
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
@@ -29,13 +28,13 @@ export const getTagList = queryField('getTagList', {
 
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
+      let tagResult;
 
-      let lang = 'VI',
+      let lang = "VI",
         tags = [];
 
       let orderByOption = {},
-        whereOption = {},
-        tagOrderByOption = {};
+        whereOption = {};
 
       if (tagId) {
         whereOption = { id: tagId };
@@ -51,61 +50,137 @@ export const getTagList = queryField('getTagList', {
           Class: { names: { some: { word: { contains: className } } } },
         };
       }
-      if (typeof tagIdAsc === 'boolean') {
-        orderByOption = tagIdAsc ? { id: 'asc' } : { id: 'desc' };
-      } else if (typeof tagNameAsc === 'boolean') {
-        tagOrderByOption = tagNameAsc ? { word: 'asc' } : { word: 'desc' };
-      } else if (typeof categoryAsc === 'boolean') {
+
+      if (typeof tagIdAsc === "boolean") {
+        orderByOption = tagIdAsc ? { id: "asc" } : { id: "desc" };
+      } else if (typeof categoryAsc === "boolean") {
         orderByOption = categoryAsc
-          ? { category: 'asc' }
-          : { category: 'desc' };
+          ? { category: "asc" }
+          : { category: "desc" };
       } else {
-        orderByOption = [{ id: 'asc' }, { category: 'asc' }];
-        tagOrderByOption = { word: 'asc' };
+        orderByOption = [{ id: "asc" }, { category: "asc" }];
       }
 
-      let tagResult = await ctx.prisma.tag.findMany({
+      if (typeof tagNameAsc === "boolean") {
+        let whereOptionTagResult = await ctx.prisma.tag.findMany({
+          where: whereOption,
+          select: {
+            id: true,
+          },
+        });
+
+        let tagIdList = [];
+
+        for (const eachtag of whereOptionTagResult) {
+          tagIdList.push(eachtag.id);
+        }
+
+        let tagNameAscResult = await ctx.prisma.tagName.findMany({
+          where: { tagId: { in: tagIdList }, lang: "VI" },
+          skip: skipNum,
+          take: loadingNum,
+          orderBy: tagNameAsc ? { word: "asc" } : { word: "desc" },
+          select: { tagId: true },
+        });
+
+        if (!tagNameAscResult) return null;
+
+        let tagAscList = [];
+
+        for (const eachtag of tagNameAscResult) {
+          tagAscList.push(eachtag.tagId);
+        }
+
+        for (const id of tagAscList) {
+          tagResult = await ctx.prisma.tag.findOne({
+            where: { id: id },
+            select: {
+              id: true,
+              names: {
+                where: { lang },
+                select: { word: true },
+              },
+              category: true,
+              Class: {
+                select: { names: { where: { lang }, select: { word: true } } },
+              },
+            },
+          });
+
+          if (!tagResult) return null;
+
+          console.log(tagResult);
+
+          let shopNum = await ctx.prisma.shop.count({
+            where: { tags: { some: { id: tagResult.id } } },
+          });
+          let postNum = await ctx.prisma.post.count({
+            where: { tags: { some: { id: tagResult.id } } },
+          });
+          let productNum = await ctx.prisma.product.count({
+            where: { tags: { some: { id: tagResult.id } } },
+          });
+
+          tags.push({
+            tagId: tagResult.id,
+            tagName: tagResult.names[0].word,
+            category: tagResult.category,
+            className: tagResult.Class.names[0].word,
+            postNum,
+            shopNum,
+            productNum,
+          });
+        }
+      } else {
+        tagResult = await ctx.prisma.tag.findMany({
+          where: whereOption,
+          orderBy: orderByOption,
+          skip: skipNum,
+          take: loadingNum,
+          select: {
+            id: true,
+            names: {
+              where: { lang },
+              select: { word: true },
+            },
+            category: true,
+            Class: {
+              select: { names: { where: { lang }, select: { word: true } } },
+            },
+          },
+        });
+
+        for (const tag of tagResult) {
+          let shopNum = await ctx.prisma.shop.count({
+            where: { tags: { some: { id: tag.id } } },
+          });
+          let postNum = await ctx.prisma.post.count({
+            where: { tags: { some: { id: tag.id } } },
+          });
+          let productNum = await ctx.prisma.product.count({
+            where: { tags: { some: { id: tag.id } } },
+          });
+
+          tags.push({
+            tagId: tag.id,
+            tagName: tag.names[0].word,
+            category: tag.category,
+            className: tag.Class.names[0].word,
+            postNum,
+            shopNum,
+            productNum,
+          });
+        }
+      }
+
+      let totalTagNum = await ctx.prisma.tag.count({
         where: whereOption,
-        orderBy: orderByOption,
-        skip: skipNum,
-        take: loadingNum,
-        select: {
-          id: true,
-          names: {
-            where: { lang },
-            select: { word: true },
-            orderBy: tagOrderByOption,
-          },
-          category: true,
-          Class: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
-        },
       });
 
-      for (const tag of tagResult) {
-        let shopNum = await ctx.prisma.shop.count({
-          where: { tags: { some: { id: tag.id } } },
-        });
-        let postNum = await ctx.prisma.post.count({
-          where: { tags: { some: { id: tag.id } } },
-        });
-        let productNum = await ctx.prisma.product.count({
-          where: { tags: { some: { id: tag.id } } },
-        });
-
-        tags.push({
-          tagId: tag.id,
-          tagName: tag.names[0].word,
-          category: tag.category,
-          className: tag.Class.names[0].word,
-          postNum,
-          shopNum,
-          productNum,
-        });
-      }
-
-      return tags ? tags : null;
+      return {
+        totalTagNum,
+        tags,
+      };
     } catch (e) {
       console.log(e);
       return null;

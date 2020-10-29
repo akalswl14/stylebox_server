@@ -1,7 +1,7 @@
 import { booleanArg, intArg, queryField, stringArg } from "@nexus/schema";
 
 export const getPostList = queryField("getPostList", {
-  type: "PostManagementList",
+  type: "PostManagementListThumbnail",
   args: {
     pageNum: intArg({ nullable: true }),
     postId: intArg({ nullable: true }),
@@ -288,7 +288,7 @@ export const getPostList = queryField("getPostList", {
           rank: eachPost.monthlyRankNum,
         });
       }
-      return posts;
+      return { posts, totalPostNum };
     } catch (e) {
       console.log(e);
       return null;

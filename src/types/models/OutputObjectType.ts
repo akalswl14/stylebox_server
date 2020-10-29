@@ -417,6 +417,14 @@ export const TagList = objectType({
   },
 });
 
+export const TagListThumbnail = objectType({
+  name: "TagListThumbnail",
+  definition(t) {
+    t.int("totalTagNum");
+    t.field("tags", { type: "TagList", list: true });
+  },
+});
+
 export const TagInfo = objectType({
   name: "TagInfo",
   definition(t) {
@@ -559,6 +567,14 @@ export const ProductList = objectType({
   },
 });
 
+export const ProductListThumbnail = objectType({
+  name: "ProductListThumbnail",
+  definition(t) {
+    t.int("totalProductNum");
+    t.field("products", { type: "ProductList", list: true });
+  },
+});
+
 export const PostManagementList = objectType({
   name: "PostManagementList",
   definition(t) {
@@ -573,6 +589,14 @@ export const PostManagementList = objectType({
     t.int("linksClickNum");
     t.int("linksNum");
     t.int("rank");
+  },
+});
+
+export const PostManagementListThumbnail = objectType({
+  name: "PostManagementListThumbnail",
+  definition(t) {
+    t.int("totalPostNum");
+    t.field("posts", { type: "PostManagementList", list: true });
   },
 });
 
