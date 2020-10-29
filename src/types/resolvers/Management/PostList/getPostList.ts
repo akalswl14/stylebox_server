@@ -41,6 +41,7 @@ export const getPostList = queryField("getPostList", {
           externalLinkClickNum: true,
           shopId: true,
         },
+        totalPostNum = 0,
         postIdList = [],
         posts = [];
 
@@ -87,6 +88,7 @@ export const getPostList = queryField("getPostList", {
               }
             }
           }
+          totalPostNum = totalPostList.length;
           if (totalPostList.length > skip) {
             let forLimit =
               skip + take < totalPostList.length
@@ -121,6 +123,7 @@ export const getPostList = queryField("getPostList", {
             }
           }
           let queryPostId = [];
+          totalPostNum = AllPostId.length;
           if (AllPostId.length > skip) {
             let forLimit =
               skip + take < AllPostId.length ? skip + take : AllPostId.length;
@@ -145,6 +148,11 @@ export const getPostList = queryField("getPostList", {
           if (typeof priorityAsc === "boolean") {
             orderByOption = { priority: priorityAsc ? "asc" : "desc" };
           }
+          totalPostNum = await ctx.prisma.post.count({
+            where: {
+              mainProductId: { in: productIdList },
+            },
+          });
           postIdList = await ctx.prisma.post.findMany({
             where: {
               mainProductId: { in: productIdList },
@@ -177,6 +185,7 @@ export const getPostList = queryField("getPostList", {
             });
             totalPostList.push(...queryResult);
           }
+          totalPostNum = totalPostList.length;
           if (totalPostList.length > skip) {
             for (var i = skip; i < skip + take; i++) {
               postIdList.push(totalPostList[i]);
@@ -212,6 +221,7 @@ export const getPostList = queryField("getPostList", {
             }
           }
           let queryPostId = [];
+          totalPostNum = AllPostId.length;
           if (AllPostId.length > skip) {
             let forLimit =
               skip + take < AllPostId.length ? skip + take : AllPostId.length;
@@ -236,6 +246,14 @@ export const getPostList = queryField("getPostList", {
           if (typeof priorityAsc === "boolean") {
             orderByOption = { priority: priorityAsc ? "asc" : "desc" };
           }
+          totalPostNum = await ctx.prisma.post.count({
+            where: {
+              Shop: shopName
+                ? { names: { some: { word: { contains: shopName } } } }
+                : {},
+              id: postId,
+            },
+          });
           postIdList = await ctx.prisma.post.findMany({
             where: {
               Shop: shopName
