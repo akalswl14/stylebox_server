@@ -567,6 +567,14 @@ export const ProductList = objectType({
   },
 });
 
+export const ProductListThumbnail = objectType({
+  name: "ProductListThumbnail",
+  definition(t) {
+    t.int("totalProductNum");
+    t.field("products", { type: "ProductList", list: true });
+  },
+});
+
 export const PostManagementList = objectType({
   name: "PostManagementList",
   definition(t) {
