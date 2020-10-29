@@ -592,6 +592,14 @@ export const PostManagementList = objectType({
   },
 });
 
+export const PostManagementListThumbnail = objectType({
+  name: "PostManagementListThumbnail",
+  definition(t) {
+    t.int("totalPostNum");
+    t.field("posts", { type: "PostManagementList", list: true });
+  },
+});
+
 export const ProductBasicInfo = objectType({
   name: "ProductBasicInfo",
   definition(t) {
