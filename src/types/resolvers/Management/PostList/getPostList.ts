@@ -13,7 +13,6 @@ export const getPostList = queryField("getPostList", {
     shopNameAsc: booleanArg({ nullable: true }),
     priorityAsc: booleanArg({ nullable: true }),
   },
-  list: true,
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
