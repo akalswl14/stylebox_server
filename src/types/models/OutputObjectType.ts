@@ -417,6 +417,14 @@ export const TagList = objectType({
   },
 });
 
+export const TagListThumbnail = objectType({
+  name: "TagListThumbnail",
+  definition(t) {
+    t.int("totalTagNum");
+    t.field("tags", { type: "TagList", list: true });
+  },
+});
+
 export const TagInfo = objectType({
   name: "TagInfo",
   definition(t) {
