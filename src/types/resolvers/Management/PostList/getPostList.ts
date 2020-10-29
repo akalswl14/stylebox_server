@@ -177,7 +177,7 @@ export const getPostList = queryField("getPostList", {
                 Shop: shopName
                   ? { names: { some: { word: { contains: shopName } } } }
                   : {},
-                id: postId,
+                id: postId ? postId : undefined,
               },
               select: selectOption,
               orderBy: { id: "asc" },
@@ -203,7 +203,7 @@ export const getPostList = queryField("getPostList", {
                       Shop: shopName
                         ? { names: { some: { word: { contains: shopName } } } }
                         : {},
-                      id: postId,
+                      id: postId ? postId : undefined,
                     },
                     orderBy: { id: "asc" },
                     select: { id: true },
@@ -250,7 +250,7 @@ export const getPostList = queryField("getPostList", {
               Shop: shopName
                 ? { names: { some: { word: { contains: shopName } } } }
                 : {},
-              id: postId,
+              id: postId ? postId : undefined,
             },
           });
           postIdList = await ctx.prisma.post.findMany({
@@ -258,7 +258,7 @@ export const getPostList = queryField("getPostList", {
               Shop: shopName
                 ? { names: { some: { word: { contains: shopName } } } }
                 : {},
-              id: postId,
+              id: postId ? postId : undefined,
             },
             select: selectOption,
             orderBy: orderByOption,
