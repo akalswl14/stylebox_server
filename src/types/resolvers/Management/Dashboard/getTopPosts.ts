@@ -61,12 +61,12 @@ export const getTopPosts = queryField("getTopPosts", {
             postId: eachPost.id,
           },
         });
-        if (!postResult) return null;
+        if (!postResult) continue;
         productResult = await ctx.prisma.product.findOne({
           where: { id: postResult.mainProductId },
           select: { names: { where: { lang: "VI" }, select: { word: true } } },
         });
-        if (!productResult) return null;
+        if (!productResult) continue;
         mainProductName = productResult.names[0].word;
         subProductNum = postResult.products.length - 1;
         let tagNames = [];
