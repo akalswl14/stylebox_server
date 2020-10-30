@@ -185,8 +185,12 @@ export const getPostList = queryField("getPostList", {
             totalPostList.push(...queryResult);
           }
           totalPostNum = totalPostList.length;
+          let forLimit =
+            skip + take < totalPostList.length
+              ? skip + take
+              : totalPostList.length;
           if (totalPostList.length > skip) {
-            for (var i = skip; i < skip + take; i++) {
+            for (var i = skip; i < forLimit; i++) {
               postIdList.push(totalPostList[i]);
               if (postIdList.length == take) break;
             }
@@ -268,6 +272,7 @@ export const getPostList = queryField("getPostList", {
         }
       }
       for (const eachPost of postIdList) {
+        if (!eachPost) continue;
         let likesNum = await ctx.prisma.like.count({
           where: { postId: eachPost.id },
         });
