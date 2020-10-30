@@ -1,7 +1,7 @@
-import { booleanArg, intArg, queryField, stringArg } from '@nexus/schema';
+import { booleanArg, intArg, queryField, stringArg } from "@nexus/schema";
 
-export const getEventManageList = queryField('getEventManageList', {
-  type: 'EventManagementList',
+export const getEventManageList = queryField("getEventManageList", {
+  type: "EventManagementListThumbnail",
   args: {
     pageNum: intArg({ nullable: true }),
     eventId: intArg({ nullable: true }),
@@ -11,7 +11,6 @@ export const getEventManageList = queryField('getEventManageList', {
     eventStartAsc: booleanArg({ nullable: true }),
     eventEndAsc: booleanArg({ nullable: true }),
   },
-  list: true,
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
@@ -38,22 +37,22 @@ export const getEventManageList = queryField('getEventManageList', {
       if (eventTitle) {
         whereOption = { title: { contains: eventTitle } };
       }
-      if (typeof eventIdAsc === 'boolean') {
-        orderByOption = eventIdAsc ? { id: 'asc' } : { id: 'desc' };
-      } else if (typeof eventTitleAsc === 'boolean') {
-        orderByOption = eventTitleAsc ? { title: 'asc' } : { title: 'desc' };
-      } else if (typeof eventStartAsc === 'boolean') {
+      if (typeof eventIdAsc === "boolean") {
+        orderByOption = eventIdAsc ? { id: "asc" } : { id: "desc" };
+      } else if (typeof eventTitleAsc === "boolean") {
+        orderByOption = eventTitleAsc ? { title: "asc" } : { title: "desc" };
+      } else if (typeof eventStartAsc === "boolean") {
         orderByOption = eventStartAsc
-          ? { startDate: 'asc' }
-          : { startDate: 'desc' };
-      } else if (typeof eventEndAsc === 'boolean') {
-        orderByOption = eventEndAsc ? { dueDate: 'asc' } : { dueDate: 'desc' };
+          ? { startDate: "asc" }
+          : { startDate: "desc" };
+      } else if (typeof eventEndAsc === "boolean") {
+        orderByOption = eventEndAsc ? { dueDate: "asc" } : { dueDate: "desc" };
       } else {
         orderByOption = [
-          { id: 'asc' },
-          { title: 'asc' },
-          { startDate: 'asc' },
-          { dueDate: 'asc' },
+          { id: "asc" },
+          { title: "asc" },
+          { startDate: "asc" },
+          { dueDate: "asc" },
         ];
       }
 
@@ -91,7 +90,12 @@ export const getEventManageList = queryField('getEventManageList', {
           viewsNum,
         });
       }
-      return events ? events : null;
+
+      let totalEventNum = await ctx.prisma.event.count({
+        where: whereOption,
+      });
+
+      return { totalEventNum, events };
     } catch (e) {
       console.log(e);
       return null;

@@ -556,6 +556,14 @@ export const EventManagementList = objectType({
   },
 });
 
+export const EventManagementListThumbnail = objectType({
+  name: "EventManagementListThumbnail",
+  definition(t) {
+    t.int("totalEventNum");
+    t.field("events", { type: "EventManagementList", list: true });
+  },
+});
+
 export const ProductList = objectType({
   name: "ProductList",
   definition(t) {
