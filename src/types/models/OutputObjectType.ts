@@ -272,8 +272,8 @@ export const DashboardBasicStatus = objectType({
   },
 });
 
-export const ShopManagementThumbnail = objectType({
-  name: "ShopManagementThumbnail",
+export const TopShops = objectType({
+  name: "TopShops",
   definition(t) {
     t.int("No", { nullable: true });
     t.int("shopId");
@@ -287,6 +287,32 @@ export const ShopManagementThumbnail = objectType({
     t.int("productNum");
     t.int("likeNum");
     t.int("viewNum");
+  },
+});
+
+export const ShopManagementShops = objectType({
+  name: "ShopManagementShops",
+  definition(t) {
+    t.int("No", { nullable: true });
+    t.int("shopId");
+    t.string("shopName");
+    t.string("phoneNumber");
+    t.string("address");
+    t.string("tagNames", { list: true });
+    t.int("rankNum");
+    t.int("weight");
+    t.int("postNum");
+    t.int("productNum");
+    t.int("likeNum");
+    t.int("viewNum");
+  },
+});
+
+export const ShopManagementThumbnail = objectType({
+  name: "ShopManagementThumbnail",
+  definition(t) {
+    t.int("totalShopNum");
+    t.field("shops", { type: "ShopManagementShops", list: true });
   },
 });
 

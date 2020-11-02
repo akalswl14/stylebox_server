@@ -11,9 +11,10 @@ export const getShopList = queryField("getShopList", {
     tagName: stringArg({ nullable: true }),
     shopIdAsc: booleanArg({ nullable: true }),
     shopNameAsc: booleanArg({ nullable: true }),
+    weightAsc: booleanArg({ nullable: true }),
+    rankAsc: booleanArg({ nullable: true }),
   },
   nullable: true,
-  list: true,
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -25,6 +26,8 @@ export const getShopList = queryField("getShopList", {
         tagName,
         shopIdAsc,
         shopNameAsc,
+        weightAsc,
+        rankAsc,
       } = args;
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
@@ -33,10 +36,19 @@ export const getShopList = queryField("getShopList", {
         shopResult,
         queryResult,
         No = 1,
+        totalShopNum = 0,
         shops = [];
 
       if (typeof shopIdAsc === "boolean") {
         orderByOption = shopIdAsc ? { id: "asc" } : { id: "desc" };
+      }
+      if (typeof weightAsc === "boolean") {
+        orderByOption = weightAsc ? { priority: "asc" } : { priority: "desc" };
+      }
+      if (typeof rankAsc === "boolean") {
+        orderByOption = rankAsc
+          ? { monthlyRankNum: "asc" }
+          : { monthlyRankNum: "desc" };
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
@@ -71,9 +83,13 @@ export const getShopList = queryField("getShopList", {
           priority: true,
         },
       });
+      totalShopNum = await ctx.prisma.shop.count({
+        where: whereOption,
+      });
       if (typeof shopNameAsc === "boolean") {
         let shopIdList = [];
         for (const eachShop of shopResult) {
+          if (!eachShop) continue;
           shopIdList.push(eachShop.id);
         }
         shopResult = await ctx.prisma.shopName.findMany({
@@ -149,6 +165,7 @@ export const getShopList = queryField("getShopList", {
         }
       } else {
         for (const eachShop of shopResult) {
+          if (!eachShop) continue;
           let branchList = [],
             tagNames = [];
           queryResult = await ctx.prisma.branch.findMany({
@@ -207,7 +224,7 @@ export const getShopList = queryField("getShopList", {
           No++;
         }
       }
-      return shops;
+      return { totalShopNum, shops };
     } catch (e) {
       console.log(e);
       return null;

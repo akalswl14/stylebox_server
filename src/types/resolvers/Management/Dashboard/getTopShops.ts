@@ -1,7 +1,7 @@
 import { queryField } from "@nexus/schema";
 
 export const getTopShops = queryField("getTopShops", {
-  type: "ShopManagementThumbnail",
+  type: "TopShops",
   nullable: true,
   list: true,
   resolve: async (_, args, ctx) => {
