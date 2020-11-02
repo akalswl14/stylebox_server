@@ -417,6 +417,7 @@ export const TagMapInfo = objectType({
 export const TagMapList = objectType({
   name: "TagMapList",
   definition(t) {
+    t.int("classId");
     t.string("className");
     t.field("tags", { type: "TagMapInfo", list: true });
   },
