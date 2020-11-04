@@ -458,7 +458,7 @@ export const TagInfo = objectType({
     t.int("tagId");
     t.string("tagName");
     t.field("category", { type: "Category" });
-    t.string("tagImage");
+    t.string("tagImage", { nullable: true });
     t.string("className");
     t.int("classId");
     t.int("postNum");
