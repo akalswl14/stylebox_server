@@ -1,7 +1,7 @@
 import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
 export const createShop = mutationField("createShop", {
-  type: "Boolean",
+  type: "ShopIdInfo",
   args: {
     shopName: stringArg({ required: true }),
     logoUrl: stringArg({ nullable: true }),
@@ -19,7 +19,7 @@ export const createShop = mutationField("createShop", {
     description: stringArg({ nullable: true }),
     branches: arg({ type: "branchInputType", list: true }),
   },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -105,31 +105,18 @@ export const createShop = mutationField("createShop", {
       let tagList = [],
         onDetailTagId = [],
         cnt = 0;
-      while (onDetailTagId.length < tags.length) {
-        for (const eachTag of tags) {
-          if (cnt === eachTag.order) {
-            tagList.push({ id: eachTag.id });
-            onDetailTagId.push(eachTag.id);
-            cnt++;
-          }
-        }
-        cnt++;
+      tags.sort(function (a, b) {
+        return a.order - b.order;
+      });
+      for (const eachTag of tags) {
+        tagList.push({ id: eachTag.id });
+        onDetailTagId.push(eachTag.id);
       }
       let queryResult = await ctx.prisma.shop.create({
         data: {
           names: { create: { lang: "VI", word: shopName } },
-          branches: {
-            create: branchList,
-          },
-          externalLinks: {
-            create: linkList,
-          },
-          logoUrl,
           description,
-          images: { create: shopImages },
-          videos: { create: shopVideos },
           phoneNumber,
-          tags: { connect: tagList },
           monthlyRankNum: 0,
           monthlyRankScore: 0,
           priority: weight,
@@ -138,6 +125,29 @@ export const createShop = mutationField("createShop", {
         },
         select: { id: true },
       });
+      if (!queryResult) return null;
+      let tagConnectResult = await ctx.prisma.shop.update({
+        where: { id: queryResult.id },
+        data: { tags: { connect: tagList } },
+      });
+      let branchResult;
+      for (const eachBranch of branchList) {
+        branchResult = await ctx.prisma.branch.create({
+          data: {
+            ...eachBranch,
+            Shop: { connect: { id: queryResult.id } },
+          },
+        });
+      }
+      let linkResult;
+      for (const eachLink of linkList) {
+        linkResult = await ctx.prisma.shopExternalLink.create({
+          data: {
+            ...eachLink,
+            Shop: { connect: { id: queryResult.id } },
+          },
+        });
+      }
       let classResult = await ctx.prisma.class.create({
         data: {
           names: { create: { lang: "VI", word: shopName } },
@@ -153,10 +163,37 @@ export const createShop = mutationField("createShop", {
           },
         },
       });
-      return queryResult && classResult ? true : false;
+      let videoResult;
+      for (const eachVideo of shopVideos) {
+        videoResult = await ctx.prisma.shopVideo.create({
+          data: { ...eachVideo, Shop: { connect: { id: queryResult.id } } },
+        });
+      }
+      let CreateImages = shopImages.map((eachData) => ({
+        order: eachData.order,
+        url: "Shop/" + queryResult.id + "/" + eachData.url,
+      }));
+      let CreateImagesResult = await ctx.prisma.shop.update({
+        where: { id: queryResult.id },
+        data: {
+          images: { create: CreateImages },
+          logoUrl: logoUrl
+            ? { set: "Shop/" + queryResult.id + "/" + logoUrl }
+            : null,
+        },
+      });
+      return queryResult &&
+        tagConnectResult &&
+        branchResult &&
+        linkResult &&
+        classResult &&
+        videoResult &&
+        CreateImagesResult
+        ? { shopId: queryResult.id }
+        : null;
     } catch (e) {
       console.log(e);
-      return false;
+      return null;
     }
   },
 });

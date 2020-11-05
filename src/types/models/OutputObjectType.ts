@@ -766,3 +766,10 @@ export const PostRankConst = objectType({
     t.int("bestConstB");
   },
 });
+
+export const ShopIdInfo = objectType({
+  name:"ShopIdInfo",
+  definition(t){
+    t.int("shopId");
+  }
+})
