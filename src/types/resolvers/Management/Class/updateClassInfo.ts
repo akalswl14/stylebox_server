@@ -1,11 +1,11 @@
-import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
-export const updateClassInfo = mutationField('updateClassInfo', {
-  type: 'Boolean',
+export const updateClassInfo = mutationField("updateClassInfo", {
+  type: "Boolean",
   args: {
     classId: intArg({ required: true }),
     className: stringArg({ nullable: true }),
-    classCategory: arg({ type: 'Category', nullable: true }),
+    classCategory: arg({ type: "Category", nullable: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -13,7 +13,7 @@ export const updateClassInfo = mutationField('updateClassInfo', {
       const { classId, className, classCategory } = args;
 
       let lang, classUpdate, tagUpdate;
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       if (className) {
         let originalClass = await ctx.prisma.class.findOne({
@@ -41,15 +41,18 @@ export const updateClassInfo = mutationField('updateClassInfo', {
           },
         });
 
-        tagUpdate = await ctx.prisma.tag.update({
-          where: { id: originalClass.tags[0].id },
-          data: {
-            names: {
-              delete: { id: originalClass.tags[0].names[0].id },
-              create: { lang, word: className },
+        if (originalClass.tags.length > 0) {
+          tagUpdate = await ctx.prisma.tag.update({
+            where: { id: originalClass.tags[0].id },
+            data: {
+              names: {
+                delete: { id: originalClass.tags[0].names[0].id },
+                create: { lang, word: className },
+              },
             },
-          },
-        });
+          });
+        }
+
         if (!tagUpdate || !classUpdate) return false;
       }
 
@@ -59,10 +62,17 @@ export const updateClassInfo = mutationField('updateClassInfo', {
           data: { category: classCategory },
         });
 
-        tagUpdate = await ctx.prisma.tag.updateMany({
+        let tagNum = await ctx.prisma.tag.findMany({
           where: { classId },
-          data: { category: classCategory },
         });
+
+        if (tagNum.length > 0) {
+          tagUpdate = await ctx.prisma.tag.updateMany({
+            where: { classId },
+            data: { category: classCategory },
+          });
+        }
+
         if (!tagUpdate || !classUpdate) return false;
       }
 
