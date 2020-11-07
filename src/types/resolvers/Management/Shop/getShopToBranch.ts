@@ -12,6 +12,8 @@ export const getShopToBranch = queryField("getShopToBranch", {
         where: { id },
         select: {
           branches: {
+            where: { isMain: false },
+            orderBy: { createdAt: "asc" },
             select: {
               id: true,
               names: { where: { lang: "VI" }, select: { word: true } },

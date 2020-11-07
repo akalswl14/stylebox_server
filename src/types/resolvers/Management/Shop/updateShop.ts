@@ -194,6 +194,7 @@ export const updateShop = mutationField("updateShop", {
               names: { create: { word: eachBranch.branchName, lang: "VI" } },
               phoneNumbers: { set: [eachBranch.branchPhoneNumber] },
               address: eachBranch.branchAddress,
+              googleMapUrl: eachBranch.branchGoogleMapUrl,
               isMain: false,
               Shop: { connect: { id: shopId } },
             },
@@ -377,20 +378,20 @@ export const updateShop = mutationField("updateShop", {
       }
       if (tags) {
         let tagIdList = [],
-          tagIdDicList = [],
-          cnt = 0;
-        while (tagIdList.length < tags.length) {
-          for (const eachTag of tags) {
-            if (eachTag.order === cnt) {
-              tagIdList.push(eachTag.id);
-              tagIdDicList.push({ id: eachTag.id });
-            }
-          }
-          cnt++;
-        }
+          tagIdDicList = [];
+        tags.sort(function (a, b) {
+          return a.order - b.order;
+        });
         for (const eachTag of tags) {
           tagIdList.push(eachTag.id);
+          tagIdDicList.push({ id: eachTag.id });
         }
+        let originalShopNameTag = await ctx.prisma.tag.findMany({
+          where: { shops: { some: { id: shopId } }, category: "ShopName" },
+          select: { id: true },
+        });
+        if (originalShopNameTag.length > 0)
+          tagIdDicList.push({ id: originalShopNameTag[0].id });
         let originalTags = await ctx.prisma.tag.findMany({
           where: { shops: { some: { id: shopId } } },
           select: { id: true },
@@ -411,14 +412,14 @@ export const updateShop = mutationField("updateShop", {
         });
         if (!queryResult) return false;
       }
+      let updateData = {};
+      if (isLogoUrlChange) updateData.logoUrl = { set: logoUrl };
+      if (isDescriptionChange) updateData.description = { set: description };
+      if (phoneNumber) updateData.phoneNumber = phoneNumber;
+      if (weight) updateData.priority = { set: weight };
       queryResult = await ctx.prisma.shop.update({
         where: { id: shopId },
-        data: {
-          logoUrl: isLogoUrlChange ? { set: logoUrl } : null,
-          description: isDescriptionChange ? { set: description } : null,
-          phoneNumber,
-          priority: weight,
-        },
+        data: updateData,
       });
       return queryResult ? true : false;
     } catch (e) {

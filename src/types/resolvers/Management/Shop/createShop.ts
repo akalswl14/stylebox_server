@@ -130,6 +130,24 @@ export const createShop = mutationField("createShop", {
         where: { id: queryResult.id },
         data: { tags: { connect: tagList } },
       });
+      let classCreateResult = await ctx.prisma.class.create({
+        data: {
+          category: "ShopName",
+          names: { create: { word: shopName, lang: "VI" } },
+        },
+        select: { id: true },
+      });
+      if (!classCreateResult) return null;
+      let tagCreateResult = await ctx.prisma.tag.create({
+        data: {
+          Class: { connect: { id: classCreateResult.id } },
+          shops: { connect: { id: queryResult.id } },
+          names: { create: { word: shopName, lang: "VI" } },
+          category: "ShopName",
+          isClass: true,
+          isRecommendation: 0,
+        },
+      });
       let branchResult;
       for (const eachBranch of branchList) {
         branchResult = await ctx.prisma.branch.create({
@@ -184,6 +202,8 @@ export const createShop = mutationField("createShop", {
       });
       return queryResult &&
         tagConnectResult &&
+        classCreateResult &&
+        tagCreateResult &&
         branchResult &&
         linkResult &&
         classResult &&
