@@ -660,7 +660,7 @@ export const ShopOption = objectType({
   definition(t) {
     t.int("id");
     t.string("shopName");
-    t.string("shopLink");
+    t.string("shopLink", { nullable: true });
   },
 });
 

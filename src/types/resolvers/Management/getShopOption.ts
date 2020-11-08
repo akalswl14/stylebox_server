@@ -27,15 +27,20 @@ export const getShopOption = queryField("getShopOption", {
       });
       if (!queryResult) return null;
       for (const eachShopName of queryResult) {
+        if (!eachShopName.shopId) continue;
         let shopNameResult = await ctx.prisma.shopExternalLink.findMany({
           where: { shopId: eachShopName.shopId, onBottom: false },
           select: { url: true },
           orderBy: { order: "asc" },
         });
+        let shopLink = null;
         shops.push({
           id: eachShopName.shopId,
           shopName: eachShopName.word,
-          shopLink: shopNameResult[0].url,
+          shopLink:
+            shopNameResult.length > 0 && shopNameResult[0].url
+              ? shopNameResult[0].url
+              : null,
         });
       }
       return shops;
