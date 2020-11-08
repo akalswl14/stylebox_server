@@ -680,7 +680,7 @@ export const ProductToShopBranchInfo = objectType({
   definition(t) {
     t.int("id");
     t.string("shopName");
-    t.string("shopLink");
+    t.string("shopLink", { nullable: true });
     t.field("branches", { type: "ProductToBranchThumbnail", list: true });
   },
 });
@@ -768,8 +768,15 @@ export const PostRankConst = objectType({
 });
 
 export const ShopIdInfo = objectType({
-  name:"ShopIdInfo",
-  definition(t){
+  name: "ShopIdInfo",
+  definition(t) {
     t.int("shopId");
-  }
-})
+  },
+});
+
+export const ProductIdInfo = objectType({
+  name: "ProductIdInfo",
+  definition(t) {
+    t.int("productId");
+  },
+});

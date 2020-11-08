@@ -1,7 +1,7 @@
 import { intArg, mutationField, stringArg } from "@nexus/schema";
 
 export const createProduct = mutationField("createProduct", {
-  type: "Boolean",
+  type: "ProductIdInfo",
   args: {
     productName: stringArg({ required: true }),
     price: intArg({ required: true }),
@@ -11,7 +11,7 @@ export const createProduct = mutationField("createProduct", {
     tags: intArg({ list: true }),
     branchIds: intArg({ list: true }),
   },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -44,6 +44,18 @@ export const createProduct = mutationField("createProduct", {
         },
         select: { id: true },
       });
+      if (!queryResult) return null;
+
+      let imageResult = true;
+      if (productImage) {
+        imageResult = await ctx.prisma.productImage.create({
+          data: {
+            Product: { connect: { id: queryResult.id } },
+            url: "Product/" + queryResult.id + "/" + productImage,
+            order: 0,
+          },
+        });
+      }
       let linkResult = await ctx.prisma.productExternalLink.create({
         data: {
           url: externalLink,
@@ -52,10 +64,12 @@ export const createProduct = mutationField("createProduct", {
           Product: { connect: { id: queryResult.id } },
         },
       });
-      return queryResult && linkResult ? true : false;
+      return queryResult && linkResult && imageResult
+        ? { productId: queryResult.id }
+        : null;
     } catch (e) {
       console.log(e);
-      return false;
+      return null;
     }
   },
 });
