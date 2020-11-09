@@ -35,9 +35,6 @@ export const createProduct = mutationField("createProduct", {
         data: {
           names: { create: { lang: "VI", word: productName } },
           price,
-          images: productImage
-            ? { create: { url: productImage, order: 0 } }
-            : null,
           description,
           tags: { connect: tagList },
           branches: { connect: branchList },
