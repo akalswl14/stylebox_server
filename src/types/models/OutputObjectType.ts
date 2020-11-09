@@ -641,7 +641,7 @@ export const ProductBasicInfo = objectType({
     t.int("productId");
     t.string("productName");
     t.int("price");
-    t.string("productImage");
+    t.string("productImage", { nullable: true });
     t.string("externalLink");
   },
 });

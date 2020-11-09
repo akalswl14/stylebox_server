@@ -21,7 +21,8 @@ export const getProductBasicInfo = queryField("getProductBasicInfo", {
         productId: id,
         productName: queryResult.names[0].word,
         price: queryResult.price,
-        productImage: queryResult.images[0].url,
+        productImage:
+          queryResult.images.length > 0 ? queryResult.images[0].url : null,
         externalLink: queryResult.externalLink.url,
       };
     } catch (e) {
