@@ -29,7 +29,7 @@ export const updateProduct = mutationField("updateProduct", {
         tags,
         branchIds,
       } = args;
-      let queryResult;
+      let queryResult = true;
       if (productName) {
         let nameResult = await ctx.prisma.productName.findMany({
           where: { productId, lang: "VI" },
@@ -45,14 +45,17 @@ export const updateProduct = mutationField("updateProduct", {
         let deleteResult = await ctx.prisma.productImage.deleteMany({
           where: { productId },
         });
-        queryResult = await ctx.prisma.productImage.create({
-          data: {
-            Product: { connect: { id: productId } },
-            url: productImage,
-            order: 1,
-          },
-        });
-        if (!queryResult || !deleteResult) return false;
+        if (productImage) {
+          queryResult = await ctx.prisma.productImage.create({
+            data: {
+              Product: { connect: { id: productId } },
+              url: productImage,
+              order: 1,
+            },
+          });
+          if (!queryResult) return false;
+        }
+        if (!deleteResult) return false;
       }
       if (isDescriptionChange) {
         queryResult = await ctx.prisma.product.update({
@@ -82,7 +85,7 @@ export const updateProduct = mutationField("updateProduct", {
       }
       if (branchIds) {
         let originalBranches = await ctx.prisma.branch.findMany({
-          where: { products: { some: { id: { in: branchIds } } } },
+          where: { products: { some: { id: productId } } },
           select: { id: true },
         });
         let disconnectResult = await ctx.prisma.product.update({
@@ -111,12 +114,14 @@ export const updateProduct = mutationField("updateProduct", {
         });
         if (!queryResult) return false;
       }
-      queryResult = await ctx.prisma.product.update({
-        where: { id: productId },
-        data: {
-          price,
-        },
-      });
+      if (price) {
+        queryResult = await ctx.prisma.product.update({
+          where: { id: productId },
+          data: {
+            price,
+          },
+        });
+      }
       return queryResult ? true : false;
     } catch (e) {
       console.log(e);

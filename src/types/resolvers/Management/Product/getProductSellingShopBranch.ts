@@ -5,7 +5,7 @@ export const getProductSellingShopBranch = queryField(
   {
     type: "ProductToShopBranchInfo",
     args: {
-      shopId: intArg({ required: true }),
+      shopId: intArg({ nullable: true }),
       productId: intArg({ nullable: true }),
     },
     nullable: true,
@@ -13,7 +13,7 @@ export const getProductSellingShopBranch = queryField(
       try {
         const { shopId, productId } = args;
         let branches = [];
-        if (shopId === 0) {
+        if (shopId === 0 || (!shopId && !productId)) {
           return {
             id: 0,
             shopName: "",
@@ -21,23 +21,51 @@ export const getProductSellingShopBranch = queryField(
             branches,
           };
         }
-        let shopResult = await ctx.prisma.shop.findOne({
-          where: { id: shopId },
-          select: {
-            id: true,
-            names: { where: { lang: "VI" }, select: { word: true } },
-            externalLinks: {
-              where: { onBottom: false },
-              select: { url: true },
-              orderBy: { order: "asc" },
-            },
-            branches: {
-              select: {
-                id: true,
+        let shopResult;
+        if (!shopId && productId) {
+          let branchResult = await ctx.prisma.branch.findMany({
+            where: { products: { some: { id: productId } } },
+            select: { shopId: true },
+          });
+          if (branchResult.length === 0) return null;
+          let shopId = branchResult[0].shopId;
+          if (!shopId) return null;
+          shopResult = await ctx.prisma.shop.findOne({
+            where: { id: shopId },
+            select: {
+              id: true,
+              names: { where: { lang: "VI" }, select: { word: true } },
+              externalLinks: {
+                where: { onBottom: false },
+                select: { url: true },
+                orderBy: { order: "asc" },
+              },
+              branches: {
+                select: {
+                  id: true,
+                },
               },
             },
-          },
-        });
+          });
+        } else {
+          shopResult = await ctx.prisma.shop.findOne({
+            where: { id: shopId },
+            select: {
+              id: true,
+              names: { where: { lang: "VI" }, select: { word: true } },
+              externalLinks: {
+                where: { onBottom: false },
+                select: { url: true },
+                orderBy: { order: "asc" },
+              },
+              branches: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          });
+        }
         if (!shopResult) return null;
         for (const eachBranch of shopResult.branches) {
           let branchResult = await ctx.prisma.branch.findOne({
