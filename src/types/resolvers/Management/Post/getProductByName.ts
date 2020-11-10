@@ -1,7 +1,7 @@
-import { queryField, stringArg } from '@nexus/schema';
+import { queryField, stringArg } from "@nexus/schema";
 
-export const getProductByName = queryField('getProductByName', {
-  type: 'SubProductList',
+export const getProductByName = queryField("getProductByName", {
+  type: "GetSubProductInfo",
   args: {
     productName: stringArg({ required: true }),
   },
@@ -10,7 +10,7 @@ export const getProductByName = queryField('getProductByName', {
   resolve: async (_, args, ctx) => {
     try {
       const { productName } = args;
-      let lang = 'VI',
+      let lang = "VI",
         searchResult = [];
       let products = await ctx.prisma.product.findMany({
         where: { names: { some: { word: { contains: productName } } } },

@@ -1,7 +1,7 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getPostImages = queryField('getPostImages', {
-  type: 'UrlOrder',
+export const getPostImages = queryField("getPostImages", {
+  type: "UrlOrder",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
@@ -23,6 +23,10 @@ export const getPostImages = queryField('getPostImages', {
           url: image.url,
         });
       }
+
+      images.sort(function (a, b) {
+        return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
+      });
 
       return images ? images : null;
     } catch (e) {
