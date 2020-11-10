@@ -1,7 +1,7 @@
-import { queryField, stringArg } from '@nexus/schema';
+import { queryField, stringArg } from "@nexus/schema";
 
-export const getShopByProductName = queryField('getShopByProductName', {
-  type: 'ShopByProductName',
+export const getShopByProductName = queryField("getShopByProductName", {
+  type: "ShopByProductName",
   args: {
     productName: stringArg({ required: true }),
   },
@@ -11,12 +11,13 @@ export const getShopByProductName = queryField('getShopByProductName', {
     try {
       const { productName } = args;
       let shop = [],
-        lang = 'VI';
+        lang = "VI";
 
       let branches = await ctx.prisma.product.findMany({
         where: { names: { some: { word: { contains: productName } } } },
         select: {
           id: true,
+          price: true,
           names: { where: { lang }, select: { word: true } },
           branches: { select: { shopId: true } },
         },
@@ -36,6 +37,7 @@ export const getShopByProductName = queryField('getShopByProductName', {
             productName: branch.names[0].word,
             shopId: branch.branches[0].shopId,
             shopName: shopInfo.names[0].word,
+            price: branch.price,
           });
         }
       }
