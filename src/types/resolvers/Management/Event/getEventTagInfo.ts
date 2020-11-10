@@ -13,7 +13,7 @@ export const getEventTagInfo = queryField("getEventTagInfo", {
         classResult,
         tagIdList,
         tags = [],
-        order = 0;
+        order = 1;
       queryResult = await ctx.prisma.event.findOne({
         where: { id },
         select: {

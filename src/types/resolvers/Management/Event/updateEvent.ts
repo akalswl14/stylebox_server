@@ -55,13 +55,9 @@ export const updateEvent = mutationField("updateEvent", {
       });
       if (!eventResult) return false;
       if (tags) {
-        while (tagIdList.length < tags.length) {
-          for (const eachTag of tags) {
-            if (eachTag.order === num) {
-              tagIdList.push(eachTag.id);
-            }
-          }
-          num++;
+        tags.sort((a, b) => a.order - b.order);
+        for (const eachTag of tags) {
+          tagIdList.push(eachTag.id);
         }
         for (const eachTagId of tagIdList) {
           tagIdDicList.push({ id: eachTagId });
@@ -95,7 +91,7 @@ export const updateEvent = mutationField("updateEvent", {
       if (contentsImages) {
         disconnectResult = await ctx.prisma.event.update({
           where: { id: eventId },
-          data: { images: { delete: eventResult.contentsImages } },
+          data: { contentsImages: { delete: eventResult.contentsImages } },
         });
         connectResult = await ctx.prisma.event.update({
           where: { id: eventId },
@@ -108,7 +104,7 @@ export const updateEvent = mutationField("updateEvent", {
       if (videos) {
         disconnectResult = await ctx.prisma.event.update({
           where: { id: eventId },
-          data: { images: { delete: eventResult.videos } },
+          data: { videos: { delete: eventResult.videos } },
         });
         let videoList = [];
         for (const eachVideo of videos) {
@@ -129,12 +125,12 @@ export const updateEvent = mutationField("updateEvent", {
       queryResult = await ctx.prisma.event.update({
         where: { id: eventId },
         data: {
-          title,
-          startDate,
-          dueDate: endDate,
-          url,
-          bannerImage,
-          isOnList,
+          title: title ?? undefined,
+          startDate: startDate ?? undefined,
+          dueDate: endDate ?? undefined,
+          url: url ?? undefined,
+          bannerImage: bannerImage ?? undefined,
+          isOnList: typeof isOnList === "boolean" ? isOnList : undefined,
         },
       });
       return queryResult ? true : false;
