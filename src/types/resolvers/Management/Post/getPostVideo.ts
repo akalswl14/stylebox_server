@@ -1,7 +1,7 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getPostVideo = queryField('getPostVideo', {
-  type: 'UrlOrder',
+export const getPostVideo = queryField("getPostVideo", {
+  type: "UrlOrder",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
@@ -25,6 +25,10 @@ export const getPostVideo = queryField('getPostVideo', {
           url: video.url,
         });
       }
+
+      videos.sort(function (a, b) {
+        return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
+      });
 
       return videos ? videos : null;
     } catch (e) {

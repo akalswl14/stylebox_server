@@ -1,7 +1,7 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getPostSubProduct = queryField('getPostSubProduct', {
-  type: 'SubProductList',
+export const getPostSubProduct = queryField("getPostSubProduct", {
+  type: "SubProductList",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
@@ -10,9 +10,9 @@ export const getPostSubProduct = queryField('getPostSubProduct', {
       const { id } = args;
       let products = [],
         lang,
-        order = 0;
+        order = 1;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       let subProductResult = await ctx.prisma.post.findOne({
         where: { id },

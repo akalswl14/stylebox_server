@@ -732,6 +732,16 @@ export const SubProductList = objectType({
   },
 });
 
+export const GetSubProductInfo = objectType({
+  name: "GetSubProductInfo",
+  definition(t) {
+    t.int("productId");
+    t.string("productName");
+    t.int("price");
+    t.string("link");
+  },
+});
+
 export const postNumPostList = objectType({
   name: "postNumPostList",
   definition(t) {

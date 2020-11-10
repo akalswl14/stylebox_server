@@ -1,7 +1,7 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getPostTagInfo = queryField('getPostTagInfo', {
-  type: 'TagManagementThumbnail',
+export const getPostTagInfo = queryField("getPostTagInfo", {
+  type: "TagManagementThumbnail",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
@@ -10,9 +10,9 @@ export const getPostTagInfo = queryField('getPostTagInfo', {
       const { id } = args;
       let lang,
         tags = [],
-        order = 0;
+        order = 1;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       let tagList = await ctx.prisma.post.findOne({
         where: { id },

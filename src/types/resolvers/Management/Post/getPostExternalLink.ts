@@ -1,7 +1,7 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getPostExternalLink = queryField('getPostExternalLink', {
-  type: 'PostExternalLink',
+export const getPostExternalLink = queryField("getPostExternalLink", {
+  type: "PostExternalLink",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
@@ -29,6 +29,10 @@ export const getPostExternalLink = queryField('getPostExternalLink', {
           order: link.order,
         });
       }
+
+      links.sort(function (a, b) {
+        return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
+      });
 
       return links ? links : null;
     } catch (e) {
