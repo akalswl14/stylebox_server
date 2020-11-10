@@ -13,7 +13,7 @@ export const getShopTagInfo = queryField("getShopTagInfo", {
         classResult,
         tagIdList,
         tags = [],
-        order = 0;
+        order = 1;
       queryResult = await ctx.prisma.shop.findOne({
         where: { id },
         select: {
