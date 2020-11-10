@@ -790,3 +790,10 @@ export const ProductIdInfo = objectType({
     t.int("productId");
   },
 });
+
+export const EventIdInfo = objectType({
+  name: "EventIdInfo",
+  definition(t) {
+    t.int("eventId");
+  },
+});

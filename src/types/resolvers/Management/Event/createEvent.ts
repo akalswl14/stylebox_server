@@ -1,7 +1,7 @@
 import { arg, booleanArg, mutationField, stringArg } from "@nexus/schema";
 
 export const createEvent = mutationField("createEvent", {
-  type: "Boolean",
+  type: "EventIdInfo",
   args: {
     title: stringArg({ required: true }),
     startDate: arg({ type: "DateTime", required: true }),
@@ -14,7 +14,7 @@ export const createEvent = mutationField("createEvent", {
     videos: arg({ type: "ImageInputType", list: true, required: true }),
     tags: arg({ type: "IdOrderInputType", nullable: true, list: true }),
   },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const {
@@ -58,18 +58,40 @@ export const createEvent = mutationField("createEvent", {
           dueDate: endDate,
           url,
           bannerImage,
-          images: { create: images },
-          contentsImages: { create: contentsImages },
           videos: { create: videoList },
           onDetailTagId: { set: tagIdList },
           tags: { connect: tagIdDicList },
           isOnList,
         },
+        select: { id: true },
       });
-      return queryResult ? true : false;
+      if (!queryResult || !queryResult.id) return null;
+      let rtnMainImages = [];
+      for (const eachImage of images) {
+        rtnMainImages.push({
+          order: eachImage.order,
+          url: "Event/" + queryResult.id + "/" + eachImage.url,
+        });
+      }
+      let rtnContentsImages = [];
+      for (const eachImage of contentsImages) {
+        rtnContentsImages.push({
+          order: eachImage.order,
+          url: "Event/" + queryResult.id + "/" + eachImage.url,
+        });
+      }
+      let ImageResult = await ctx.prisma.event.update({
+        where: { id: queryResult.id },
+        data: {
+          bannerImage: "Event/" + queryResult.id + "/" + bannerImage,
+          images: { create: rtnMainImages },
+          contentsImages: { create: rtnContentsImages },
+        },
+      });
+      return ImageResult ? { eventId: queryResult.id } : null;
     } catch (e) {
       console.log(e);
-      return false;
+      return null;
     }
   },
 });
