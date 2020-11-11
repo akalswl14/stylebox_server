@@ -1,9 +1,9 @@
-import { arg, mutationField } from '@nexus/schema';
+import { arg, mutationField } from "@nexus/schema";
 
-export const updateEventList = mutationField('updateEventList', {
-  type: 'Boolean',
+export const updateEventList = mutationField("updateEventList", {
+  type: "Boolean",
   args: {
-    events: arg({ type: 'EventListInputType', list: true, required: true }),
+    events: arg({ type: "EventListInputType", list: true, required: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -15,6 +15,7 @@ export const updateEventList = mutationField('updateEventList', {
           data: {
             startDate: { set: event.eventStart },
             dueDate: { set: event.eventEnd },
+            isOnList: event.isOnList,
           },
         });
       }
