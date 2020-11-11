@@ -57,7 +57,7 @@ export const PostDetail = objectType({
       list: true,
     });
     t.field("postImages", { type: "contentsThumbnail", list: true });
-    t.field("tags", { type: "ClassTagDetail", list: true });
+    t.field("tags", { type: "PostTagDetail", list: true });
     t.string("shopTags", { list: true });
     t.field("products", { type: "ProductThumbnail", list: true });
   },
@@ -796,5 +796,15 @@ export const EventIdInfo = objectType({
   name: "EventIdInfo",
   definition(t) {
     t.int("eventId");
+  },
+});
+
+export const PostTagDetail = objectType({
+  name: "PostTagDetail",
+  definition(t) {
+    t.int("id");
+    t.string("tagName");
+    t.int("order");
+    t.field("Category", { type: "Category" });
   },
 });

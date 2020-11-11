@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getPostDetail = queryField('getPostDetail', {
-  type: 'PostDetail',
+export const getPostDetail = queryField("getPostDetail", {
+  type: "PostDetail",
   args: {
     lang: stringArg({ nullable: true }),
     postId: intArg({ required: true }),
@@ -24,7 +24,7 @@ export const getPostDetail = queryField('getPostDetail', {
         mainProduct,
         tagResult;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       await ctx.prisma.view.create({
         data: {
@@ -62,11 +62,11 @@ export const getPostDetail = queryField('getPostDetail', {
           },
           postExternalLinks: {
             where: { isShown: true },
-            orderBy: { order: 'asc' },
+            orderBy: { order: "asc" },
             select: { url: true, linkType: true, id: true, order: true },
           },
           images: {
-            orderBy: { order: 'asc' },
+            orderBy: { order: "asc" },
             select: { id: true, order: true, url: true },
           },
           onDetailTagId: true,
@@ -92,13 +92,15 @@ export const getPostDetail = queryField('getPostDetail', {
           select: {
             id: true,
             names: { where: { lang }, select: { word: true } },
+            category: true,
           },
         });
-
+        if (!tagResult) continue;
         tags.push({
-          id: tagResult?.id,
+          id: tagResult.id,
           order: order++,
-          tagName: tagResult?.names[0].word,
+          tagName: tagResult.names[0].word,
+          category: tagResult.category,
         });
       }
 
@@ -135,7 +137,7 @@ export const getPostDetail = queryField('getPostDetail', {
       let shopTags = [];
       for (const eachTag of postPrismaResult.Shop?.onDetailTagId) {
         let queryResult = await ctx.prisma.tagName.findMany({
-          where: { tagId: eachTag, lang: 'VI' },
+          where: { tagId: eachTag, lang: "VI" },
           select: { word: true },
         });
         if (queryResult.length > 0) shopTags.push(queryResult[0].word);
