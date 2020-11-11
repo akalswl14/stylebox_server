@@ -805,6 +805,6 @@ export const PostTagDetail = objectType({
     t.int("id");
     t.string("tagName");
     t.int("order");
-    t.field("Category", { type: "Category" });
+    t.field("Category", { type: "Category", nullable: true });
   },
 });

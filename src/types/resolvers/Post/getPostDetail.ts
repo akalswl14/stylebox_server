@@ -103,7 +103,6 @@ export const getPostDetail = queryField("getPostDetail", {
           category: tagResult.category,
         });
       }
-
       for (const eachImage of postPrismaResult.images) {
         postImages.push({
           id: eachImage.id,
