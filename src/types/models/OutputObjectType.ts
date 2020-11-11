@@ -757,6 +757,7 @@ export const ShopByProductName = objectType({
     t.string("productName");
     t.int("shopId");
     t.string("shopName");
+    t.int("price", { nullable: true });
   },
 });
 
