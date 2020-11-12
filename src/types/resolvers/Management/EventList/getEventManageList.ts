@@ -15,7 +15,6 @@ export const getEventManageList = queryField("getEventManageList", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        pageNum = 1,
         eventId,
         eventTitle,
         eventIdAsc,
@@ -23,6 +22,10 @@ export const getEventManageList = queryField("getEventManageList", {
         eventStartAsc,
         eventEndAsc,
       } = args;
+
+      let { pageNum } = args;
+
+      if (!pageNum) pageNum = 1;
 
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);

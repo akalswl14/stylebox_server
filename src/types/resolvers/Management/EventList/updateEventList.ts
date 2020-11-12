@@ -9,16 +9,33 @@ export const updateEventList = mutationField("updateEventList", {
   resolve: async (_, args, ctx) => {
     try {
       const { events = [] } = args;
+      let updateQuery;
+
       for (const event of events) {
-        await ctx.prisma.event.update({
-          where: { id: event.eventId },
-          data: {
-            startDate: { set: event.eventStart },
-            dueDate: { set: event.eventEnd },
-            isOnList: event.isOnList,
-          },
-        });
+        if (event) {
+          if (event.isOnList) {
+            updateQuery = await ctx.prisma.event.update({
+              where: { id: event.eventId },
+              data: {
+                startDate: { set: event.eventStart },
+                dueDate: { set: event.eventEnd },
+                isOnList: event.isOnList,
+              },
+            });
+          } else {
+            updateQuery = await ctx.prisma.event.update({
+              where: { id: event.eventId },
+              data: {
+                startDate: { set: event.eventStart },
+                dueDate: { set: event.eventEnd },
+              },
+            });
+          }
+        }
       }
+
+      if (!updateQuery) return false;
+
       return true;
     } catch (e) {
       console.log(e);
