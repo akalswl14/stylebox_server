@@ -1,14 +1,14 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getClassInfo = queryField('getClassInfo', {
-  type: 'ClassInfo',
+export const getClassInfo = queryField("getClassInfo", {
+  type: "ClassInfo",
   args: { id: intArg({ required: true }) },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
       let lang;
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       let classResult = await ctx.prisma.class.findOne({
         where: { id },
@@ -46,7 +46,7 @@ export const getClassInfo = queryField('getClassInfo', {
         updatedAt: classResult.updatedAt,
       };
 
-      return classInfo;
+      return classInfo ? classInfo : null;
     } catch (e) {
       console.log(e);
       return null;

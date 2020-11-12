@@ -1,4 +1,5 @@
 import { intArg, queryField } from "@nexus/schema";
+import { LinkType } from "@prisma/client";
 
 export const getPostExternalLink = queryField("getPostExternalLink", {
   type: "PostExternalLink",
@@ -8,7 +9,8 @@ export const getPostExternalLink = queryField("getPostExternalLink", {
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
-      let links = [];
+
+      let links : any = [];
 
       let externalLink = await ctx.prisma.post.findOne({
         where: { id },
@@ -30,9 +32,34 @@ export const getPostExternalLink = queryField("getPostExternalLink", {
         });
       }
 
-      links.sort(function (a, b) {
-        return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
-      });
+      let Links: {
+        linkType: LinkType;
+        url: string;
+        isShown: boolean;
+        order: number;
+      }[] = [];
+
+      for (const link of links) {
+        if (link) {
+          if (link.linkType && link.url && link.isShown && link.order) {
+            Links.push({
+              url: link.url,
+              linkType: link.linkType,
+              isShown: link.isShown,
+              order: link.order,
+            });
+          }
+        }
+      }
+
+      Links.sort((a, b) =>
+        a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+      );
+
+      links = [];
+      for (const link of Links) {
+        links.push(link);
+      }
 
       return links ? links : null;
     } catch (e) {

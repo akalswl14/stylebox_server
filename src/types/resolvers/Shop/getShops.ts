@@ -14,23 +14,41 @@ export const getShops = queryField("getShops", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const {
-        lang = "VI",
-        locationId,
-        tagId,
-        classId,
-        isClass,
-        cursorId,
-      } = args;
+      const { locationId, tagId, classId, isClass, cursorId } = args;
       let shopResults,
         queryResult,
         loadingPostNum,
         totalShopNum = 0,
         shops = [],
-        classTags = [],
-        queryOption,
+        classTags: { id: number }[] = [],
+        queryOption: {
+          cursor?: { id: number };
+          skip?: number;
+          where?: {
+            tags: { some: { AND?: { id: number }[]; OR?: { id: number }[] } };
+          };
+          orderBy: {
+            monthlyRankScore: string;
+          };
+          take: number;
+          select: {
+            id: boolean;
+            logoUrl: boolean;
+            names: {
+              select: {
+                word: boolean;
+              };
+              where: {
+                lang: string | null;
+              };
+            };
+            onDetailTagId: boolean;
+          };
+        },
         countQueryOption,
         tags = [];
+      let { lang } = args;
+      if (!lang) lang = "VI";
       try {
         const userId = Number(getUserId(ctx));
         queryResult = await ctx.prisma.setting.findOne({
@@ -95,7 +113,13 @@ export const getShops = queryField("getShops", {
         for (const eachShop of shopResults) {
           let isLikeShop,
             queryResult,
-            tmp = {
+            tmp: {
+              shopId: number;
+              shopName: string;
+              logoUrl: string | null;
+              isLikeShop: boolean;
+              tagNames: string[];
+            } = {
               shopId: eachShop.id,
               shopName: eachShop.names[0].word,
               logoUrl: eachShop.logoUrl,
@@ -119,6 +143,7 @@ export const getShops = queryField("getShops", {
                 names: { where: { lang }, select: { word: true } },
               },
             });
+            if (!queryResult) return null;
             if (queryResult) {
               tmp.tagNames.push(queryResult.names[0].word);
               order++;

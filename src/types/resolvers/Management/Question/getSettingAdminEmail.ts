@@ -1,8 +1,9 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
+import { AnyAaaaRecord } from "dns";
 
-export const getSettingAdminEmail = queryField('getSettingAdminEmail', {
-  type: 'AdminInfo',
-  nullable: false,
+export const getSettingAdminEmail = queryField("getSettingAdminEmail", {
+  type: "AdminInfo",
+  nullable: true,
   resolve: async (_, __, ctx) => {
     try {
       let AdminSetting;
@@ -14,12 +15,12 @@ export const getSettingAdminEmail = queryField('getSettingAdminEmail', {
 
       if (!AdminSetting) return null;
 
-      let AdminInfo = {
+      let AdminInfo: any = {
         email: AdminSetting.adminEmail,
         pw: AdminSetting.adminEmailPW,
       };
 
-      return AdminInfo;
+      return AdminInfo ? AdminInfo : null;
     } catch (e) {
       console.log(e);
       return null;

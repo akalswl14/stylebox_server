@@ -1,12 +1,12 @@
-import { arg, mutationField, stringArg } from '@nexus/schema';
+import { arg, mutationField, stringArg } from "@nexus/schema";
 
-export const updateSettingQuestion = mutationField('updateSettingQuestion', {
-  type: 'Boolean',
+export const updateSettingQuestion = mutationField("updateSettingQuestion", {
+  type: "Boolean",
   args: {
     email: stringArg({ nullable: true }),
     pw: stringArg({ nullable: true }),
     questionTypes: arg({
-      type: 'QuestionInputType',
+      type: "QuestionInputType",
       nullable: true,
       list: true,
     }),
@@ -15,6 +15,7 @@ export const updateSettingQuestion = mutationField('updateSettingQuestion', {
   resolve: async (_, args, ctx) => {
     try {
       const { questionTypes = [], email, pw } = args;
+      let updateQuery;
 
       if (email) {
         await ctx.prisma.setting.update({
@@ -30,23 +31,35 @@ export const updateSettingQuestion = mutationField('updateSettingQuestion', {
         });
       }
 
-      if (questionTypes.length > 0) {
-        questionTypes.sort(function (
-          a: { order: number },
-          b: { order: number }
-        ) {
-          return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
-        });
-        let questionOptions = [];
-        for (const type of questionTypes) {
-          questionOptions.push(type.questionType);
+      if (questionTypes) {
+        let QuestionType: { order: number; questionType: string }[] = [];
+
+        for (const eachItem of questionTypes) {
+          if (eachItem) {
+            if (eachItem.order && eachItem.questionType)
+              QuestionType.push({
+                order: eachItem.order,
+                questionType: eachItem.questionType,
+              });
+          }
         }
-        console.log(questionOptions);
-        await ctx.prisma.setting.update({
-          where: { id: 1 },
-          data: { QuestionOption: { set: questionOptions } },
-        });
+
+        if (questionTypes.length > 0) {
+          QuestionType.sort((a, b) =>
+            a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+          );
+          let questionOptions = [];
+          for (const type of QuestionType) {
+            questionOptions.push(type.questionType);
+          }
+          updateQuery = await ctx.prisma.setting.update({
+            where: { id: 1 },
+            data: { QuestionOption: { set: questionOptions } },
+          });
+        }
       }
+
+      if (!updateQuery) return false;
 
       return true;
     } catch (e) {

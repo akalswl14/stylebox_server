@@ -1,10 +1,10 @@
-import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
-export const createTagInfo = mutationField('createTagInfo', {
-  type: 'Boolean',
+export const createTagInfo = mutationField("createTagInfo", {
+  type: "Boolean",
   args: {
     tagName: stringArg({ required: true }),
-    tagCategory: arg({ type: 'Category', required: true }),
+    tagCategory: arg({ type: "Category", required: true }),
     tagImage: stringArg({ nullable: true }),
     classId: intArg({ required: true }),
   },
@@ -14,12 +14,12 @@ export const createTagInfo = mutationField('createTagInfo', {
       const { tagName, tagCategory, tagImage, classId } = args;
       let lang,
         isClass = false;
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       if (
-        tagCategory === 'Style' ||
-        tagCategory === 'Feature' ||
-        tagCategory === 'Price'
+        tagCategory === "Style" ||
+        tagCategory === "Feature" ||
+        tagCategory === "Price"
       ) {
         isClass = true;
       } else {
@@ -27,7 +27,7 @@ export const createTagInfo = mutationField('createTagInfo', {
           where: { id: classId, category: tagCategory },
           select: { names: { where: { lang }, select: { word: true } } },
         });
-        if (!classNameResult) return null;
+        if (!classNameResult) return false;
         if (classNameResult[0].names[0].word === tagName) {
           isClass = true;
         }
@@ -44,7 +44,9 @@ export const createTagInfo = mutationField('createTagInfo', {
         },
       });
 
-      return queryResult ? true : false;
+      if (!queryResult) return false;
+
+      return true;
     } catch (e) {
       console.log(e);
       return false;

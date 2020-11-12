@@ -27,27 +27,72 @@ export const createSetting = mutationField("createSetting", {
         mainBubbleTagId,
         bestBubbleTagId,
         shopBubbleTagId,
-        loadingPostNum = 20,
         TodaysStylesPeriod,
-        bestTotalPostNum = 300,
-        bestConstA = 1.0,
-        bestConstB = 1.0,
-        shopConstA = 1.0,
-        shopConstB = 1.0,
-        shopConstC = 1.0,
         adminEmail,
         adminEmailPW,
         mainEventBannerId,
         QuestionOption,
         SearchPeriod,
       } = args;
+
       let setting;
+
+      let {
+        loadingPostNum,
+        bestTotalPostNum,
+        bestConstA,
+        bestConstB,
+        shopConstA,
+        shopConstB,
+        shopConstC,
+      } = args;
+
+      if (!loadingPostNum) loadingPostNum = 20;
+      if (!bestTotalPostNum) bestTotalPostNum = 300;
+      if (!bestConstA) bestConstA = 1.0;
+      if (!bestConstB) bestConstB = 1.0;
+      if (!shopConstA) shopConstA = 1.0;
+      if (!shopConstB) shopConstB = 1.0;
+      if (!shopConstC) shopConstC = 1.0;
+
+      let MainBubbleTagId: number[] = [];
+      let BestBubbleTagId: number[] = [];
+      let ShopBubbleTagId: number[] = [];
+      let MainEventBannerId: number[] = [];
+      let questionOption: string[] = [];
+
+      if (mainBubbleTagId) {
+        for (const item of mainBubbleTagId) {
+          if (item) MainBubbleTagId.push(item);
+        }
+      }
+      if (bestBubbleTagId) {
+        for (const item of bestBubbleTagId) {
+          if (item) BestBubbleTagId.push(item);
+        }
+      }
+      if (shopBubbleTagId) {
+        for (const item of shopBubbleTagId) {
+          if (item) ShopBubbleTagId.push(item);
+        }
+      }
+      if (mainEventBannerId) {
+        for (const item of mainEventBannerId) {
+          if (item) MainEventBannerId.push(item);
+        }
+      }
+      if (QuestionOption) {
+        for (const item of QuestionOption) {
+          if (item) questionOption.push(item);
+        }
+      }
+
       try {
         setting = await ctx.prisma.setting.create({
           data: {
-            mainBubbleTagId: { set: mainBubbleTagId },
-            bestBubbleTagId: { set: bestBubbleTagId },
-            shopBubbleTagId: { set: shopBubbleTagId },
+            mainBubbleTagId: { set: MainBubbleTagId },
+            bestBubbleTagId: { set: BestBubbleTagId },
+            shopBubbleTagId: { set: ShopBubbleTagId },
             loadingPostNum,
             TodaysStylesPeriod,
             bestTotalPostNum,
@@ -58,8 +103,8 @@ export const createSetting = mutationField("createSetting", {
             shopConstC,
             adminEmail,
             adminEmailPW,
-            mainEventBannerId: { set: mainEventBannerId },
-            QuestionOption: { set: QuestionOption },
+            mainEventBannerId: { set: MainEventBannerId },
+            QuestionOption: { set: questionOption },
             SearchPeriod,
           },
         });

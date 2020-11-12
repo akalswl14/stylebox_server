@@ -9,7 +9,8 @@ export const getLocationOption = queryField("getLocationOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "VI" } = args;
+      let { lang } = args;
+      if (!lang) lang = "VI";
       // let nameResult,
       //   tagResult,
       //   tags = [];
@@ -46,7 +47,7 @@ export const getLocationOption = queryField("getLocationOption", {
       if (!nameResult) return null;
       let order = 0;
       for (const eachName of nameResult) {
-        if (eachName.tagId) {
+        if (eachName.tagId && eachName.Tag) {
           tags.push({
             id: eachName.tagId,
             tagName: eachName.word,

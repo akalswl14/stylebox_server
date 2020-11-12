@@ -1,7 +1,7 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
 
-export const getEventBanners = queryField('getEventBanners', {
-  type: 'EventBanner',
+export const getEventBanners = queryField("getEventBanners", {
+  type: "EventBanner",
   nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
@@ -9,30 +9,40 @@ export const getEventBanners = queryField('getEventBanners', {
       let prismaResult,
         eventBannersId,
         order = 0,
-        rtn = [];
+        rtn: any = [];
       try {
         prismaResult = await ctx.prisma.setting.findOne({
           where: { id: 1 },
           select: { mainEventBannerId: true },
         });
 
-        eventBannersId = prismaResult?.mainEventBannerId;
+        if (!prismaResult) return null;
 
-        if (eventBannersId) {
-          for (const eachId of eventBannersId) {
-            prismaResult = await ctx.prisma.event.findOne({
-              where: { id: eachId },
-              select: { bannerImage: true, id: true },
-            });
-            rtn.push({
-              eventId: prismaResult?.id,
-              bannerImage: prismaResult?.bannerImage,
-              order,
-            });
-            order++;
-          }
+        eventBannersId = prismaResult.mainEventBannerId;
+
+        for (const eachId of eventBannersId) {
+          prismaResult = await ctx.prisma.event.findOne({
+            where: { id: eachId },
+            select: { bannerImage: true, id: true },
+          });
+
+          if (!prismaResult) return null;
+
+          let rtnObject: {
+            eventId?: number | null;
+            bannerImage?: string | null;
+            order?: number | null;
+          } | null = {
+            eventId: prismaResult.id,
+            bannerImage: prismaResult.bannerImage,
+            order: order,
+          };
+
+          rtn.push(rtnObject);
+          order++;
         }
-        return rtn ? rtn : null;
+
+        return rtn;
       } catch (e) {
         console.log(e);
       }

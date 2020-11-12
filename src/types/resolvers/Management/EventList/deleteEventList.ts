@@ -37,7 +37,29 @@ export const deleteEventList = mutationField("deleteEventList", {
         where: { id: { in: EventIds } },
       });
 
-      if (!deleteQuery || !queryResult) return false;
+      let settingEventResult = await ctx.prisma.setting.findOne({
+        where: { id: 1 },
+        select: {
+          mainEventBannerId: true,
+        },
+      });
+
+      if (!settingEventResult) return false;
+
+      let eventBannerList = settingEventResult.mainEventBannerId.slice();
+      for (const id of settingEventResult.mainEventBannerId) {
+        if (EventIds.indexOf(id) >= 0) {
+          const idx = eventBannerList.indexOf(id);
+          if (idx > -1) eventBannerList.splice(idx, 1);
+        }
+      }
+
+      let eventBannerUpdate = await ctx.prisma.setting.update({
+        where: { id: 1 },
+        data: { mainEventBannerId: { set: eventBannerList } },
+      });
+
+      if (!deleteQuery || !queryResult || !eventBannerUpdate) return false;
 
       return queryResult ? true : false;
     } catch (e) {

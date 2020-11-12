@@ -9,7 +9,9 @@ export const getStyleOption = queryField("getStyleOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "VI" } = args;
+      let { lang } = args;
+      if (!lang) lang = "VI";
+
       let nameResult,
         tags = [];
       nameResult = await ctx.prisma.tagName.findMany({

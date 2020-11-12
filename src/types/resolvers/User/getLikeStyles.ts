@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getLikeStyles = queryField('getLikeStyles', {
-  type: 'PostList',
+export const getLikeStyles = queryField("getLikeStyles", {
+  type: "PostList",
   args: {
     lang: stringArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
@@ -22,7 +22,7 @@ export const getLikeStyles = queryField('getLikeStyles', {
 
       const userId = Number(getUserId(ctx));
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -85,22 +85,26 @@ export const getLikeStyles = queryField('getLikeStyles', {
       });
 
       for (const eachPost of QueryResult) {
-        mainProduct = await ctx.prisma.product.findOne({
-          where: { id: eachPost.mainProductId },
-          select: {
-            names: { where: { lang }, select: { word: true } },
-          },
-        });
+        if (eachPost.mainProductId) {
+          mainProduct = await ctx.prisma.product.findOne({
+            where: { id: eachPost.mainProductId },
+            select: {
+              names: { where: { lang }, select: { word: true } },
+            },
+          });
 
-        if (!mainProduct) return null;
+          if (!mainProduct) return null;
 
-        posts.push({
-          postId: eachPost.id,
-          productName: mainProduct.names[0].word,
-          shopName: eachPost.Shop?.names[0].word,
-          postImage: eachPost.images[0].url,
-          price: eachPost.mainProductPrice,
-        });
+          posts.push({
+            postId: eachPost.id,
+            productName: mainProduct.names[0].word,
+            shopName: eachPost.Shop?.names[0].word,
+            postImage: eachPost.images[0].url,
+            price: eachPost.mainProductPrice,
+          });
+        } else {
+          return null;
+        }
       }
 
       let rtn = {

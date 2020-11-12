@@ -16,7 +16,6 @@ export const getTagList = queryField("getTagList", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        pageNum = 1,
         tagId,
         tagName,
         category,
@@ -25,6 +24,9 @@ export const getTagList = queryField("getTagList", {
         tagNameAsc,
         categoryAsc,
       } = args;
+
+      let { pageNum } = args;
+      if (!pageNum) pageNum = 1;
 
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
@@ -88,7 +90,7 @@ export const getTagList = queryField("getTagList", {
         let tagAscList = [];
 
         for (const eachtag of tagNameAscResult) {
-          tagAscList.push(eachtag.tagId);
+          if (eachtag.tagId) tagAscList.push(eachtag.tagId);
         }
 
         for (const id of tagAscList) {

@@ -1,34 +1,88 @@
-import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
-export const createPostManage = mutationField('createPostManage', {
-  type: 'Boolean',
+export const createPostManage = mutationField("createPostManage", {
+  type: "Boolean",
   args: {
     mainProductId: intArg({ nullable: true }),
     priority: intArg({ nullable: true }),
     description: stringArg({ nullable: true }),
-    tags: arg({ type: 'IdOrderInputType', required: true, list: true }),
-    externalLinks: arg({ type: 'LinkInputType', required: true, list: true }),
-    images: arg({ type: 'ImageInputType', required: true, list: true }),
-    videos: arg({ type: 'VideoInputType', required: true, list: true }),
+    tags: arg({ type: "IdOrderInputType", required: true, list: [true] }),
+    externalLinks: arg({ type: "LinkInputType", required: true, list: [true] }),
+    images: arg({ type: "ImageInputType", required: true, list: [true] }),
+    videos: arg({ type: "VideoInputType", required: true, list: [true] }),
     subProducts: arg({
-      type: 'idDicInputType',
+      type: "idDicInputType",
       required: true,
-      list: true,
+      list: [true],
     }),
   },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const {
         mainProductId,
         priority,
         description,
-        tags = [],
-        externalLinks = [],
-        images = [],
-        videos = [],
-        subProducts = [],
+        tags,
+        externalLinks,
+        videos,
+        images,
+        subProducts,
       } = args;
+
+      let ImageArray: { url: string; order: number }[] = [];
+      let VideoArray: { isYoutube: boolean; order: number; url: string }[] = [];
+      let ExternalLinkArray: {
+        isShown: boolean;
+        linkType:
+          | "Facebook"
+          | "FacebookMessanger"
+          | "Instagram"
+          | "LAZADA"
+          | "OnlineShop"
+          | "Sendo"
+          | "Shopee"
+          | "Tiki"
+          | "TikTok"
+          | "Youtube";
+        order: number;
+        url: string;
+      }[] = [];
+      let SubProductArray: { id: number }[] = [];
+
+      if (images) {
+        for (const eachItem of images) {
+          if (eachItem) ImageArray.push(eachItem);
+        }
+      }
+
+      if (videos) {
+        for (const eachItem of videos) {
+          if (eachItem) VideoArray.push(eachItem);
+        }
+      }
+
+      if (externalLinks) {
+        for (const eachItem of externalLinks) {
+          if (eachItem) {
+            if (eachItem.isShown)
+              ExternalLinkArray.push({
+                isShown: eachItem.isShown,
+                linkType: eachItem.linkType,
+                order: eachItem.order,
+                url: eachItem.url,
+              });
+          }
+        }
+      }
+
+      if (subProducts) {
+        for (const eachItem of subProducts) {
+          if (eachItem) {
+            SubProductArray.push(eachItem);
+          }
+        }
+      }
 
       const weeklyRankScore = 0.0,
         lifeTimeRankScore = 0.0,
@@ -40,7 +94,7 @@ export const createPostManage = mutationField('createPostManage', {
         externalLinkClickNum = 0;
 
       let isOnline = true;
-      let onDetailTagId = [],
+      let onDetailTagId: number[] = [],
         products = [],
         shopId,
         price;
@@ -62,15 +116,27 @@ export const createPostManage = mutationField('createPostManage', {
         products = [...subProducts];
       }
 
-      let tagsId = [];
+      let tagsId: { id: number }[] = [];
 
       for (const tag of tags) {
-        tagsId.push({ id: tag.id });
+        if (tag) {
+          if (tag.id) tagsId.push({ id: tag.id });
+        }
       }
 
-      tags.sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0));
-
+      let TagsArray: { id: number; order: number }[] = [];
       for (const tag of tags) {
+        if (tag) {
+          if (tag.id && tag.order)
+            TagsArray.push({ id: tag.id, order: tag.order });
+        }
+      }
+
+      TagsArray.sort((a, b) =>
+        a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+      );
+
+      for (const tag of TagsArray) {
         onDetailTagId.push(tag.id);
       }
 
@@ -83,10 +149,10 @@ export const createPostManage = mutationField('createPostManage', {
           priority,
           text: description,
           tags: { connect: tagsId },
-          postExternalLinks: { create: externalLinks },
-          images: { create: images },
-          videos: { create: videos },
-          products: { connect: products },
+          postExternalLinks: { create: ExternalLinkArray },
+          images: { create: ImageArray },
+          videos: { create: VideoArray },
+          products: { connect: SubProductArray },
           onDetailTagId: { set: onDetailTagId },
           externalLinkClickNum,
           weeklyRankScore,
