@@ -1,14 +1,14 @@
-import { intArg, queryField } from '@nexus/schema';
+import { intArg, queryField } from "@nexus/schema";
 
-export const getTagInfo = queryField('getTagInfo', {
-  type: 'TagInfo',
+export const getTagInfo = queryField("getTagInfo", {
+  type: "TagInfo",
   args: { id: intArg({ required: true }) },
-  nullable: false,
+  nullable: true,
   resolve: async (_, args, ctx) => {
     try {
       const { id } = args;
       let lang;
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       let tagResult = await ctx.prisma.tag.findOne({
         where: { id },
@@ -40,7 +40,7 @@ export const getTagInfo = queryField('getTagInfo', {
         where: { tags: { some: { id } } },
       });
 
-      let tagInfo = {
+      let tagInfo: any = {
         tagId: tagResult.id,
         tagName: tagResult.names[0].word,
         category: tagResult.category,
@@ -54,7 +54,7 @@ export const getTagInfo = queryField('getTagInfo', {
         updatedAt: tagResult.updatedAt,
       };
 
-      return tagInfo;
+      return tagInfo ? tagInfo : null;
     } catch (e) {
       console.log(e);
       return null;

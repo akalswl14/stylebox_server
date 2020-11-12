@@ -1,8 +1,8 @@
-import { queryField, stringArg, intArg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, stringArg, intArg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getLikeShops = queryField('getLikeShops', {
-  type: 'ShopList',
+export const getLikeShops = queryField("getLikeShops", {
+  type: "ShopList",
   args: {
     lang: stringArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
@@ -21,7 +21,7 @@ export const getLikeShops = queryField('getLikeShops', {
 
       const userId = Number(getUserId(ctx));
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -85,11 +85,14 @@ export const getLikeShops = queryField('getLikeShops', {
               names: { where: { lang }, select: { word: true } },
             },
           });
-
-          if (check < 3) {
-            styleTag.push(tagResult?.names[0].word);
+          if (tagResult) {
+            if (check < 3) {
+              styleTag.push(tagResult.names[0].word);
+            }
+            check++;
+          } else {
+            return null;
           }
-          check++;
         }
 
         shops.push({

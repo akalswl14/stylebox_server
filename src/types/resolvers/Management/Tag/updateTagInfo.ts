@@ -4,14 +4,14 @@ import {
   intArg,
   mutationField,
   stringArg,
-} from '@nexus/schema';
+} from "@nexus/schema";
 
-export const updateTagInfo = mutationField('updateTagInfo', {
-  type: 'Boolean',
+export const updateTagInfo = mutationField("updateTagInfo", {
+  type: "Boolean",
   args: {
     tagId: intArg({ required: true }),
     tagName: stringArg({ nullable: true }),
-    tagCategory: arg({ type: 'Category', nullable: true }),
+    tagCategory: arg({ type: "Category", nullable: true }),
     tagImage: stringArg({ nullable: true }),
     isTagImageChange: booleanArg({ required: true }),
     classId: intArg({ nullable: true }),
@@ -29,14 +29,14 @@ export const updateTagInfo = mutationField('updateTagInfo', {
       } = args;
 
       let lang;
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       if (tagName) {
         let originalTag = await ctx.prisma.tag.findOne({
           where: { id: tagId },
           select: { names: { where: { lang }, select: { id: true } } },
         });
-        if (!originalTag) return null;
+        if (!originalTag) return false;
         let tagNameUpdate = await ctx.prisma.tag.update({
           where: { id: tagId },
           data: {
