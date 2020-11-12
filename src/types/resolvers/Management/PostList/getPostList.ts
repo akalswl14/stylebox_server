@@ -32,8 +32,7 @@ export const getPostList = queryField("getPostList", {
 
       const take = 13;
       const skip = (pageNum - 1) * take;
-      let orderByOption,
-        selectOption = {
+      let selectOption = {
           id: true,
           mainProductPrice: true,
           mainProductId: true,
@@ -45,6 +44,11 @@ export const getPostList = queryField("getPostList", {
         totalPostNum = 0,
         postIdList = [],
         posts = [];
+
+      let orderByOption:
+        | { priority: "asc" | "desc" }
+        | { mainProductPrice: "asc" | "desc" }
+        | { id: "asc" | "desc" } = { id: "asc" };
 
       if (mainProductName) {
         let productIdDicList = await ctx.prisma.product.findMany({

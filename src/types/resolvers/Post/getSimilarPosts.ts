@@ -31,8 +31,8 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         loadingPostNum,
         totalPostNum,
         mainProductName,
-        filterArrayOne = [],
-        filterArrayTwo = [],
+        filterArrayOne: any[] = [],
+        filterArrayTwo: any[] = [],
         skipNum,
         cursorOption;
 
@@ -107,12 +107,15 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
       if (!similarPostPrismaResult) return null;
 
       for (const item of similarPostPrismaResult) {
+        if (!item.mainProductId) return null;
         mainProductName = await ctx.prisma.product.findOne({
           where: { id: item.mainProductId },
           select: {
             names: { where: { lang }, select: { word: true } },
           },
         });
+
+        if (!mainProductName) return null;
 
         isLikePost =
           (await ctx.prisma.like.count({

@@ -122,6 +122,8 @@ export const getPostDetail = queryField("getPostDetail", {
         ? postPrismaResult.updatedAt
         : postPrismaResult.createdAt;
 
+      if (!postPrismaResult.mainProductId) return null;
+
       mainProduct = await ctx.prisma.product.findOne({
         where: { id: postPrismaResult.mainProductId },
         select: {
@@ -129,11 +131,16 @@ export const getPostDetail = queryField("getPostDetail", {
         },
       });
 
+      if (!mainProduct) return null;
+
       YoutubeVideoUrl = postPrismaResult.videos.filter(
         (item) => item.isYoutube === true
       );
 
       let shopTags = [];
+
+      if (!postPrismaResult.Shop?.onDetailTagId) return null;
+
       for (const eachTag of postPrismaResult.Shop?.onDetailTagId) {
         let queryResult = await ctx.prisma.tagName.findMany({
           where: { tagId: eachTag, lang: "VI" },
@@ -143,7 +150,7 @@ export const getPostDetail = queryField("getPostDetail", {
         if (shopTags.length == 3) break;
       }
 
-      let rtn = {
+      let rtn : any = {
         postId,
         isLikePost,
         PostDate,
@@ -161,6 +168,7 @@ export const getPostDetail = queryField("getPostDetail", {
         tags,
         products,
       };
+
       return rtn ? rtn : null;
     } catch (e) {
       console.log(e);

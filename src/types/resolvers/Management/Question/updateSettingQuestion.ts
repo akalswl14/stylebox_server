@@ -32,24 +32,25 @@ export const updateSettingQuestion = mutationField("updateSettingQuestion", {
       }
 
       if (questionTypes) {
-        let QuestionType = [];
+        let QuestionType: { order: number; questionType: string }[] = [];
+
         for (const eachItem of questionTypes) {
           if (eachItem) {
             if (eachItem.order && eachItem.questionType)
-              QuestionType.push(eachItem);
+              QuestionType.push({
+                order: eachItem.order,
+                questionType: eachItem.questionType,
+              });
           }
         }
 
         if (questionTypes.length > 0) {
-          questionTypes.sort(function (
-            a: { order: number },
-            b: { order: number }
-          ) {
-            return a.order < b.order ? -1 : a.order > b.order ? 1 : 0;
-          });
+          QuestionType.sort((a, b) =>
+            a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+          );
           let questionOptions = [];
-          for (const type of questionTypes) {
-            if (type?.questionType) questionOptions.push(type.questionType);
+          for (const type of QuestionType) {
+            questionOptions.push(type.questionType);
           }
           updateQuery = await ctx.prisma.setting.update({
             where: { id: 1 },

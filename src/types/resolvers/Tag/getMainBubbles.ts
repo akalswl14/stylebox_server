@@ -10,7 +10,7 @@ export const getMainBubbles = queryField("getMainBubbles", {
   resolve: async (_, args, ctx) => {
     try {
       let { lang } = args;
-      let rtn = [],
+      let rtn: any = [],
         order = 0,
         mainBubbleTagId,
         prismaResult,

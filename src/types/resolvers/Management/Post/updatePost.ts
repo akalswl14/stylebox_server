@@ -176,13 +176,20 @@ export const updatePostManage = mutationField("updatePostManage", {
             if (tag.id) tagsId.push({ id: tag.id });
           }
         }
-        tags.sort((a, b) =>
-          a.order < b.order ? -1 : a.order > b.order ? 1 : 0
-        );
+        let TagsArray: { id: number; order: number }[] = [];
         for (const tag of tags) {
           if (tag) {
-            if (tag.id) onDetailTagId.push(tag.id);
+            if (tag.id && tag.order)
+              TagsArray.push({ id: tag.id, order: tag.order });
           }
+        }
+
+        TagsArray.sort((a, b) =>
+          a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+        );
+
+        for (const tag of TagsArray) {
+          onDetailTagId.push(tag.id);
         }
 
         let originalTags = await ctx.prisma.tag.findMany({

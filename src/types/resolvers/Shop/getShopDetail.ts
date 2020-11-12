@@ -10,7 +10,10 @@ export const getShopDetail = queryField("getShopDetail", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { shopId, lang = "VI" } = args;
+      const { shopId } = args;
+      let { lang } = args;
+      if (!lang) lang = "VI";
+
       let queryResult,
         tagsResult,
         likeResult,
@@ -145,7 +148,7 @@ export const getShopDetail = queryField("getShopDetail", {
         },
       });
       isLikeShop = likeResult > 0 ? true : false;
-      let rtn = {
+      let rtn: any = {
         shopId,
         logoUrl: queryResult.logoUrl,
         shopName: queryResult.names[0].word,
