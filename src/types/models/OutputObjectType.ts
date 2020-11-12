@@ -746,7 +746,7 @@ export const postNumPostList = objectType({
   name: "postNumPostList",
   definition(t) {
     t.int("postNum");
-    t.field("posts", { type: "PostThumbnail", list: true });
+    t.field("posts", { type: "PostThumbnail", list: [true] });
   },
 });
 

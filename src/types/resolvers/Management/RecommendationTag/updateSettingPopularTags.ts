@@ -1,13 +1,13 @@
-import { arg, mutationField } from '@nexus/schema';
+import { arg, mutationField } from "@nexus/schema";
 
 export const updateSettingPopularTags = mutationField(
-  'updateSettingPopularTags',
+  "updateSettingPopularTags",
   {
-    type: 'Boolean',
+    type: "Boolean",
     args: {
       popularTags: arg({
-        type: 'PopularTagInputType',
-        list: true,
+        type: "PopularTagInputType",
+        list: [true],
         required: true,
       }),
     },

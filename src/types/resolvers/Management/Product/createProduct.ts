@@ -8,8 +8,8 @@ export const createProduct = mutationField("createProduct", {
     productImage: stringArg({ nullable: true }),
     description: stringArg({ nullable: true }),
     externalLink: stringArg({ required: true }),
-    tags: intArg({ list: true }),
-    branchIds: intArg({ list: true }),
+    tags: intArg({ list: [true], nullable: true }),
+    branchIds: intArg({ list: [true], nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -20,9 +20,9 @@ export const createProduct = mutationField("createProduct", {
         productImage,
         description,
         externalLink,
-        tags = [],
-        branchIds = [],
       } = args;
+      const tags = args.tags ?? [];
+      const branchIds = args.branchIds ?? [];
       let tagList = await ctx.prisma.tag.findMany({
         where: { id: { in: tags } },
         select: { id: true },
@@ -43,7 +43,7 @@ export const createProduct = mutationField("createProduct", {
       });
       if (!queryResult) return null;
 
-      let imageResult = true;
+      let imageResult: any = true;
       if (productImage) {
         imageResult = await ctx.prisma.productImage.create({
           data: {

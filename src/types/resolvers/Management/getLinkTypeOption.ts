@@ -6,7 +6,19 @@ export const getLinkTypeOption = queryField("getLinkTypeOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      let rtnList = [
+      let rtnList: (
+        | "Facebook"
+        | "FacebookMessanger"
+        | "Instagram"
+        | "LAZADA"
+        | "OnlineShop"
+        | "Sendo"
+        | "Shopee"
+        | "Tiki"
+        | "TikTok"
+        | "Youtube"
+        | null
+      )[] = [
         "Facebook",
         "Instagram",
         "FacebookMessanger",

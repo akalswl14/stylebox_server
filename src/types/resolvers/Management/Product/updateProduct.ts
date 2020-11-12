@@ -11,8 +11,8 @@ export const updateProduct = mutationField("updateProduct", {
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
     externalLink: stringArg({ nullable: true }),
-    tags: intArg({ list: true, nullable: true }),
-    branchIds: intArg({ list: true, nullable: true }),
+    tags: intArg({ list: [true], nullable: true }),
+    branchIds: intArg({ list: [true], nullable: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -29,13 +29,12 @@ export const updateProduct = mutationField("updateProduct", {
         tags,
         branchIds,
       } = args;
-      let queryResult = true;
       if (productName) {
         let nameResult = await ctx.prisma.productName.findMany({
           where: { productId, lang: "VI" },
           select: { id: true },
         });
-        queryResult = await ctx.prisma.productName.update({
+        let queryResult = await ctx.prisma.productName.update({
           where: { id: nameResult[0].id },
           data: { word: productName },
         });
@@ -46,7 +45,7 @@ export const updateProduct = mutationField("updateProduct", {
           where: { productId },
         });
         if (productImage) {
-          queryResult = await ctx.prisma.productImage.create({
+          let queryResult = await ctx.prisma.productImage.create({
             data: {
               Product: { connect: { id: productId } },
               url: productImage,
@@ -58,7 +57,7 @@ export const updateProduct = mutationField("updateProduct", {
         if (!deleteResult) return false;
       }
       if (isDescriptionChange) {
-        queryResult = await ctx.prisma.product.update({
+        let queryResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: { description },
         });
@@ -77,7 +76,7 @@ export const updateProduct = mutationField("updateProduct", {
           where: { id: { in: tags } },
           select: { id: true },
         });
-        queryResult = await ctx.prisma.product.update({
+        let queryResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: { tags: { connect: tagList } },
         });
@@ -96,33 +95,34 @@ export const updateProduct = mutationField("updateProduct", {
           where: { id: { in: branchIds } },
           select: { id: true },
         });
-        queryResult = await ctx.prisma.product.update({
+        let queryResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: { branches: { connect: branchList } },
         });
         if (!disconnectResult || !queryResult) return false;
       }
       if (externalLink) {
-        queryResult = await ctx.prisma.productExternalLink.findMany({
+        let queryResult_find = await ctx.prisma.productExternalLink.findMany({
           where: { productId },
           select: { id: true, productId: true },
         });
-        if (queryResult.length == 0) return false;
-        queryResult = await ctx.prisma.productExternalLink.update({
-          where: { id: queryResult[0].id },
+        if (queryResult_find.length === 0 || !queryResult_find) return false;
+        let queryResult_update = await ctx.prisma.productExternalLink.update({
+          where: { id: queryResult_find[0].id },
           data: { url: externalLink },
         });
-        if (!queryResult) return false;
+        if (!queryResult_update) return false;
       }
       if (price) {
-        queryResult = await ctx.prisma.product.update({
+        let queryResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: {
             price,
           },
         });
+        if (!queryResult) return false;
       }
-      return queryResult ? true : false;
+      return true;
     } catch (e) {
       console.log(e);
       return false;

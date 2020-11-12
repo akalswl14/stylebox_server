@@ -11,7 +11,7 @@ export const getEventThumbnailImage = queryField("getEventThumbnailImage", {
         where: { id },
         select: { bannerImage: true },
       });
-      return queryResult?.bannerImage;
+      return queryResult ? queryResult.bannerImage : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -27,13 +27,17 @@ export const createEvent = mutationField("createEvent", {
         images,
         contentsImages,
         videos,
-        tags = [],
       } = args;
+      let tags: ({
+        id?: number | null | undefined;
+        order?: number | null | undefined;
+      } | null)[] = args.tags ?? [];
       let tagIdList: number[] = [],
         tagIdDicList: { id: number }[] = [],
         num = 0;
       while (tagIdList.length < tags.length) {
         for (const eachTag of tags) {
+          if (!eachTag || !eachTag.id || !eachTag.order) continue;
           if (eachTag.order === num) {
             tagIdList.push(eachTag.id);
           }
@@ -45,6 +49,7 @@ export const createEvent = mutationField("createEvent", {
       }
       let videoList = [];
       for (const eachVideo of videos) {
+        if (!eachVideo) continue;
         videoList.push({
           order: eachVideo.order,
           url: eachVideo.url,
@@ -68,6 +73,7 @@ export const createEvent = mutationField("createEvent", {
       if (!queryResult || !queryResult.id) return null;
       let rtnMainImages = [];
       for (const eachImage of images) {
+        if (!eachImage) continue;
         rtnMainImages.push({
           order: eachImage.order,
           url: "Event/" + queryResult.id + "/" + eachImage.url,
@@ -75,6 +81,7 @@ export const createEvent = mutationField("createEvent", {
       }
       let rtnContentsImages = [];
       for (const eachImage of contentsImages) {
+        if (!eachImage) continue;
         rtnContentsImages.push({
           order: eachImage.order,
           url: "Event/" + queryResult.id + "/" + eachImage.url,

@@ -14,10 +14,21 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
     "About filter, 1 means Recent, 2 means Price Low and 3 means Price High",
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "VI", shopId, filter = 1, cursorId } = args;
+      const { shopId, filter = 1, cursorId } = args;
+      const lang = args.lang ?? "VI";
       let queryResult,
-        orderQuery,
-        queryArg,
+        orderQuery:
+          | (
+              | {
+                  isOnline: "asc" | "desc";
+                }
+              | {
+                  mainProductPrice: "asc" | "desc";
+                }
+            )[]
+          | {
+              createdAt: "asc" | "desc";
+            }[],
         loadingPostNum,
         totalPostNum,
         posts = [];
@@ -35,7 +46,7 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
             ? [{ isOnline: "asc" }, { mainProductPrice: "asc" }]
             : [{ isOnline: "desc" }, { mainProductPrice: "desc" }];
       }
-      queryArg = {
+      queryResult = await ctx.prisma.post.findMany({
         where: { shopId },
         select: {
           id: true,
@@ -45,12 +56,9 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
         },
         orderBy: orderQuery,
         take: loadingPostNum,
-      };
-      if (cursorId) {
-        queryArg.cursor = { id: cursorId };
-        queryArg.skip = 1;
-      }
-      queryResult = await ctx.prisma.post.findMany(queryArg);
+        cursor: cursorId ? { id: cursorId } : undefined,
+        skip: cursorId ? 1 : undefined,
+      });
       for (const eachPost of queryResult) {
         if (!eachPost.mainProductId) {
           return null;

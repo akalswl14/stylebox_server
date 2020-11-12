@@ -5,7 +5,7 @@ import { getUserId } from "../../../utils";
 export const getRecentSearchResult = queryField("getRecentSearchResult", {
   type: "searchResultList",
   args: {
-    tags: arg({ type: "TagClassIdInputType", required: true, list: true }),
+    tags: arg({ type: "TagClassIdInputType", required: true, list: [true] }),
     lang: stringArg({ nullable: true }),
     lastPostDate: arg({ type: "DateTime", nullable: true }),
     cursorId: intArg({ nullable: true }),

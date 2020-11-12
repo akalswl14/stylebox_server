@@ -17,33 +17,50 @@ export const getBestPosts = queryField("getBestPosts", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        lang = "VI",
         periodFilter = 1,
         locationTagId,
         classId,
         cursorId,
         pageNum,
       } = args;
-      let queryResult,
-        postResult,
-        tagResult = [],
+      let { lang } = args;
+      if (!lang) lang = "VI";
+      let tagResult = [],
         loadingPostNum,
         bestTotalPostNum,
-        queryOption,
-        orderOption,
         posts = [];
+      let orderOption:
+        | (
+            | {
+                weeklyRankScore: "asc" | "desc";
+              }
+            | {
+                createdAt: "asc" | "desc";
+              }
+          )[]
+        | (
+            | {
+                monthlyRankScore: "asc" | "desc";
+              }
+            | {
+                createdAt: "asc" | "desc";
+              }
+          )[]
+        | (
+            | {
+                lifeTimeRankScore: "asc" | "desc";
+              }
+            | {
+                createdAt: "asc" | "desc";
+              }
+          )[] = [];
       const userId = Number(getUserId(ctx));
-      queryResult = await ctx.prisma.setting.findOne({
+      let queryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, bestTotalPostNum: true },
       });
       loadingPostNum = queryResult ? queryResult.loadingPostNum : 20;
       bestTotalPostNum = queryResult ? queryResult.bestTotalPostNum : 100;
-      if (bestTotalPostNum - pageNum * loadingPostNum == 0) {
-        return [];
-      } else if (bestTotalPostNum - pageNum * loadingPostNum < loadingPostNum) {
-        loadingPostNum = bestTotalPostNum - pageNum * loadingPostNum;
-      }
       if (classId) {
         let classTags = await ctx.prisma.tag.findMany({
           where: { classId },
@@ -63,51 +80,64 @@ export const getBestPosts = queryField("getBestPosts", {
       } else {
         orderOption = [{ lifeTimeRankScore: "desc" }, { createdAt: "asc" }];
       }
-      queryOption = {
+      if (bestTotalPostNum - pageNum * loadingPostNum < loadingPostNum) {
+        loadingPostNum = bestTotalPostNum - pageNum * loadingPostNum;
+      }
+      let totalPostNum = await ctx.prisma.post.count({
+        where: {
+          AND: tagResult,
+        },
+      });
+      if (bestTotalPostNum - pageNum * loadingPostNum == 0) {
+        return { postNum: totalPostNum, posts: [] };
+      }
+      let postResult = await ctx.prisma.post.findMany({
         where: {
           AND: tagResult,
         },
         select: {
           id: true,
           images: { select: { url: true }, take: 1 },
-          Shop: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
           mainProductId: true,
           mainProductPrice: true,
         },
         orderBy: orderOption,
         take: loadingPostNum,
-      };
-      if (cursorId) {
-        queryOption.cursor = { id: cursorId };
-        queryOption.skip = 1;
-      }
-      postResult = await ctx.prisma.post.findMany(queryOption);
+        cursor: cursorId ? { id: cursorId } : undefined,
+        skip: cursorId ? 1 : undefined,
+      });
       for (const eachPost of postResult) {
-        if (eachPost.Shop) {
-          queryResult = await ctx.prisma.like.count({
-            where: { userId, postId: eachPost.id },
-          });
-          let isLikePost = queryResult > 0 ? true : false;
-          queryResult = await ctx.prisma.productName.findMany({
-            where: { productId: eachPost.mainProductId, lang },
-            select: { word: true },
-          });
-          let productName = queryResult[0].word;
-          let tmp = {
-            postId: eachPost.id,
-            productName,
-            shopName: eachPost.Shop.names[0].word,
-            postImage: eachPost.images[0].url,
-            price: eachPost.mainProductPrice,
-            isLikePost,
-          };
-          posts.push(tmp);
-        }
+        let likeResult = await ctx.prisma.like.count({
+          where: { userId, postId: eachPost.id },
+        });
+        let isLikePost = likeResult > 0 ? true : false;
+        let productNameResult = await ctx.prisma.productName.findMany({
+          where: { productId: eachPost.mainProductId, lang },
+          select: { word: true },
+        });
+        let productName = productNameResult[0].word;
+        let shopResult = await ctx.prisma.shop.findMany({
+          where: {
+            posts: { some: { id: eachPost.id } },
+          },
+          select: {
+            names: { where: { lang }, select: { word: true } },
+          },
+        });
+        if (shopResult.length <= 0 || !shopResult) continue;
+        if (!eachPost.mainProductPrice) continue;
+        let tmp = {
+          postId: eachPost.id,
+          productName,
+          shopName: shopResult[0].names[0].word,
+          postImage: eachPost.images[0].url,
+          price: eachPost.mainProductPrice,
+          isLikePost,
+        };
+        posts.push(tmp);
       }
       return {
-        postNum: posts.length,
+        postNum: totalPostNum,
         posts,
       };
     } catch (e) {

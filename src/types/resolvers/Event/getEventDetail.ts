@@ -11,23 +11,15 @@ export const getEventDetail = queryField("getEventDetail", {
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
-      const { eventId, lang = 'VI' } = args;
+      let { eventId, lang } = args;
+      if (!lang) lang = "VI";
       let queryResult,
         order = 0,
         tagResult,
         eventVideos = [],
         eventImages = [],
         eventContentsImage = [],
-        detailTags = [],
-        rtn: {
-          eventTitle: string;
-          eventVideos: { id: number; url: string; order: number }[];
-          eventImages: { id: number; url: string; order: number }[];
-          url: string | null;
-          dueDate: Date;
-          eventContentsImages: { id: number; url: string; order: number }[];
-          detailTags: { id: number; tagName: string; order: number }[];
-        } = {};
+        detailTags = [];
 
       await ctx.prisma.view.create({
         data: {
@@ -85,24 +77,35 @@ export const getEventDetail = queryField("getEventDetail", {
               names: { where: { lang }, select: { word: true } },
             },
           });
-
+          if (!tagResult) continue;
           detailTags.push({
-            id: tagResult?.id,
+            id: tagResult.id,
             order: order++,
-            tagName: tagResult?.names[0].word,
+            tagName: tagResult.names[0].word,
           });
         }
-        rtn.eventTitle = queryResult.title;
-        rtn.url = queryResult.url;
-        rtn.dueDate = queryResult.dueDate;
-        rtn.eventVideos = eventVideos;
-        rtn.eventImages = eventImages;
-        rtn.eventContentsImages = eventContentsImage;
-        rtn.detailTags = detailTags;
+        let rtn: {
+          eventTitle: string;
+          eventVideos: { id: number; url: string; order: number }[];
+          eventImages: { id: number; url: string; order: number }[];
+          url: string | null;
+          dueDate: Date;
+          eventContentsImages: { id: number; url: string; order: number }[];
+          detailTags: { id: number; tagName: string; order: number }[];
+        } = {
+          eventTitle: queryResult.title,
+          url: queryResult.url,
+          dueDate: queryResult.dueDate,
+          eventVideos: eventVideos,
+          eventImages: eventImages,
+          eventContentsImages: eventContentsImage,
+          detailTags: detailTags,
+        };
+        return rtn ? rtn : null;
       } catch (e) {
         console.log(e);
+        return null;
       }
-      return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -4,7 +4,7 @@ import { getUserId } from "../../../utils";
 export const getPriceSearchResult = queryField("getPriceSearchResult", {
   type: "searchResultList",
   args: {
-    tags: arg({ type: "TagClassIdInputType", required: true, list: true }),
+    tags: arg({ type: "TagClassIdInputType", required: true, list: [true] }),
     filter: intArg({ nullable: true }),
     lang: stringArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
@@ -13,7 +13,8 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
   description: "About filter, 2 means Price Low and 3 means Price High",
   resolve: async (_, args, ctx) => {
     try {
-      const { tags, filter = 1, lang = "VI", cursorId } = args;
+      const { tags, filter = 1, cursorId } = args;
+      const lang = args.lang ?? "VI";
       let queryResult,
         TagResult = [],
         PostResult = [],
@@ -21,7 +22,6 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         loadingPostNum,
         totalPostNum,
         rtnLastPostDate,
-        queryOption,
         tagIds = [],
         tagNumList = [],
         posts = [];
@@ -56,7 +56,51 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
           tagNumList.push(eachTag.tagId);
         }
       }
-      queryOption = {
+      let queryOption: {
+        where: {
+          AND: (
+            | {
+                tags: {
+                  some: {
+                    OR: {
+                      id: number;
+                    }[];
+                    id?: undefined;
+                  };
+                };
+              }
+            | {
+                tags: {
+                  some: {
+                    id: number;
+                    OR?: undefined;
+                  };
+                };
+              }
+          )[];
+          createdAt: {
+            gte: Date;
+          };
+        };
+        take: number;
+        select: {
+          id: boolean;
+          shopId: boolean;
+          mainProductPrice: boolean;
+          mainProductId: boolean;
+          images: {
+            select: { url: boolean };
+            take: number;
+          };
+          createdAt: boolean;
+        };
+        orderBy:
+          | [{ isOnline: "asc" }, { mainProductPrice: "desc" }]
+          | [{ isOnline: "desc" }, { mainProductPrice: "asc" }]
+          | undefined;
+        cursor: { id: number } | undefined;
+        skip: number | undefined;
+      } = {
         where: {
           AND: tagIds,
           createdAt: { gte: searchDate },
@@ -70,6 +114,9 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
           images: { select: { url: true }, take: 1 },
           createdAt: true,
         },
+        orderBy: undefined,
+        cursor: cursorId ? { id: cursorId } : undefined,
+        skip: cursorId ? 1 : undefined,
       };
       if (filter == 2) {
         queryOption.orderBy = [
@@ -81,10 +128,6 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
           { isOnline: "desc" },
           { mainProductPrice: "asc" },
         ];
-      }
-      if (cursorId) {
-        queryOption.cursor = { id: cursorId };
-        queryOption.skip = 1;
       }
       PostResult = await ctx.prisma.post.findMany(queryOption);
       // console.log(PostResult);
@@ -122,7 +165,7 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
             where: { productId: eachPost.mainProductId, lang },
             select: { word: true },
           });
-          if (!shopResult || !productResult) return false;
+          if (!shopResult || !productResult) return null;
           let productName = productResult[0].word;
           posts.push({
             postId: eachPost.id,
