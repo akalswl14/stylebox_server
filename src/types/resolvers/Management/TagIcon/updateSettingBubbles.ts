@@ -3,24 +3,32 @@ import { arg, mutationField } from "@nexus/schema";
 export const updateSettingBubbles = mutationField("updateSettingBubbles", {
   type: "Boolean",
   args: {
-    mainBubbleTags: arg({ type: "IdOrderInputType", list: true }),
-    bestBubbleTags: arg({ type: "IdOrderInputType", list: true }),
-    shopBubbleTags: arg({ type: "IdOrderInputType", list: true }),
+    mainBubbleTags: arg({
+      type: "IdOrderInputType",
+      list: [true],
+    }),
+    bestBubbleTags: arg({
+      type: "IdOrderInputType",
+      list: [true],
+    }),
+    shopBubbleTags: arg({
+      type: "IdOrderInputType",
+      list: [true],
+    }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
     try {
-      const {
-        mainBubbleTags = [],
-        bestBubbleTags = [],
-        shopBubbleTags = [],
-      } = args;
+      const mainBubbleTags = args.mainBubbleTags ?? [];
+      const bestBubbleTags = args.bestBubbleTags ?? [];
+      const shopBubbleTags = args.shopBubbleTags ?? [];
       let num = 0,
         rtnMainBubbles = [],
         rtnBestBubbles = [],
         rtnShopBubbles = [];
       while (mainBubbleTags.length != rtnMainBubbles.length) {
         for (const eachTag of mainBubbleTags) {
+          if (!eachTag.order || !eachTag.id) continue;
           if (num == eachTag.order) {
             rtnMainBubbles.push(eachTag.id);
           }
@@ -30,6 +38,7 @@ export const updateSettingBubbles = mutationField("updateSettingBubbles", {
       num = 0;
       while (bestBubbleTags.length != rtnBestBubbles.length) {
         for (const eachTag of bestBubbleTags) {
+          if (!eachTag.order || !eachTag.id) continue;
           if (num == eachTag.order) {
             rtnBestBubbles.push(eachTag.id);
           }
@@ -39,6 +48,7 @@ export const updateSettingBubbles = mutationField("updateSettingBubbles", {
       num = 0;
       while (shopBubbleTags.length != rtnShopBubbles.length) {
         for (const eachTag of shopBubbleTags) {
+          if (!eachTag.order || !eachTag.id) continue;
           if (num == eachTag.order) {
             rtnShopBubbles.push(eachTag.id);
           }

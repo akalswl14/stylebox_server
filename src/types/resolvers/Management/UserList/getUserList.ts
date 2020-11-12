@@ -11,10 +11,26 @@ export const getUserList = queryField("getUserList", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { pageNum = 1, userId, userIdAsc, installationDateAsc } = args;
+      const { userId, userIdAsc, installationDateAsc } = args;
+      let { pageNum } = args;
+      if (!pageNum) pageNum = 1;
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
-      let orderByOption,
+      let orderByOption:
+          | {
+              id: "asc" | "desc";
+            }
+          | {
+              createdAt: "asc" | "desc";
+            }
+          | (
+              | {
+                  id: "asc" | "desc";
+                }
+              | {
+                  createdAt: "asc" | "desc";
+                }
+            )[],
         whereOption,
         userResult,
         queryResult,

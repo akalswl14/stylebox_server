@@ -13,7 +13,7 @@ export const getProductDescription = queryField("getProductDescription", {
           description: true,
         },
       });
-      return queryResult?.description;
+      return queryResult ? queryResult.description : null;
     } catch (e) {
       console.log(e);
       return null;

@@ -1,7 +1,7 @@
 import { queryField } from "@nexus/schema";
 
 export const downloadUserList = queryField("downloadUserList", {
-  type: "UserManagementThumbnail",
+  type: "UserManagementUsers",
   nullable: true,
   list: true,
   resolve: async (_, args, ctx) => {

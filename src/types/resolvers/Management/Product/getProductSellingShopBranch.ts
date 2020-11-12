@@ -18,7 +18,7 @@ export const getProductSellingShopBranch = queryField(
             id: 0,
             shopName: "",
             shopLink: "",
-            branches,
+            branches: [],
           };
         }
         let shopResult;
@@ -47,7 +47,8 @@ export const getProductSellingShopBranch = queryField(
               },
             },
           });
-        } else {
+        }
+        if (shopId) {
           shopResult = await ctx.prisma.shop.findOne({
             where: { id: shopId },
             select: {

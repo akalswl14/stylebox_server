@@ -6,7 +6,15 @@ export const getManageCategoryOptions = queryField("getManageCategoryOptions", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      let rtnList = [
+      let rtnList: (
+        | "ShopName"
+        | "Feature"
+        | "Location"
+        | "Price"
+        | "ProductClass"
+        | "Style"
+        | null
+      )[] = [
         "Feature",
         "Location",
         "Price",

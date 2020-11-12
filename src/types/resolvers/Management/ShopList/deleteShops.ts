@@ -3,7 +3,7 @@ import { intArg, mutationField } from "@nexus/schema";
 export const deleteShops = mutationField("deleteShops", {
   type: "Boolean",
   args: {
-    shopIds: intArg({ list: true, required: true }),
+    shopIds: intArg({ list: [true], required: true }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {

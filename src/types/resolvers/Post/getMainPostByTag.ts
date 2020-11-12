@@ -8,13 +8,16 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
   args: {
     lastPostPriority: intArg({ nullable: true }),
     lang: stringArg({ nullable: true }),
-    postIds: intArg({ list: true, nullable: true }),
-    tags: arg({ type: "idDicInputType", list: true }),
+    postIds: intArg({ list: [true], nullable: true }),
+    tags: arg({ type: "idDicInputType", list: [true], nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { lang = "VI", postIds = [], lastPostPriority, tags = [] } = args;
+      const { lastPostPriority } = args;
+      const lang = args.lang ?? "VI";
+      const postIds = args.postIds ?? [];
+      const tags = args.tags ?? [];
       let settingQueryResult,
         loadingPostNum,
         TodaysStylesDate,
@@ -24,7 +27,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
         postResult = [],
         rtnLastPostPriority = 5,
         posts = [],
-        tagIdList = [];
+        tagIdList: { tags: { some: { id: number } } }[] = [];
       const userId = Number(getUserId(ctx));
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -53,10 +56,20 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
           postIds,
           tagIdList
         );
-        let randomPostResult = await getRandomResult(
-          queryLoadingPostNum,
-          queryResult
-        );
+        let randomPostResult: {
+          Shop: {
+            names: {
+              word: string;
+            }[];
+          } | null;
+          id: number;
+          mainProductId: number | null;
+          mainProductPrice: number | null;
+          images: {
+            url: string;
+          }[];
+          priority: number | null;
+        }[] = await getRandomResult(queryLoadingPostNum, queryResult);
         postResult.push(...randomPostResult);
         if (queryResult.length < queryLoadingPostNum) {
           queryLoadingPostNum = loadingPostNum - postResult.length;
@@ -65,7 +78,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
       }
       console.log(postResult);
       if (postResult.length > 0) {
-        rtnLastPostPriority = postResult[postResult.length - 1].priority;
+        rtnLastPostPriority = postResult[postResult.length - 1].priority ?? 1;
         for (const eachPost of postResult) {
           queryResult = await ctx.prisma.like.count({
             where: { userId, postId: eachPost.id },
@@ -76,6 +89,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
             select: { word: true },
           });
           let productName = queryResult[0].word;
+          if (!eachPost.Shop) continue;
           posts.push({
             postId: eachPost.id,
             productName,
@@ -103,10 +117,10 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
 const getfindManyResult = async (
   ctx: Context,
   queryDate: Date,
-  lang: String,
+  lang: string,
   priority: number,
-  postIds = [],
-  tagIdList = []
+  postIds: number[] = [],
+  tagIdList: { tags: { some: { id: number } } }[] = []
 ) => {
   let queryResult = await ctx.prisma.post.findMany({
     where: {
@@ -127,8 +141,37 @@ const getfindManyResult = async (
   return queryResult;
 };
 
-const getRandomResult = async (loadingPostNum: number, posts: Post[]) => {
-  let results: Post[] = [];
+const getRandomResult = async (
+  loadingPostNum: number,
+  posts: {
+    Shop: {
+      names: {
+        word: string;
+      }[];
+    } | null;
+    id: number;
+    mainProductId: number | null;
+    mainProductPrice: number | null;
+    images: {
+      url: string;
+    }[];
+    priority: number | null;
+  }[]
+) => {
+  let results: {
+    Shop: {
+      names: {
+        word: string;
+      }[];
+    } | null;
+    id: number;
+    mainProductId: number | null;
+    mainProductPrice: number | null;
+    images: {
+      url: string;
+    }[];
+    priority: number | null;
+  }[] = [];
   console.log("RANDOM INPUT : ", posts);
   while (results.length < loadingPostNum && posts.length > 0) {
     let postNum = posts.length;

@@ -18,7 +18,6 @@ export const getShopList = queryField("getShopList", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        pageNum = 1,
         shopId,
         shopName,
         phoneNumber,
@@ -29,9 +28,21 @@ export const getShopList = queryField("getShopList", {
         weightAsc,
         rankAsc,
       } = args;
+      let { pageNum } = args;
+      if (!pageNum) pageNum = 1;
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
-      let orderByOption,
+      let orderByOption:
+          | {
+              monthlyRankNum: "asc" | "desc";
+            }
+          | {
+              priority: "asc" | "desc";
+            }
+          | {
+              id: "asc" | "desc";
+            }
+          | undefined,
         whereOption,
         shopResult,
         queryResult,

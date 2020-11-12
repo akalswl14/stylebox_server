@@ -17,17 +17,17 @@ export const updateShop = mutationField("updateShop", {
     weight: intArg({ nullable: true }),
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
-    tags: arg({ type: "IdOrderInputType", list: true }),
-    externalLinks: arg({ type: "LinkInputType", list: true }),
-    isFacebookLinkChage: booleanArg({ required: true }),
+    tags: arg({ type: "IdOrderInputType", list: [true] }),
+    externalLinks: arg({ type: "LinkInputType", list: [true] }),
+    isFacebookLinkChange: booleanArg({ required: true }),
     FacebookLink: stringArg({ nullable: true }),
-    isInstagramLinkChage: booleanArg({ required: true }),
+    isInstagramLinkChange: booleanArg({ required: true }),
     InstagramLink: stringArg({ nullable: true }),
-    isYoutubeLinkChage: booleanArg({ required: true }),
+    isYoutubeLinkChange: booleanArg({ required: true }),
     YoutubeLink: stringArg({ nullable: true }),
-    shopImages: arg({ type: "ImageInputType", list: true }),
-    shopVideos: arg({ type: "ImageInputType", list: true }),
-    branches: arg({ type: "branchUpdateInputType", list: true }),
+    shopImages: arg({ type: "ImageInputType", list: [true] }),
+    shopVideos: arg({ type: "ImageInputType", list: [true] }),
+    branches: arg({ type: "branchUpdateInputType", list: [true] }),
     mainBranchAddress: stringArg({ nullable: true }),
     mainBranchMapUrl: stringArg({ nullable: true }),
   },
@@ -44,9 +44,9 @@ export const updateShop = mutationField("updateShop", {
         mainBranchMapUrl,
         weight,
         tags,
-        isFacebookLinkChage,
-        isInstagramLinkChage,
-        isYoutubeLinkChage,
+        isFacebookLinkChange,
+        isInstagramLinkChange,
+        isYoutubeLinkChange,
         FacebookLink,
         InstagramLink,
         YoutubeLink,
@@ -162,10 +162,10 @@ export const updateShop = mutationField("updateShop", {
                 data: {
                   phoneNumbers: inputBranch.branchPhoneNumber
                     ? { set: [inputBranch.branchPhoneNumber] }
-                    : null,
+                    : undefined,
                   address: inputBranch.branchAddress
                     ? { set: inputBranch.branchAddress }
-                    : null,
+                    : undefined,
                   googleMapUrl: inputBranch.branchGoogleMapUrl,
                 },
               });
@@ -202,7 +202,7 @@ export const updateShop = mutationField("updateShop", {
           if (!queryResult) return false;
         }
       }
-      if (isFacebookLinkChage) {
+      if (isFacebookLinkChange) {
         let isExist = await ctx.prisma.shopExternalLink.count({
           where: { shopId, onBottom: false, linkType: "Facebook" },
         });
@@ -218,7 +218,7 @@ export const updateShop = mutationField("updateShop", {
             });
           }
           if (!queryResult) return false;
-        } else {
+        } else if (FacebookLink) {
           let topLinks = await ctx.prisma.shopExternalLink.findMany({
             where: { shopId, onBottom: false },
             orderBy: { order: "asc" },
@@ -244,7 +244,7 @@ export const updateShop = mutationField("updateShop", {
           }
         }
       }
-      if (isInstagramLinkChage) {
+      if (isInstagramLinkChange) {
         let isExist = await ctx.prisma.shopExternalLink.count({
           where: { shopId, onBottom: false, linkType: "Instagram" },
         });
@@ -260,7 +260,7 @@ export const updateShop = mutationField("updateShop", {
             });
           }
           if (!queryResult) return false;
-        } else {
+        } else if (InstagramLink) {
           let facebookExist = await ctx.prisma.shopExternalLink.count({
             where: { shopId, onBottom: false, linkType: "Facebook" },
           });
@@ -287,7 +287,7 @@ export const updateShop = mutationField("updateShop", {
           }
         }
       }
-      if (isYoutubeLinkChage) {
+      if (isYoutubeLinkChange) {
         let isExist = await ctx.prisma.shopExternalLink.count({
           where: { shopId, onBottom: false, linkType: "Youtube" },
         });
@@ -303,7 +303,7 @@ export const updateShop = mutationField("updateShop", {
             });
           }
           if (!queryResult) return false;
-        } else {
+        } else if (YoutubeLink) {
           let toplinkExist = await ctx.prisma.shopExternalLink.count({
             where: {
               shopId,
@@ -377,12 +377,10 @@ export const updateShop = mutationField("updateShop", {
         }
       }
       if (tags) {
-        let tagIdList = [],
-          tagIdDicList = [];
-        tags.sort(function (a, b) {
-          return a.order - b.order;
-        });
+        let tagIdList: number[] = [],
+          tagIdDicList: { id: number }[] = [];
         for (const eachTag of tags) {
+          if (!eachTag.id) continue;
           tagIdList.push(eachTag.id);
           tagIdDicList.push({ id: eachTag.id });
         }
@@ -412,14 +410,14 @@ export const updateShop = mutationField("updateShop", {
         });
         if (!queryResult) return false;
       }
-      let updateData = {};
-      if (isLogoUrlChange) updateData.logoUrl = { set: logoUrl };
-      if (isDescriptionChange) updateData.description = { set: description };
-      if (phoneNumber) updateData.phoneNumber = phoneNumber;
-      if (weight) updateData.priority = { set: weight };
       queryResult = await ctx.prisma.shop.update({
         where: { id: shopId },
-        data: updateData,
+        data: {
+          logoUrl: isLogoUrlChange ? { set: logoUrl } : undefined,
+          description: isDescriptionChange ? { set: description } : undefined,
+          phoneNumber: phoneNumber ?? undefined,
+          priority: weight ? { set: weight } : undefined,
+        },
       });
       return queryResult ? true : false;
     } catch (e) {

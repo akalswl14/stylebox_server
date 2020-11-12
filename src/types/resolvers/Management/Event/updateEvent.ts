@@ -16,10 +16,14 @@ export const updateEvent = mutationField("updateEvent", {
     url: stringArg({ nullable: true }),
     bannerImage: stringArg({ nullable: true }),
     isOnList: booleanArg({ nullable: true }),
-    images: arg({ type: "ImageInputType", list: true, nullable: true }),
-    contentsImages: arg({ type: "ImageInputType", list: true, nullable: true }),
-    videos: arg({ type: "ImageInputType", list: true, nullable: true }),
-    tags: arg({ type: "IdOrderInputType", nullable: true, list: true }),
+    images: arg({ type: "ImageInputType", list: [true], nullable: true }),
+    contentsImages: arg({
+      type: "ImageInputType",
+      list: [true],
+      nullable: true,
+    }),
+    videos: arg({ type: "ImageInputType", list: [true], nullable: true }),
+    tags: arg({ type: "IdOrderInputType", nullable: true, list: [true] }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
@@ -55,8 +59,8 @@ export const updateEvent = mutationField("updateEvent", {
       });
       if (!eventResult) return false;
       if (tags) {
-        tags.sort((a, b) => a.order - b.order);
         for (const eachTag of tags) {
+          if (!eachTag.id) continue;
           tagIdList.push(eachTag.id);
         }
         for (const eachTagId of tagIdList) {

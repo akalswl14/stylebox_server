@@ -9,15 +9,15 @@ export const createShop = mutationField("createShop", {
     mainBranchAddress: stringArg({ required: true }),
     mainBranchMapUrl: stringArg({ required: true }),
     weight: intArg({ required: true }),
-    tags: arg({ type: "IdOrderInputType", list: true }),
+    tags: arg({ type: "IdOrderInputType", list: [true] }),
     FacebookLink: stringArg({ nullable: true }),
     InstagramLink: stringArg({ nullable: true }),
     YoutubeLink: stringArg({ nullable: true }),
-    externalLinks: arg({ type: "LinkInputType", list: true }),
-    shopImages: arg({ type: "ImageInputType", list: true }),
-    shopVideos: arg({ type: "ImageInputType", list: true }),
+    externalLinks: arg({ type: "LinkInputType", list: [true] }),
+    shopImages: arg({ type: "ImageInputType", list: [true] }),
+    shopVideos: arg({ type: "ImageInputType", list: [true] }),
     description: stringArg({ nullable: true }),
-    branches: arg({ type: "branchInputType", list: true }),
+    branches: arg({ type: "branchInputType", list: [true] }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -29,16 +29,16 @@ export const createShop = mutationField("createShop", {
         mainBranchAddress,
         mainBranchMapUrl,
         weight,
-        tags = [],
         FacebookLink,
         InstagramLink,
         YoutubeLink,
-        externalLinks = [],
-        shopImages = [],
-        shopVideos = [],
         description,
-        branches = [],
       } = args;
+      let tags = args.tags ?? [];
+      let externalLinks = args.externalLinks ?? [];
+      let shopImages = args.shopImages ?? [];
+      let shopVideos = args.shopVideos ?? [];
+      let branches = args.branches ?? [];
       let branchList = [
         {
           names: { create: { lang: "VI", word: shopName } },
@@ -48,6 +48,11 @@ export const createShop = mutationField("createShop", {
           isMain: true,
         },
       ];
+      let rtnVideoList: {
+        order: number;
+        url: string;
+        isYoutube: boolean;
+      }[] = [];
       for (const eachBranch of branches) {
         branchList.push({
           names: { create: { lang: "VI", word: eachBranch.branchName } },
@@ -57,7 +62,23 @@ export const createShop = mutationField("createShop", {
           isMain: false,
         });
       }
-      let linkList = [];
+      let linkList: {
+        url: string;
+        linkType:
+          | "Facebook"
+          | "FacebookMessanger"
+          | "Instagram"
+          | "LAZADA"
+          | "OnlineShop"
+          | "Sendo"
+          | "Shopee"
+          | "Tiki"
+          | "TikTok"
+          | "Youtube";
+        order: number;
+        onBottom: boolean;
+        isShown: boolean;
+      }[] = [];
       let order = 0;
       if (FacebookLink) {
         linkList.push({
@@ -100,15 +121,12 @@ export const createShop = mutationField("createShop", {
         });
       }
       for (var i = 0; i < shopVideos.length; i++) {
-        shopVideos[i].isYoutube = true;
+        rtnVideoList.push({ ...shopVideos[i], isYoutube: true });
       }
-      let tagList = [],
-        onDetailTagId = [],
-        cnt = 0;
-      tags.sort(function (a, b) {
-        return a.order - b.order;
-      });
+      let tagList: { id: number }[] = [],
+        onDetailTagId: number[] = [];
       for (const eachTag of tags) {
+        if (!eachTag.id) continue;
         tagList.push({ id: eachTag.id });
         onDetailTagId.push(eachTag.id);
       }
@@ -182,7 +200,7 @@ export const createShop = mutationField("createShop", {
         },
       });
       let videoResult;
-      for (const eachVideo of shopVideos) {
+      for (const eachVideo of rtnVideoList) {
         videoResult = await ctx.prisma.shopVideo.create({
           data: { ...eachVideo, Shop: { connect: { id: queryResult.id } } },
         });

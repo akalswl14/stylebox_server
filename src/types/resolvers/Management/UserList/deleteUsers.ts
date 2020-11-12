@@ -3,12 +3,12 @@ import { intArg, mutationField } from "@nexus/schema";
 export const deleteUsers = mutationField("deleteUsers", {
   type: "Boolean",
   args: {
-    userIds: intArg({ list: true }),
+    userIds: intArg({ list: [true] }),
   },
   nullable: false,
   resolve: async (_, args, ctx) => {
     try {
-      const { userIds = [] } = args;
+      const userIds = args.userIds ?? [];
       let likeResult = await ctx.prisma.like.deleteMany({
         where: { userId: { in: userIds } },
       });

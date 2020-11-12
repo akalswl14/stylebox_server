@@ -5,21 +5,17 @@ export const updateSettingEventBanner = mutationField(
   {
     type: "Boolean",
     args: {
-      events: arg({ type: "IdOrderInputType", list: true }),
+      events: arg({ type: "IdOrderInputType", list: [true], required: true }),
     },
     nullable: false,
     resolve: async (_, args, ctx) => {
       try {
         const { events } = args;
-        let num = 0,
-          rtnBanners = [];
-        while (events.length != rtnBanners.length) {
-          for (const eachEvent of events) {
-            if (num == eachEvent.order) {
-              rtnBanners.push(eachEvent.id);
-            }
+        let rtnBanners: number[] = [];
+        for (const eachEvent of events) {
+          if (eachEvent.id) {
+            rtnBanners.push(eachEvent.id);
           }
-          num++;
         }
         let queryResult = await ctx.prisma.setting.update({
           where: {

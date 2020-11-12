@@ -9,17 +9,14 @@ export const getMainPosts = queryField("getMainPosts", {
     lastPostPriority: intArg({ nullable: true }),
     lang: stringArg({ nullable: true }),
     locationTagId: intArg({ nullable: true }),
-    postIds: intArg({ list: true, nullable: true }),
+    postIds: intArg({ list: [true], nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const {
-        lang = "VI",
-        postIds = [],
-        lastPostPriority,
-        locationTagId,
-      } = args;
+      const { lastPostPriority, locationTagId } = args;
+      const lang = args.lang ?? "VI";
+      const postIds = args.postIds ?? [];
       let settingQueryResult,
         loadingPostNum,
         TodaysStylesDate,
@@ -53,10 +50,20 @@ export const getMainPosts = queryField("getMainPosts", {
           postIds,
           locationTagId
         );
-        let randomPostResult = await getRandomResult(
-          queryLoadingPostNum,
-          queryResult
-        );
+        let randomPostResult: {
+          Shop: {
+            names: {
+              word: string;
+            }[];
+          } | null;
+          id: number;
+          mainProductId: number | null;
+          mainProductPrice: number | null;
+          images: {
+            url: string;
+          }[];
+          priority: number | null;
+        }[] = await getRandomResult(queryLoadingPostNum, queryResult);
         postResult.push(...randomPostResult);
         if (queryResult.length < queryLoadingPostNum) {
           queryLoadingPostNum = loadingPostNum - postResult.length;
@@ -64,7 +71,7 @@ export const getMainPosts = queryField("getMainPosts", {
         queryPriority--;
       }
       if (postResult.length > 0) {
-        rtnLastPostPriority = postResult[postResult.length - 1].priority;
+        rtnLastPostPriority = postResult[postResult.length - 1].priority ?? 1;
         for (const eachPost of postResult) {
           queryResult = await ctx.prisma.like.count({
             where: { userId, postId: eachPost.id },
@@ -75,6 +82,7 @@ export const getMainPosts = queryField("getMainPosts", {
             select: { word: true },
           });
           let productName = queryResult[0].word;
+          if (!eachPost.Shop) continue;
           posts.push({
             postId: eachPost.id,
             productName,
@@ -102,17 +110,17 @@ export const getMainPosts = queryField("getMainPosts", {
 const getfindManyResult = async (
   ctx: Context,
   queryDate: Date,
-  lang: String,
+  lang: string,
   priority: number,
-  postIds = [],
-  locationTagId?: number
+  postIds: number[] = [],
+  locationTagId?: number | null | undefined
 ) => {
   let queryResult = await ctx.prisma.post.findMany({
     where: {
       priority,
       id: { notIn: postIds },
       createdAt: { gte: queryDate },
-      tags: { some: { id: locationTagId } },
+      tags: locationTagId ? { some: { id: locationTagId } } : undefined,
     },
     select: {
       id: true,
@@ -126,8 +134,37 @@ const getfindManyResult = async (
   return queryResult;
 };
 
-const getRandomResult = async (loadingPostNum: number, posts: Post[]) => {
-  let results: Post[] = [];
+const getRandomResult = async (
+  loadingPostNum: number,
+  posts: {
+    Shop: {
+      names: {
+        word: string;
+      }[];
+    } | null;
+    id: number;
+    mainProductId: number | null;
+    mainProductPrice: number | null;
+    images: {
+      url: string;
+    }[];
+    priority: number | null;
+  }[]
+) => {
+  let results: {
+    Shop: {
+      names: {
+        word: string;
+      }[];
+    } | null;
+    id: number;
+    mainProductId: number | null;
+    mainProductPrice: number | null;
+    images: {
+      url: string;
+    }[];
+    priority: number | null;
+  }[] = [];
   console.log("RANDOM INPUT : ", posts);
   while (results.length < loadingPostNum && posts.length > 0) {
     let postNum = posts.length;

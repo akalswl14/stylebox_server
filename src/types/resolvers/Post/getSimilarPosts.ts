@@ -1,17 +1,21 @@
-import { queryField, intArg, stringArg, arg } from '@nexus/schema';
-import { getUserId } from '../../../utils';
+import { queryField, intArg, stringArg, arg } from "@nexus/schema";
+import { getUserId } from "../../../utils";
 
-export const getSimilarPosts = queryField('getSimilarPosts', {
-  type: 'PostList',
+export const getSimilarPosts = queryField("getSimilarPosts", {
+  type: "PostList",
   args: {
-    LocationTagId: arg({ type: 'idDicInputType', list: true, required: true }),
-    lang: stringArg({ nullable: true }),
-    productClassTagId: arg({
-      type: 'idDicInputType',
-      list: true,
+    LocationTagId: arg({
+      type: "idDicInputType",
+      list: [true],
       required: true,
     }),
-    styleTagId: arg({ type: 'idDicInputType', list: true, required: true }),
+    lang: stringArg({ nullable: true }),
+    productClassTagId: arg({
+      type: "idDicInputType",
+      list: [true],
+      required: true,
+    }),
+    styleTagId: arg({ type: "idDicInputType", list: [true], required: true }),
     cursorId: intArg({ nullable: true }),
   },
   nullable: true,
@@ -32,7 +36,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
         skipNum,
         cursorOption;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -45,14 +49,14 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
 
       let result1 = await ctx.prisma.post.findMany({
         where: {
-          tags: { some: { OR: LocationTagId, category: 'Location' } },
+          tags: { some: { OR: LocationTagId, category: "Location" } },
         },
         select: { id: true },
       });
 
       let result2 = await ctx.prisma.post.findMany({
         where: {
-          tags: { some: { OR: productClassTagId, category: 'ProductClass' } },
+          tags: { some: { OR: productClassTagId, category: "ProductClass" } },
         },
         select: { id: true },
       });
@@ -64,7 +68,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
       }
 
       let result3 = await ctx.prisma.post.findMany({
-        where: { tags: { some: { OR: styleTagId, category: 'Style' } } },
+        where: { tags: { some: { OR: styleTagId, category: "Style" } } },
         select: { id: true },
       });
 
@@ -82,7 +86,7 @@ export const getSimilarPosts = queryField('getSimilarPosts', {
       }
 
       similarPostPrismaResult = await ctx.prisma.post.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: loadingPostNum,
         skip: skipNum,
         cursor: cursorOption,

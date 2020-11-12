@@ -12,7 +12,22 @@ export const getTopPosts = queryField("getTopPosts", {
         postList,
         No = 1,
         rtn = [];
-      let orderByOption =
+      let orderByOption:
+        | {
+            weeklyRankScore: "desc";
+            monthlyRankScore?: undefined;
+            lifeTimeRankScore?: undefined;
+          }
+        | {
+            monthlyRankScore: "desc";
+            weeklyRankScore?: undefined;
+            lifeTimeRankScore?: undefined;
+          }
+        | {
+            lifeTimeRankScore: "desc";
+            weeklyRankScore?: undefined;
+            monthlyRankScore?: undefined;
+          } =
         periodFilter == 1
           ? { weeklyRankScore: "desc" }
           : periodFilter == 2
@@ -61,7 +76,7 @@ export const getTopPosts = queryField("getTopPosts", {
             postId: eachPost.id,
           },
         });
-        if (!postResult) continue;
+        if (!postResult || !postResult.mainProductId) continue;
         productResult = await ctx.prisma.product.findOne({
           where: { id: postResult.mainProductId },
           select: { names: { where: { lang: "VI" }, select: { word: true } } },
