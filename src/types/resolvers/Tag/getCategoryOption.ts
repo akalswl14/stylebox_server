@@ -9,9 +9,7 @@ export const getCategoryOption = queryField("getCategoryOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      let { lang } = args;
-      if (!lang) lang = "VI";
-
+      const lang = args.lang ?? "VI";
       let options = [];
       let classNameResult = await ctx.prisma.className.findMany({
         where: { lang, Class: { category: "ProductClass" } },
@@ -36,7 +34,8 @@ export const getCategoryOption = queryField("getCategoryOption", {
           let subTags = [];
           let order = 1;
           for (const eachtagName of tagResult) {
-            if (eachtagName.tagId && eachtagName.Tag) {
+            if (!eachtagName.Tag) continue;
+            if (eachtagName.tagId) {
               subTags.push({
                 id: eachtagName.tagId,
                 tagName: eachtagName.word,

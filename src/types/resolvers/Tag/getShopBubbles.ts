@@ -9,8 +9,7 @@ export const getShopBubbles = queryField("getShopBubbles", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      let { lang } = args;
-      if (!lang) lang = "VI";
+      const lang = args.lang ?? "VI";
       let queryResult,
         tagIdList = [],
         order = 0,

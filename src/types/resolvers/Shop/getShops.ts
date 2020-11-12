@@ -15,40 +15,80 @@ export const getShops = queryField("getShops", {
   resolve: async (_, args, ctx) => {
     try {
       const { locationId, tagId, classId, isClass, cursorId } = args;
+      const lang = args.lang ?? "VI";
       let shopResults,
         queryResult,
         loadingPostNum,
         totalShopNum = 0,
         shops = [],
-        classTags: { id: number }[] = [],
-        queryOption: {
-          cursor?: { id: number };
-          skip?: number;
-          where?: {
-            tags: { some: { AND?: { id: number }[]; OR?: { id: number }[] } };
-          };
-          orderBy: {
-            monthlyRankScore: string;
-          };
-          take: number;
-          select: {
-            id: boolean;
-            logoUrl: boolean;
-            names: {
-              select: {
-                word: boolean;
-              };
-              where: {
-                lang: string | null;
+        classTags: {
+          id: number;
+        }[] = [],
+        tags = [];
+      let countQueryOption:
+        | {
+            tags: {
+              some: {
+                AND: {
+                  id: number;
+                }[];
+                OR: {
+                  id: number;
+                }[];
               };
             };
-            onDetailTagId: boolean;
-          };
-        },
-        countQueryOption,
-        tags = [];
-      let { lang } = args;
-      if (!lang) lang = "VI";
+          }
+        | {
+            tags: {
+              some: {
+                AND: {
+                  id: number;
+                }[];
+              };
+            };
+          }
+        | {
+            tags: {
+              some: {
+                OR: {
+                  id: number;
+                }[];
+              };
+            };
+          }
+        | undefined;
+      let queryWhereOption:
+        | {
+            tags: {
+              some: {
+                AND: {
+                  id: number;
+                }[];
+                OR: {
+                  id: number;
+                }[];
+              };
+            };
+          }
+        | {
+            tags: {
+              some: {
+                AND: {
+                  id: number;
+                }[];
+              };
+            };
+          }
+        | {
+            tags: {
+              some: {
+                OR: {
+                  id: number;
+                }[];
+              };
+            };
+          }
+        | undefined;
       try {
         const userId = Number(getUserId(ctx));
         queryResult = await ctx.prisma.setting.findOne({
@@ -77,7 +117,78 @@ export const getShops = queryField("getShops", {
         if (locationId) {
           tags.push({ id: locationId });
         }
-        queryOption = {
+
+        if (tags.length > 0) {
+          if (classTags.length > 0) {
+            queryWhereOption = {
+              tags: { some: { AND: tags, OR: classTags } },
+            };
+            countQueryOption = {
+              tags: { some: { AND: tags, OR: classTags } },
+            };
+          } else {
+            queryWhereOption = { tags: { some: { AND: tags } } };
+            countQueryOption = { tags: { some: { AND: tags } } };
+          }
+        } else {
+          if (classTags.length > 0) {
+            queryWhereOption = { tags: { some: { OR: classTags } } };
+            countQueryOption = { tags: { some: { OR: classTags } } };
+          }
+        }
+        let queryOption: {
+          orderBy: {
+            monthlyRankScore: "asc" | "desc";
+          };
+          take: number;
+          select: {
+            id: boolean;
+            logoUrl: boolean;
+            names: {
+              select: {
+                word: boolean;
+              };
+              where: {
+                lang: string;
+              };
+            };
+            onDetailTagId: boolean;
+          };
+          cursor: { id: number } | undefined;
+          skip: number | undefined;
+          where:
+            | {
+                tags: {
+                  some: {
+                    AND: {
+                      id: number;
+                    }[];
+                    OR: {
+                      id: number;
+                    }[];
+                  };
+                };
+              }
+            | {
+                tags: {
+                  some: {
+                    AND: {
+                      id: number;
+                    }[];
+                  };
+                };
+              }
+            | {
+                tags: {
+                  some: {
+                    OR: {
+                      id: number;
+                    }[];
+                  };
+                };
+              }
+            | undefined;
+        } = {
           orderBy: { monthlyRankScore: "desc" },
           take: loadingPostNum,
           select: {
@@ -86,29 +197,10 @@ export const getShops = queryField("getShops", {
             names: { select: { word: true }, where: { lang } },
             onDetailTagId: true,
           },
+          where: queryWhereOption,
+          cursor: cursorId ? { id: cursorId } : undefined,
+          skip: cursorId ? 1 : undefined,
         };
-        if (tags.length > 0) {
-          if (classTags.length > 0) {
-            queryOption.where = {
-              tags: { some: { AND: tags, OR: classTags } },
-            };
-            countQueryOption = {
-              tags: { some: { AND: tags, OR: classTags } },
-            };
-          } else {
-            queryOption.where = { tags: { some: { AND: tags } } };
-            countQueryOption = { tags: { some: { AND: tags } } };
-          }
-        } else {
-          if (classTags.length > 0) {
-            queryOption.where = { tags: { some: { OR: classTags } } };
-            countQueryOption = { tags: { some: { OR: classTags } } };
-          }
-        }
-        if (cursorId) {
-          queryOption.cursor = { id: cursorId };
-          queryOption.skip = 1;
-        }
         shopResults = await ctx.prisma.shop.findMany(queryOption);
         for (const eachShop of shopResults) {
           let isLikeShop,

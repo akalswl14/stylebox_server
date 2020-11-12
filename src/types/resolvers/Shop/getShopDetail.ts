@@ -11,9 +11,7 @@ export const getShopDetail = queryField("getShopDetail", {
   resolve: async (_, args, ctx) => {
     try {
       const { shopId } = args;
-      let { lang } = args;
-      if (!lang) lang = "VI";
-
+      const lang = args.lang ?? "VI";
       let queryResult,
         tagsResult,
         likeResult,
@@ -148,7 +146,11 @@ export const getShopDetail = queryField("getShopDetail", {
         },
       });
       isLikeShop = likeResult > 0 ? true : false;
-      let rtn: any = {
+      let branchResult = await ctx.prisma.branch.findMany({
+        where: { shopId },
+        select: { address: true, googleMapUrl: true },
+      });
+      let rtn = {
         shopId,
         logoUrl: queryResult.logoUrl,
         shopName: queryResult.names[0].word,
@@ -160,7 +162,7 @@ export const getShopDetail = queryField("getShopDetail", {
         BottomExternalLinks,
         shopImages,
         shopVideos,
-        Branches: queryResult.branches,
+        Branches: branchResult,
       };
       return rtn;
     } catch (e) {

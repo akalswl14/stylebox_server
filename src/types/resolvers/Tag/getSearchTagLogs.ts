@@ -12,10 +12,7 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
   resolve: async (_, args, ctx) => {
     try {
       const { filterDate } = args;
-
-      let { lang } = args;
-      if (!lang) lang = "VI";
-
+      const lang = args.lang ?? "VI";
       let queryResult,
         order = 0,
         tags = [];
@@ -50,14 +47,13 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
         });
       }
       for (const eachTag of queryResult) {
-        if (eachTag.Tag) {
-          tags.push({
-            id: eachTag.Tag.id,
-            tagName: eachTag.Tag.names[0].word,
-            order,
-          });
-          order++;
-        }
+        if (!eachTag.Tag) continue;
+        tags.push({
+          id: eachTag.Tag.id,
+          tagName: eachTag.Tag.names[0].word,
+          order,
+        });
+        order++;
       }
       return tags ? tags : null;
     } catch (e) {

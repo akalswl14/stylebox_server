@@ -9,9 +9,7 @@ export const getPriceOption = queryField("getPriceOption", {
   list: true,
   resolve: async (_, args, ctx) => {
     try {
-      let { lang } = args;
-      if (!lang) lang = "VI";
-
+      const lang = args.lang ?? "VI";
       let nameResult,
         tags = [];
       nameResult = await ctx.prisma.tagName.findMany({

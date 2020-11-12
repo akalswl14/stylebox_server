@@ -13,7 +13,9 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { tags, lang = "VI", lastPostDate, cursorId } = args;
+      const { lastPostDate } = args;
+      const { tags, cursorId } = args;
+      const lang = args.lang ?? "VI";
       let queryResult,
         TagResult = [],
         PostResult = [],
@@ -39,7 +41,11 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       queryLoadingPostNum = loadingPostNum;
       let queryDate = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDateTomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
-      inputLastDate = lastPostDate ? Date.parse(lastPostDate) : new Date();
+      inputLastDate = lastPostDate ? new Date(lastPostDate) : new Date();
+      inputLastDate.setUTCHours(0, 0, 0, 0);
+      let inputLastDateTomorrow = new Date(
+        inputLastDate.setUTCHours(24, 0, 0, 0)
+      );
       for (const eachTag of tags) {
         if (eachTag.isClass && eachTag.classId) {
           ClassResult = await ctx.prisma.class.findOne({
@@ -63,9 +69,9 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         }
       }
       if (cursorId && lastPostDate) {
-        queryDate.setTime(inputLastDate);
+        queryDate.setTime(inputLastDate.getTime());
         queryDate.setUTCHours(0, 0, 0, 0);
-        queryDateTomorrow.setTime(queryDate);
+        queryDateTomorrow.setTime(queryDate.getTime());
         queryDateTomorrow.setUTCHours(24, 0, 0, 0);
         functionOption = { cursorId };
       }
@@ -77,9 +83,9 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           ctx,
           queryLoadingPostNum,
           tagIds,
-          queryDate,
-          queryDateTomorrow,
-          functionOption
+          cursorId && lastPostDate ? inputLastDate : queryDate,
+          cursorId && lastPostDate ? inputLastDateTomorrow : queryDateTomorrow,
+          cursorId && lastPostDate ? { cursorId } : {}
         );
         PostResult.push(...queryResult);
         queryLoadingPostNum = loadingPostNum - PostResult.length;
@@ -87,7 +93,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           functionOption = { cursorId: queryResult[queryResult.length - 1].id };
         } else {
           queryDate.setUTCDate(queryDate.getUTCDate() - 1);
-          queryDateTomorrow.setTime(queryDate);
+          queryDateTomorrow.setTime(queryDate.getTime());
           queryDateTomorrow.setUTCHours(24, 0, 0, 0);
           functionOption = {};
         }
@@ -125,7 +131,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
             where: { productId: eachPost.mainProductId, lang },
             select: { word: true },
           });
-          if (!shopResult || !productResult) return false;
+          if (!shopResult || !productResult) return null;
           let productName = productResult[0].word;
           posts.push({
             postId: eachPost.id,
@@ -154,14 +160,31 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
 const getResult = async (
   ctx: Context,
   loadingPostNum: number,
-  tagIds: { tags: { some: { id: number } } }[],
+  tagIds: (
+    | {
+        tags: {
+          some: {
+            OR: {
+              id: number;
+            }[];
+          };
+        };
+      }
+    | {
+        tags: {
+          some: {
+            id: number;
+          };
+        };
+      }
+  )[],
   queryDate: Date,
   queryDateTomorrow: Date,
-  option?: {
+  option: {
     cursorId?: number;
   }
 ) => {
-  let queryOption = {
+  let queryResult = await ctx.prisma.post.findMany({
     where: {
       AND: tagIds,
       createdAt: { gte: queryDate, lt: queryDateTomorrow },
@@ -176,11 +199,8 @@ const getResult = async (
       images: { select: { url: true }, take: 1 },
       createdAt: true,
     },
-  };
-  if (option && option.cursorId) {
-    queryOption.cursor = { id: option.cursorId };
-    queryOption.skip = 1;
-  }
-  let queryResult = await ctx.prisma.post.findMany(queryOption);
+    cursor: option.cursorId ? { id: option.cursorId } : undefined,
+    skip: option.cursorId ? 1 : undefined,
+  });
   return queryResult;
 };
