@@ -1,7 +1,7 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
 
-export const getSettingAdminEmail = queryField('getSettingAdminEmail', {
-  type: 'AdminInfo',
+export const getSettingAdminEmail = queryField("getSettingAdminEmail", {
+  type: "AdminInfo",
   nullable: false,
   resolve: async (_, __, ctx) => {
     try {

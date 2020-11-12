@@ -17,7 +17,6 @@ export const getPostList = queryField("getPostList", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        pageNum = 1,
         postId,
         mainProductName,
         shopName,
@@ -27,6 +26,9 @@ export const getPostList = queryField("getPostList", {
         shopNameAsc,
         priorityAsc,
       } = args;
+
+      let { pageNum } = args;
+      if (!pageNum) pageNum = 1;
 
       const take = 13;
       const skip = (pageNum - 1) * take;
@@ -65,7 +67,8 @@ export const getPostList = queryField("getPostList", {
           let mainProductIdList = [],
             totalPostList = [];
           for (const eachPost of queryResult) {
-            mainProductIdList.push(eachPost.mainProductId);
+            if (eachPost.mainProductId)
+              mainProductIdList.push(eachPost.mainProductId);
           }
           let productNameResult = await ctx.prisma.productName.findMany({
             where: { productId: { in: mainProductIdList } },

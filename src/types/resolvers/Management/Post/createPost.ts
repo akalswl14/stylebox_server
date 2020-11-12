@@ -1,17 +1,17 @@
-import { arg, intArg, mutationField, stringArg } from '@nexus/schema';
+import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
-export const createPostManage = mutationField('createPostManage', {
-  type: 'Boolean',
+export const createPostManage = mutationField("createPostManage", {
+  type: "Boolean",
   args: {
     mainProductId: intArg({ nullable: true }),
     priority: intArg({ nullable: true }),
     description: stringArg({ nullable: true }),
-    tags: arg({ type: 'IdOrderInputType', required: true, list: true }),
-    externalLinks: arg({ type: 'LinkInputType', required: true, list: true }),
-    images: arg({ type: 'ImageInputType', required: true, list: true }),
-    videos: arg({ type: 'VideoInputType', required: true, list: true }),
+    tags: arg({ type: "IdOrderInputType", required: true, list: true }),
+    externalLinks: arg({ type: "LinkInputType", required: true, list: true }),
+    images: arg({ type: "ImageInputType", required: true, list: true }),
+    videos: arg({ type: "VideoInputType", required: true, list: true }),
     subProducts: arg({
-      type: 'idDicInputType',
+      type: "idDicInputType",
       required: true,
       list: true,
     }),
@@ -65,13 +65,17 @@ export const createPostManage = mutationField('createPostManage', {
       let tagsId = [];
 
       for (const tag of tags) {
-        tagsId.push({ id: tag.id });
+        if (tag) tagsId.push({ id: tag.id });
       }
+
+      // tags.sort((a: order, b: order): number => {
+      //   return a.value - b.value;
+      // });
 
       tags.sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0));
 
       for (const tag of tags) {
-        onDetailTagId.push(tag.id);
+        if (tag) onDetailTagId.push(tag.id);
       }
 
       if (!shopId) return false;

@@ -10,35 +10,42 @@ export const deleteProductList = mutationField("deleteProductList", {
     try {
       const { productIds = [] } = args;
       let deleteQuery, queryResult;
+      let ProductIds = [];
+
+      for (const id of productIds) {
+        if (id) {
+          ProductIds.push(id);
+        }
+      }
 
       deleteQuery = await ctx.prisma.productImage.deleteMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
       });
       deleteQuery = await ctx.prisma.productName.deleteMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
       });
       deleteQuery = await ctx.prisma.productVideo.deleteMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
       });
       deleteQuery = await ctx.prisma.like.deleteMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
       });
       deleteQuery = await ctx.prisma.view.deleteMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
       });
       let productLinkIds = await ctx.prisma.productExternalLink.findMany({
-        where: { productId: { in: productIds } },
+        where: { productId: { in: ProductIds } },
         select: { id: true },
       });
       queryResult = await ctx.prisma.product.deleteMany({
-        where: { id: { in: productIds } },
+        where: { id: { in: ProductIds } },
       });
       deleteQuery = await ctx.prisma.productExternalLink.deleteMany({
         where: { OR: productLinkIds },
       });
 
       let postQuery = await ctx.prisma.post.findMany({
-        where: { mainProductId: { in: productIds } },
+        where: { mainProductId: { in: ProductIds } },
         select: { id: true },
       });
 

@@ -14,13 +14,15 @@ export const getProductList = queryField("getProductList", {
   resolve: async (_, args, ctx) => {
     try {
       const {
-        pageNum = 1,
         productId,
         productName,
         productIdAsc,
         productNameAsc,
         priceAsc,
       } = args;
+
+      let { pageNum } = args;
+      if (!pageNum) pageNum = 1;
 
       let products = [],
         lang = "VI";
@@ -74,7 +76,7 @@ export const getProductList = queryField("getProductList", {
         let productAscList = [];
 
         for (const eachProduct of productNameAscResult) {
-          productAscList.push(eachProduct.productId);
+          if (eachProduct.productId) productAscList.push(eachProduct.productId);
         }
 
         for (const id of productAscList) {
