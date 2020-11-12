@@ -1,7 +1,7 @@
-import { queryField, stringArg } from "@nexus/schema";
+import { mutationField, stringArg } from "@nexus/schema";
 import nodemailer from "nodemailer";
 
-export const sendEmail = queryField("sendEmail", {
+export const sendEmail = mutationField("sendEmail", {
   type: "Boolean",
   args: {
     option: stringArg({ required: true }),
