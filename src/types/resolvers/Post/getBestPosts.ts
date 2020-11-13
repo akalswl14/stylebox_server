@@ -9,20 +9,13 @@ export const getBestPosts = queryField("getBestPosts", {
     locationTagId: intArg({ nullable: true }),
     classId: intArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
-    pageNum: intArg({ required: true }),
   },
   nullable: true,
   description:
     "About filter, 1 means this week, 2 means this month and 3 means life time. Field pageNum has to start from 1.",
   resolve: async (_, args, ctx) => {
     try {
-      const {
-        periodFilter = 1,
-        locationTagId,
-        classId,
-        cursorId,
-        pageNum,
-      } = args;
+      const { periodFilter = 1, locationTagId, classId, cursorId } = args;
       let { lang } = args;
       if (!lang) lang = "VI";
       let tagResult = [],
@@ -80,17 +73,11 @@ export const getBestPosts = queryField("getBestPosts", {
       } else {
         orderOption = [{ lifeTimeRankScore: "desc" }, { createdAt: "asc" }];
       }
-      if (bestTotalPostNum - pageNum * loadingPostNum < loadingPostNum) {
-        loadingPostNum = bestTotalPostNum - pageNum * loadingPostNum;
-      }
       let totalPostNum = await ctx.prisma.post.count({
         where: {
           AND: tagResult,
         },
       });
-      if (bestTotalPostNum - pageNum * loadingPostNum == 0) {
-        return { postNum: totalPostNum, posts: [] };
-      }
       let postResult = await ctx.prisma.post.findMany({
         where: {
           AND: tagResult,

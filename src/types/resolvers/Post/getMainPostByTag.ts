@@ -27,6 +27,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
         postResult = [],
         rtnLastPostPriority = 5,
         posts = [],
+        rtnPostNum: number = 0,
         tagIdList: { tags: { some: { id: number } } }[] = [];
       const userId = Number(getUserId(ctx));
       settingQueryResult = await ctx.prisma.setting.findOne({
@@ -100,9 +101,12 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
           });
         }
       }
+      rtnPostNum = await ctx.prisma.post.count({
+        where: { AND: tagIdList },
+      });
       let rtn = {
         lastPostPriority: rtnLastPostPriority,
-        postNum: posts.length,
+        postNum: rtnPostNum,
         posts,
       };
 
