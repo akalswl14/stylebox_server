@@ -22,6 +22,7 @@ export const getLikeStyles = queryField("getLikeStyles", {
 
       const userId = Number(getUserId(ctx));
 
+      if (!userId) return null;
       if (!lang) lang = "VI";
 
       settingQueryResult = await ctx.prisma.setting.findOne({

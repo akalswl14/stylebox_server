@@ -12,6 +12,7 @@ export const createSearchTagLog = mutationField("createSearchTagLog", {
       const { tagId } = args;
       let queryResult;
       const userId = Number(getUserId(ctx));
+      if (!userId) return false;
       queryResult = await ctx.prisma.searchTagLog.create({
         data: {
           User: { connect: { id: userId } },

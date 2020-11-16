@@ -23,10 +23,10 @@ export const getShopDetail = queryField("getShopDetail", {
         isLikeShop = false,
         TopExternalLinks = [],
         BottomExternalLinks = [];
+
       const userId = Number(getUserId(ctx));
-      if (!userId) {
-        return null;
-      }
+      if (!userId) return null;
+
       await ctx.prisma.view.create({
         data: {
           Shop: { connect: { id: shopId } },
