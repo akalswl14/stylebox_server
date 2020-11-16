@@ -17,7 +17,8 @@ export const getLikeShops = queryField("getLikeShops", {
         shops = [],
         settingQueryResult,
         loadingPostNum,
-        tagResult;
+        tagResult,
+        isLikeShop;
 
       const userId = Number(getUserId(ctx));
 
@@ -91,19 +92,24 @@ export const getLikeShops = queryField("getLikeShops", {
               styleTag.push(tagResult.names[0].word);
             }
             check++;
-          } else {
-            return null;
           }
         }
+
+        isLikeShop =
+          (await ctx.prisma.like.count({
+            where: { userId, shopId: eachLike.id },
+          })) > 0
+            ? true
+            : false;
 
         shops.push({
           shopId: eachLike.id,
           shopName: eachLike.names[0].word,
           logoUrl: eachLike.logoUrl,
           tagNames: styleTag,
+          isLikeShop,
         });
       }
-
       let rtn = {
         totalShopNum,
         shops,

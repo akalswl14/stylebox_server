@@ -18,6 +18,7 @@ export const getLikeStyles = queryField("getLikeStyles", {
         posts = [],
         settingQueryResult,
         loadingPostNum,
+        isLikePost,
         postIds = [];
 
       const userId = Number(getUserId(ctx));
@@ -96,12 +97,20 @@ export const getLikeStyles = queryField("getLikeStyles", {
 
           if (!mainProduct) return null;
 
+          isLikePost =
+            (await ctx.prisma.like.count({
+              where: { userId, postId: eachPost.id },
+            })) > 0
+              ? true
+              : false;
+
           posts.push({
             postId: eachPost.id,
             productName: mainProduct.names[0].word,
             shopName: eachPost.Shop?.names[0].word,
             postImage: eachPost.images[0].url,
             price: eachPost.mainProductPrice,
+            isLikePost,
           });
         } else {
           return null;

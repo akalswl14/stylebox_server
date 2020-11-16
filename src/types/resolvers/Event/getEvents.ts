@@ -38,7 +38,10 @@ export const getEvents = queryField("getEvents", {
       if (!lang) lang = "VI";
 
       totalEventNum = await ctx.prisma.event.count({
-        where: { tags: { some: { names: { some: { lang } } } } },
+        where: {
+          tags: { some: { names: { some: { lang } } } },
+          isOnList: true,
+        },
       });
 
       settingQueryResult = await ctx.prisma.setting.findOne({
@@ -98,6 +101,26 @@ export const getEvents = queryField("getEvents", {
               isOnList: true,
             },
           });
+
+          const idx1 = prismaQueryResults.length - 1;
+          let lastPostInResults1 = prismaQueryResults[idx1];
+          let myCursor1 = lastPostInResults1.id;
+
+          if (myCursor === myCursor1) {
+            DdayEventCheck = true;
+            loadingEventNum = loadingPostNum - prismaQueryResults.length;
+            loadingEventNum = loadingEventNum !== 0 ? loadingEventNum : 0;
+
+            secondPrismaQueryResults = await ctx.prisma.event.findMany({
+              orderBy: { dueDate: "desc" },
+              take: loadingEventNum,
+              where: {
+                tags: { some: { names: { some: { lang } } } },
+                dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
+                isOnList: true,
+              },
+            });
+          }
         } else {
           check = await ctx.prisma.event.findMany({
             orderBy: { dueDate: "asc" },
