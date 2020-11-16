@@ -1,7 +1,7 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
 
-export const getSettingPopularTags = queryField('getSettingPopularTags', {
-  type: 'ClassTagDetail',
+export const getSettingPopularTags = queryField("getSettingPopularTags", {
+  type: "ClassTagDetail",
   nullable: true,
   list: true,
   resolve: async (_, __, ctx) => {
@@ -11,11 +11,11 @@ export const getSettingPopularTags = queryField('getSettingPopularTags', {
         tags = [],
         order = 1;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       popularTags = await ctx.prisma.tag.findMany({
         where: { isRecommendation: { gte: 1 } },
-        orderBy: { isRecommendation: 'asc' },
+        orderBy: { isRecommendation: "asc" },
         select: {
           id: true,
           category: true,
@@ -33,7 +33,7 @@ export const getSettingPopularTags = queryField('getSettingPopularTags', {
       for (const eachPopularTag of popularTags) {
         tags.push({
           order,
-          Category: eachPopularTag.category,
+          category: eachPopularTag.category,
           classId: eachPopularTag.classId,
           className: eachPopularTag.Class.names[0].word,
           id: eachPopularTag.id,
