@@ -92,6 +92,7 @@ export const ClassTagDetail = objectType({
     t.int("classId", { nullable: true });
     t.string("className", { nullable: true });
     t.boolean("isClass", { nullable: true });
+    t.string("category", { nullable: true });
     t.field("Category", { type: "Category", nullable: true });
   },
 });
@@ -340,7 +341,7 @@ export const TagManagementThumbnail = objectType({
     t.string("tagName", { nullable: true });
     t.int("classId", { nullable: true });
     t.string("className", { nullable: true });
-    t.field("category", { type: "Category", nullable: true });
+    t.string("category", { nullable: true });
     t.int("order", { nullable: true });
   },
 });
@@ -436,7 +437,7 @@ export const TagList = objectType({
   definition(t) {
     t.int("tagId");
     t.string("tagName");
-    t.field("category", { type: "Category" });
+    t.string("category");
     t.string("className");
     t.int("postNum");
     t.int("shopNum");
@@ -457,7 +458,7 @@ export const TagInfo = objectType({
   definition(t) {
     t.int("tagId");
     t.string("tagName");
-    t.field("category", { type: "Category" });
+    t.string("category");
     t.string("tagImage", { nullable: true });
     t.string("className");
     t.int("classId");
@@ -474,7 +475,7 @@ export const ClassInfo = objectType({
   definition(t) {
     t.int("classId");
     t.string("className");
-    t.field("category", { type: "Category" });
+    t.string("category");
     t.int("postNum");
     t.int("shopNum");
     t.int("productNum");
@@ -805,6 +806,7 @@ export const PostTagDetail = objectType({
     t.int("id");
     t.string("tagName");
     t.int("order");
+    t.string("category", { nullable: true });
     t.field("Category", { type: "Category", nullable: true });
   },
 });

@@ -45,7 +45,7 @@ export const getShopBubbles = queryField("getShopBubbles", {
             order: eachTagId.order,
             isClass: queryResult?.isClass,
             classId: queryResult?.classId,
-            Category: queryResult?.category,
+            category: queryResult?.category,
           };
           rtn.push(tmp);
         }
