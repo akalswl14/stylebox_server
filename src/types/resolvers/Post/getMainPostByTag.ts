@@ -30,6 +30,9 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
         rtnPostNum: number = 0,
         tagIdList: { tags: { some: { id: number } } }[] = [];
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, TodaysStylesPeriod: true },

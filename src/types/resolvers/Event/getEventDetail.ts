@@ -11,6 +11,9 @@ export const getEventDetail = queryField("getEventDetail", {
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       let { eventId, lang } = args;
       if (!lang) lang = "VI";
       let queryResult,

@@ -12,6 +12,9 @@ export const toggleLikePost = mutationField("toggleLikePost", {
     try {
       const { id } = args;
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return false;
+      }
       let likeNum,
         result,
         userExists = false;

@@ -27,6 +27,9 @@ export const getMainPosts = queryField("getMainPosts", {
         rtnLastPostPriority = 5,
         posts = [];
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, TodaysStylesPeriod: true },

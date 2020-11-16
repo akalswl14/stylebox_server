@@ -48,6 +48,9 @@ export const getBestPosts = queryField("getBestPosts", {
               }
           )[] = [];
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       let queryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, bestTotalPostNum: true },

@@ -91,6 +91,9 @@ export const getShops = queryField("getShops", {
         | undefined;
       try {
         const userId = Number(getUserId(ctx));
+        if (!userId) {
+          return null;
+        }
         queryResult = await ctx.prisma.setting.findOne({
           where: {
             id: 1,

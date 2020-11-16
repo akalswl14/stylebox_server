@@ -26,6 +26,9 @@ export const getPriceSearchResult = queryField("getPriceSearchResult", {
         tagNumList = [],
         posts = [];
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       queryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
         select: { loadingPostNum: true, SearchPeriod: true },

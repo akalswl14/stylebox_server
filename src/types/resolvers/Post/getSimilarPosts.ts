@@ -22,6 +22,9 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       const { productClassTagId, styleTagId, LocationTagId } = args;
       let { lang, cursorId } = args;
       let similarPostPrismaResult,

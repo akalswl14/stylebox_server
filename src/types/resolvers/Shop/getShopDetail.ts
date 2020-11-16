@@ -24,7 +24,9 @@ export const getShopDetail = queryField("getShopDetail", {
         TopExternalLinks = [],
         BottomExternalLinks = [];
       const userId = Number(getUserId(ctx));
-
+      if (!userId) {
+        return null;
+      }
       await ctx.prisma.view.create({
         data: {
           Shop: { connect: { id: shopId } },
@@ -155,7 +157,10 @@ export const getShopDetail = queryField("getShopDetail", {
         logoUrl: queryResult.logoUrl,
         shopName: queryResult.names[0].word,
         isLikeShop,
-        lastUpdateDate: queryResult.posts[0].createdAt,
+        lastUpdateDate:
+          queryResult.posts.length > 0 && queryResult.posts[0].createdAt
+            ? queryResult.posts[0].createdAt
+            : null,
         description: queryResult.description,
         tags,
         TopExternalLinks,

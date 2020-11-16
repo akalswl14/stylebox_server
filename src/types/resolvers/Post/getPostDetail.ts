@@ -11,6 +11,9 @@ export const getPostDetail = queryField("getPostDetail", {
   resolve: async (_, args, ctx) => {
     try {
       const userId = Number(getUserId(ctx));
+      if (!userId) {
+        return null;
+      }
       const { postId } = args;
       let { lang } = args;
       let postImages = [],
@@ -150,7 +153,7 @@ export const getPostDetail = queryField("getPostDetail", {
         if (shopTags.length == 3) break;
       }
 
-      let rtn : any = {
+      let rtn: any = {
         postId,
         isLikePost,
         PostDate,
