@@ -17,6 +17,7 @@ export const getLinkTypeOption = queryField("getLinkTypeOption", {
         | "Tiki"
         | "TikTok"
         | "Youtube"
+        | "Cafe24"
         | null
       )[] = [
         "Facebook",
@@ -29,6 +30,7 @@ export const getLinkTypeOption = queryField("getLinkTypeOption", {
         "LAZADA",
         "Tiki",
         "OnlineShop",
+        "Cafe24",
       ];
       return rtnList;
     } catch (e) {

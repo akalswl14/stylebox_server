@@ -74,7 +74,8 @@ export const createShop = mutationField("createShop", {
           | "Shopee"
           | "Tiki"
           | "TikTok"
-          | "Youtube";
+          | "Youtube"
+          | "Cafe24";
         order: number;
         onBottom: boolean;
         isShown: boolean;
