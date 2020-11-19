@@ -237,7 +237,7 @@ export const getShops = queryField("getShops", {
                 names: { where: { lang }, select: { word: true } },
               },
             });
-            if (!queryResult) return null;
+            if (!queryResult) continue;
             if (queryResult) {
               tmp.tagNames.push(queryResult.names[0].word);
               order++;
