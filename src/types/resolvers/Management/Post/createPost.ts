@@ -44,7 +44,8 @@ export const createPostManage = mutationField("createPostManage", {
           | "Shopee"
           | "Tiki"
           | "TikTok"
-          | "Youtube";
+          | "Youtube"
+          | "Cafe24";
         order: number;
         url: string;
       }[] = [];
