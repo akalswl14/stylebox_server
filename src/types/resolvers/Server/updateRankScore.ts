@@ -1,4 +1,16 @@
 import { mutationField } from "@nexus/schema";
+import { Post, Shop } from "@prisma/client";
+import AWS, { Credentials } from "aws-sdk";
+import { BUCKET_NAME, IAM_ID, IAM_SECRETKEY, S3_REGION } from "../AWS_IAM";
+const access = new Credentials({
+  accessKeyId: IAM_ID,
+  secretAccessKey: IAM_SECRETKEY,
+});
+
+const s3 = new AWS.S3({
+  credentials: access,
+  region: S3_REGION,
+});
 
 export const updateRankScore = mutationField("updateRankScore", {
   type: "Boolean",
@@ -32,7 +44,13 @@ export const updateRankScore = mutationField("updateRankScore", {
           shopConstC: true,
         },
       });
-      if (!queryResult) return false;
+      if (!queryResult)
+        return await uploadJsonLog(
+          [],
+          [],
+          false,
+          "Error while getting setting data"
+        );
       const bestConstA = queryResult.bestConstA;
       const bestConstB = queryResult.bestConstB;
       const shopConstA = queryResult.shopConstA;
@@ -48,7 +66,13 @@ export const updateRankScore = mutationField("updateRankScore", {
       queryResult = await ctx.prisma.shop.updateMany({
         data: { monthlyRankScore: { set: 0.0 } },
       });
-      if (!queryResult) return false;
+      if (!queryResult)
+        return await uploadJsonLog(
+          [],
+          [],
+          false,
+          "Error while setting shop monthlyRankScore 0.0"
+        );
       postResult = await ctx.prisma.post.findMany({
         select: {
           id: true,
@@ -91,7 +115,13 @@ export const updateRankScore = mutationField("updateRankScore", {
             lifeTimeRankScore: { set: lifeTimeRankScore },
           },
         });
-        if (!queryResult) return false;
+        if (!queryResult)
+          return await uploadJsonLog(
+            [],
+            [],
+            false,
+            "Error while updating post data."
+          );
         if (eachPost.shopId) {
           ShopMonthLikeNum = await ctx.prisma.like.count({
             where: {
@@ -135,7 +165,13 @@ export const updateRankScore = mutationField("updateRankScore", {
             where: { id: eachPost.shopId },
             data: { monthlyRankScore: { set: ShopmonthlyRankScore } },
           });
-          if (!queryResult) return false;
+          if (!queryResult)
+            return await uploadJsonLog(
+              [],
+              [],
+              false,
+              "Error while updating shop monthlyRankScore"
+            );
         }
       }
       postResult = await ctx.prisma.post.findMany({
@@ -148,7 +184,13 @@ export const updateRankScore = mutationField("updateRankScore", {
           where: { id: eachPost.id },
           data: { weeklyRankNum: order },
         });
-        if (!queryResult) return false;
+        if (!queryResult)
+          return await uploadJsonLog(
+            [],
+            [],
+            false,
+            "Error while updating post weeklyRankNum"
+          );
         order++;
       }
       order = 0;
@@ -162,7 +204,13 @@ export const updateRankScore = mutationField("updateRankScore", {
           where: { id: eachPost.id },
           data: { monthlyRankNum: order },
         });
-        if (!queryResult) return false;
+        if (!queryResult)
+          return await uploadJsonLog(
+            [],
+            [],
+            false,
+            "Error while updating post monthlyRankNum"
+          );
         order++;
       }
       order = 0;
@@ -176,7 +224,13 @@ export const updateRankScore = mutationField("updateRankScore", {
           where: { id: eachPost.id },
           data: { lifeTimeRankNum: order },
         });
-        if (!queryResult) return false;
+        if (!queryResult)
+          return await uploadJsonLog(
+            [],
+            [],
+            false,
+            "Error while updating post lifeTimeRankNum"
+          );
         order++;
       }
       order = 0;
@@ -190,13 +244,54 @@ export const updateRankScore = mutationField("updateRankScore", {
           where: { id: eachShop.id },
           data: { monthlyRankNum: order },
         });
-        if (!queryResult) return false;
+        if (!queryResult)
+          return await uploadJsonLog(
+            [],
+            [],
+            false,
+            "Error while updating shop monthlyRankNum"
+          );
         order++;
       }
-      return true;
+      return await uploadJsonLog(postResult, shopListResult, true, "-");
     } catch (e) {
       console.log(e);
       return false;
     }
   },
 });
+
+const uploadJsonLog = async (
+  postResult: Post[],
+  shopListResult: Shop[],
+  result: Boolean,
+  status: String
+) => {
+  try {
+    const now = new Date();
+    const jsonObject = {
+      Date: now,
+      result: result,
+      posts: postResult,
+      shops: shopListResult,
+      status,
+    };
+    JSON.stringify(jsonObject);
+    const bufferObject = Buffer.from(JSON.stringify(jsonObject));
+    const fileKey = "RankUpdateLog/" + now.getTime() + ".json";
+    var params = {
+      Bucket: BUCKET_NAME,
+      Key: fileKey,
+      Body: bufferObject,
+      CacheControl: "public, max-age=3600",
+      ContentType: "application/json",
+    };
+    await s3.putObject(params, (err, data) => {
+      if (err) return false;
+      if (data) return true;
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
