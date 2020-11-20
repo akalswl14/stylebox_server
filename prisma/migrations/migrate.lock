@@ -1,13 +1,3 @@
 # Prisma Migrate lockfile v1
 
-20200918065158-initial-migration
-20200922025036-initial-migration
-20200922061124-udpate-schema
-20200922061857-update-shop-external-link
-20200922062434-update-search-period-on-setting
-20200923022244-add-is-shown-on-post-external-link-shop-external-link
-20200923071843-add-is-main-on-branch
-20200926020132-fix-nullable
-20200926043538-fix-schmea
-20201119080438-update-unique-property
-20201119080527-add-cafe24-to-link-type
+20201120023910-initail-migration
