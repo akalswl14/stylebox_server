@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -240,7 +240,6 @@ enum LinkType {
   LAZADA
   Tiki
   OnlineShop
-  Cafe24
 }
 
 model Class {
