@@ -1,4 +1,5 @@
 import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
+import { ShopVideo } from "@prisma/client";
 
 export const createShop = mutationField("createShop", {
   type: "ShopIdInfo",
@@ -36,8 +37,8 @@ export const createShop = mutationField("createShop", {
       } = args;
       let tags = args.tags ?? [];
       let externalLinks = args.externalLinks ?? [];
-      let shopImages = args.shopImages ?? [];
-      let shopVideos = args.shopVideos ?? [];
+      let shopImages: { url: string; order: number }[] = args.shopImages ?? [];
+      let shopVideos: { url: string; order: number }[] = args.shopVideos ?? [];
       let branches = args.branches ?? [];
       let branchList = [
         {
@@ -185,22 +186,7 @@ export const createShop = mutationField("createShop", {
           },
         });
       }
-      let classResult = await ctx.prisma.class.create({
-        data: {
-          names: { create: { lang: "VI", word: shopName } },
-          category: "ShopName",
-          tags: {
-            create: {
-              category: "ShopName",
-              shops: { connect: { id: queryResult.id } },
-              names: { create: { lang: "VI", word: shopName } },
-              isClass: true,
-              isRecommendation: 0,
-            },
-          },
-        },
-      });
-      let videoResult;
+      let videoResult: ShopVideo | Boolean = true;
       for (const eachVideo of rtnVideoList) {
         videoResult = await ctx.prisma.shopVideo.create({
           data: { ...eachVideo, Shop: { connect: { id: queryResult.id } } },
@@ -225,7 +211,6 @@ export const createShop = mutationField("createShop", {
         tagCreateResult &&
         branchResult &&
         linkResult &&
-        classResult &&
         videoResult &&
         CreateImagesResult
         ? { shopId: queryResult.id }
