@@ -105,7 +105,7 @@ model ShopName {
   shopId    Int?
   Shop      Shop?    @relation(fields: [shopId], references: [id])
   lang      String
-  word      String
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

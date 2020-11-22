@@ -1,11 +1,15 @@
-# Migration `20201120023910-initail-migration`
+# Migration `20201122132600-initial-migration`
 
-This migration has been generated at 11/20/2020, 11:39:10 AM.
+This migration has been generated at 11/22/2020, 10:26:00 PM.
 You can check out the [state of the schema](./schema.prisma) after the migration.
 
 ## Database Steps
 
 ```sql
+CREATE TYPE "public"."Category" AS ENUM ('Location', 'ProductClass', 'Style', 'Price', 'Feature', 'ShopName')
+
+CREATE TYPE "public"."LinkType" AS ENUM ('Instagram', 'Facebook', 'FacebookMessanger', 'Youtube', 'TikTok', 'Shopee', 'Sendo', 'LAZADA', 'Tiki', 'OnlineShop', 'Cafe24')
+
 CREATE TABLE "public"."User" (
 "id" SERIAL,
 "createdAt" timestamp(3)   NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -374,6 +378,8 @@ CREATE TABLE "public"."_PostToTag" (
 
 CREATE UNIQUE INDEX "ProductExternalLink_productId_unique" ON "public"."ProductExternalLink"("productId")
 
+CREATE UNIQUE INDEX "ShopName.word_unique" ON "public"."ShopName"("word")
+
 CREATE UNIQUE INDEX "ClassName.word_unique" ON "public"."ClassName"("word")
 
 CREATE UNIQUE INDEX "TagName.word_unique" ON "public"."TagName"("word")
@@ -495,7 +501,7 @@ ALTER TABLE "public"."_PostToTag" ADD FOREIGN KEY ("B")REFERENCES "public"."Tag"
 
 ```diff
 diff --git schema.prisma schema.prisma
-migration ..20201120023910-initail-migration
+migration ..20201122132600-initial-migration
 --- datamodel.dml
 +++ datamodel.dml
 @@ -1,0 +1,414 @@
@@ -606,7 +612,7 @@ migration ..20201120023910-initail-migration
 +  shopId    Int?
 +  Shop      Shop?    @relation(fields: [shopId], references: [id])
 +  lang      String
-+  word      String
++  word      String   @unique
 +  createdAt DateTime @default(now())
 +  updatedAt DateTime @default(now()) @updatedAt
 +}
