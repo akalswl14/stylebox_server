@@ -786,6 +786,20 @@ export const ShopIdInfo = objectType({
   },
 });
 
+export const TagIdInfo = objectType({
+  name: "TagIdInfo",
+  definition(t) {
+    t.int("tagId");
+  },
+});
+
+export const PostTagInfo = objectType({
+  name: "PostTagInfo",
+  definition(t) {
+    t.int("postId");
+  },
+});
+
 export const ProductIdInfo = objectType({
   name: "ProductIdInfo",
   definition(t) {

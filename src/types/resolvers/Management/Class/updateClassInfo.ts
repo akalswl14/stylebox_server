@@ -41,6 +41,8 @@ export const updateClassInfo = mutationField("updateClassInfo", {
           },
         });
 
+        if (!classUpdate) return false;
+
         if (originalClass.tags.length > 0) {
           tagUpdate = await ctx.prisma.tag.update({
             where: { id: originalClass.tags[0].id },
@@ -51,9 +53,8 @@ export const updateClassInfo = mutationField("updateClassInfo", {
               },
             },
           });
+          if (!tagUpdate) return false;
         }
-
-        if (!tagUpdate || !classUpdate) return false;
       }
 
       if (classCategory) {
@@ -61,6 +62,7 @@ export const updateClassInfo = mutationField("updateClassInfo", {
           where: { id: classId },
           data: { category: classCategory },
         });
+        if (!classUpdate) return false;
 
         let tagNum = await ctx.prisma.tag.findMany({
           where: { classId },
@@ -71,9 +73,8 @@ export const updateClassInfo = mutationField("updateClassInfo", {
             where: { classId },
             data: { category: classCategory },
           });
+          if (!tagUpdate) return false;
         }
-
-        if (!tagUpdate || !classUpdate) return false;
       }
 
       return true;

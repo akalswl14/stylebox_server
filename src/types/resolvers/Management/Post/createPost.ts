@@ -1,7 +1,7 @@
 import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
 export const createPostManage = mutationField("createPostManage", {
-  type: "Boolean",
+  type: "PostTagInfo",
   args: {
     mainProductId: intArg({ nullable: true }),
     priority: intArg({ nullable: true }),
@@ -141,7 +141,7 @@ export const createPostManage = mutationField("createPostManage", {
         onDetailTagId.push(tag.id);
       }
 
-      if (!shopId) return false;
+      if (!shopId) return null;
 
       let postResult = await ctx.prisma.post.create({
         data: {
@@ -151,7 +151,6 @@ export const createPostManage = mutationField("createPostManage", {
           text: description,
           tags: { connect: tagsId },
           postExternalLinks: { create: ExternalLinkArray },
-          images: { create: ImageArray },
           videos: { create: VideoArray },
           products: { connect: SubProductArray },
           onDetailTagId: { set: onDetailTagId },
@@ -167,11 +166,35 @@ export const createPostManage = mutationField("createPostManage", {
             connect: { id: shopId },
           },
         },
+        select: {
+          id: true,
+        },
       });
-      return postResult ? true : false;
+
+      if (!postResult) return null;
+
+      if (ImageArray) {
+        ImageArray.sort((a, b) =>
+          a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+        );
+        const createPostImage = [];
+        for (const image of ImageArray) {
+          const s3ImageKey = "Post/" + postResult.id + "/" + image.url;
+          createPostImage.push({ order: image.order, url: s3ImageKey });
+        }
+
+        let createImage = await ctx.prisma.post.update({
+          where: { id: postResult.id },
+          data: { images: { create: createPostImage } },
+        });
+
+        if (!createImage) return null;
+      }
+
+      return postResult ? { postId: postResult.id } : null;
     } catch (e) {
       console.log(e);
-      return false;
+      return null;
     }
   },
 });
