@@ -26,7 +26,8 @@
         "Sendo",
         "LAZADA",
         "Tiki",
-        "OnlineShop"
+        "OnlineShop",
+        "Cafe24"
       ]
     },
     {
@@ -321,13 +322,6 @@
     {
       "tag": "CreateField",
       "model": "Product",
-      "field": "isOwnPost",
-      "type": "Boolean",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Product",
       "field": "views",
       "type": "View",
       "arity": "List"
@@ -336,13 +330,6 @@
       "tag": "CreateField",
       "model": "Product",
       "field": "priority",
-      "type": "Int",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Product",
-      "field": "mainPostId",
       "type": "Int",
       "arity": "Optional"
     },
@@ -534,17 +521,6 @@
       "field": "word",
       "type": "String",
       "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "ProductName",
-          "field": "word"
-        },
-        "directive": "unique"
-      }
     },
     {
       "tag": "CreateField",
@@ -1303,7 +1279,7 @@
       "model": "Shop",
       "field": "phoneNumber",
       "type": "String",
-      "arity": "List"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -1343,16 +1319,16 @@
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "priority",
+      "field": "monthlyRankNum",
       "type": "Int",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
       "model": "Shop",
-      "field": "onShopListTagId",
+      "field": "priority",
       "type": "Int",
-      "arity": "List"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -2145,14 +2121,21 @@
     {
       "tag": "CreateField",
       "model": "ShopExternalLink",
-      "field": "isOnDetail",
+      "field": "order",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopExternalLink",
+      "field": "onBottom",
       "type": "Boolean",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
       "model": "ShopExternalLink",
-      "field": "isOnGoToShop",
+      "field": "isShown",
       "type": "Boolean",
       "arity": "Required"
     },
@@ -2383,6 +2366,13 @@
     {
       "tag": "CreateField",
       "model": "Branch",
+      "field": "isMain",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Branch",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -2568,17 +2558,6 @@
       "field": "word",
       "type": "String",
       "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "BranchName",
-          "field": "word"
-        },
-        "directive": "unique"
-      }
     },
     {
       "tag": "CreateField",
@@ -2775,9 +2754,9 @@
     {
       "tag": "CreateField",
       "model": "Event",
-      "field": "bannerText",
-      "type": "String",
-      "arity": "Optional"
+      "field": "onDetailTagId",
+      "type": "Int",
+      "arity": "List"
     },
     {
       "tag": "CreateField",
@@ -2785,6 +2764,13 @@
       "field": "contentsImages",
       "type": "EventContentsImage",
       "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "startDate",
+      "type": "DateTime",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -4326,13 +4312,6 @@
     {
       "tag": "CreateField",
       "model": "Post",
-      "field": "title",
-      "type": "String",
-      "arity": "Optional"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Post",
       "field": "text",
       "type": "String",
       "arity": "Optional"
@@ -4375,8 +4354,22 @@
     {
       "tag": "CreateField",
       "model": "Post",
-      "field": "publisher",
-      "type": "String",
+      "field": "weeklyRankNum",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "monthlyRankNum",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Post",
+      "field": "lifeTimeRankNum",
+      "type": "Int",
       "arity": "Optional"
     },
     {
@@ -4651,6 +4644,13 @@
       "field": "postId",
       "type": "Int",
       "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "PostExternalLink",
+      "field": "isShown",
+      "type": "Boolean",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
@@ -5922,7 +5922,7 @@
       "tag": "CreateField",
       "model": "Setting",
       "field": "TodaysStylesPeriod",
-      "type": "Int",
+      "type": "DateTime",
       "arity": "Required"
     },
     {
@@ -5999,7 +5999,7 @@
       "tag": "CreateField",
       "model": "Setting",
       "field": "SearchPeriod",
-      "type": "Int",
+      "type": "DateTime",
       "arity": "Required"
     },
     {
