@@ -9,3 +9,4 @@ export * from "./getShopExternalLink";
 export * from "./getShopSNSLink";
 export * from "./getShopDescription";
 export * from "./getShopToBranch";
+export * from "./getShopNameExists";
