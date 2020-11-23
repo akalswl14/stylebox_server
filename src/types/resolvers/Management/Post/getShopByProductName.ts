@@ -9,40 +9,55 @@ export const getShopByProductName = queryField("getShopByProductName", {
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { productName } = args;
-      let shop = [],
-        lang = "VI";
+      let lang = "VI",
+        products = [];
 
-      let branches = await ctx.prisma.product.findMany({
-        where: { names: { some: { word: { contains: productName } } } },
+      let rtnProducts = await ctx.prisma.product.findMany({
         select: {
           id: true,
           price: true,
-          names: { where: { lang }, select: { word: true } },
-          branches: { select: { shopId: true } },
         },
       });
-
-      if (!branches) return null;
-
-      for (const branch of branches) {
-        if (branch.branches[0].shopId) {
-          let shopInfo = await ctx.prisma.shop.findOne({
-            where: { id: branch.branches[0].shopId },
-            select: { names: { where: { lang }, select: { word: true } } },
-          });
-          if (!shopInfo) return null;
-          shop.push({
-            productId: branch.id,
-            productName: branch.names[0].word,
-            shopId: branch.branches[0].shopId,
-            shopName: shopInfo.names[0].word,
-            price: branch.price,
-          });
-        }
+      for (const eachProduct of rtnProducts) {
+        if (!eachProduct) continue;
+        let ProductNameResult = await ctx.prisma.productName.findMany({
+          where: { productId: eachProduct.id, lang },
+          select: {
+            word: true,
+          },
+        });
+        let BranchResult = await ctx.prisma.branch.findMany({
+          where: { products: { some: { id: eachProduct.id } } },
+          select: {
+            id: true,
+          },
+        });
+        if (
+          !BranchResult ||
+          BranchResult.length <= 0 ||
+          !ProductNameResult ||
+          ProductNameResult.length <= 0
+        )
+          continue;
+        let ShopResult = await ctx.prisma.shop.findMany({
+          where: {
+            branches: { some: { OR: BranchResult } },
+          },
+          select: {
+            id: true,
+            names: { where: { lang }, select: { word: true } },
+          },
+        });
+        products.push({
+          productId: eachProduct.id,
+          productName: ProductNameResult[0].word,
+          shopId: ShopResult[0].id,
+          shopName: ShopResult[0].names[0].word,
+          price: eachProduct.price,
+        });
       }
 
-      return shop ? shop : null;
+      return products ?? null;
     } catch (e) {
       console.log(e);
       return null;
