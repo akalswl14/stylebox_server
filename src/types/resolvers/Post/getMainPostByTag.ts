@@ -92,13 +92,20 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
             where: { productId: eachPost.mainProductId, lang },
             select: { word: true },
           });
+          if (queryResult.length <= 0 || !queryResult) continue;
           let productName = queryResult[0].word;
           if (!eachPost.Shop) continue;
           posts.push({
             postId: eachPost.id,
             productName,
-            shopName: eachPost.Shop.names[0].word,
-            postImage: eachPost.images[0].url,
+            shopName:
+              eachPost.Shop.names.length > 0 && eachPost.Shop.names[0].word
+                ? eachPost.Shop.names[0].word
+                : null,
+            postImage:
+              eachPost.images.length > 0 && eachPost.images[0].url
+                ? eachPost.images[0].url
+                : null,
             price: eachPost.mainProductPrice,
             isLikePost,
           });
