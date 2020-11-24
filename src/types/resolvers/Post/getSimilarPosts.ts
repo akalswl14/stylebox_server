@@ -6,7 +6,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
   type: "PostList",
   args: {
     lang: stringArg({ nullable: true }),
-    TagIds: intArg({ list: true, nullable: true }),
+    TagIds: intArg({ list: true, required: true }),
     postId: intArg({ required: true }),
     cursorId: intArg({ nullable: true }),
   },
