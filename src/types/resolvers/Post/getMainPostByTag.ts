@@ -1,5 +1,4 @@
 import { queryField, intArg, stringArg, arg } from "@nexus/schema";
-import { Post } from "@prisma/client";
 import { Context } from "nexus-prisma/dist/utils";
 import { getUserId } from "../../../utils";
 
