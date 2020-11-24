@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getLikeShops = queryField("getLikeShops", {
   type: "ShopList",
@@ -78,6 +79,7 @@ export const getLikeShops = queryField("getLikeShops", {
       for (const eachLike of QueryResult) {
         let check = 0;
         let styleTag = [];
+        if (!eachLike || !eachLike.onDetailTagId) continue;
         for (const eachTagId of eachLike.onDetailTagId) {
           tagResult = await ctx.prisma.tag.findOne({
             where: {
@@ -87,7 +89,12 @@ export const getLikeShops = queryField("getLikeShops", {
               names: { where: { lang }, select: { word: true } },
             },
           });
-          if (tagResult) {
+          if (
+            tagResult &&
+            tagResult.names &&
+            tagResult.names.length > 0 &&
+            tagResult.names[0].word
+          ) {
             if (check < 3) {
               styleTag.push(tagResult.names[0].word);
             }
@@ -104,8 +111,13 @@ export const getLikeShops = queryField("getLikeShops", {
 
         shops.push({
           shopId: eachLike.id,
-          shopName: eachLike.names[0].word,
-          logoUrl: eachLike.logoUrl,
+          shopName:
+            eachLike.names &&
+            eachLike.names.length > 0 &&
+            eachLike.names[0].word
+              ? eachLike.names[0].word
+              : null,
+          logoUrl: eachLike.logoUrl ? S3_URL + eachLike.logoUrl : null,
           tagNames: styleTag,
           isLikeShop,
         });

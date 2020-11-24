@@ -30,7 +30,10 @@ export const getRecommendTags = queryField("getRecommendTags", {
       for (const eachTag of queryResult) {
         tags.push({
           id: eachTag.id,
-          tagName: eachTag.names[0].word,
+          tagName:
+            eachTag.names && eachTag.names.length > 0 && eachTag.names[0].word
+              ? eachTag.names[0].word
+              : null,
           isClass: eachTag.isClass,
         });
       }

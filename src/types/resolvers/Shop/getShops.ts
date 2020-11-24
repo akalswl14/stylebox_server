@@ -1,5 +1,6 @@
 import { intArg, queryField, stringArg, booleanArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getShops = queryField("getShops", {
   type: "ShopList",
@@ -216,7 +217,7 @@ export const getShops = queryField("getShops", {
             } = {
               shopId: eachShop.id,
               shopName: eachShop.names[0].word,
-              logoUrl: eachShop.logoUrl,
+              logoUrl: eachShop.logoUrl ? S3_URL + eachShop.logoUrl : null,
               isLikeShop: false,
               tagNames: [],
             };

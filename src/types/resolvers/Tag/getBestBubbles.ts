@@ -1,4 +1,5 @@
 import { queryField, stringArg } from "@nexus/schema";
+import { S3_URL } from "../AWS_IAM";
 
 export const getBestBubbles = queryField("getBestBubbles", {
   type: "ClassTagDetail",
@@ -43,9 +44,16 @@ export const getBestBubbles = queryField("getBestBubbles", {
 
           tags.push({
             id: tagQueryResult.id,
-            tagName: tagQueryResult.names[0].word,
+            tagName:
+              tagQueryResult.names &&
+              tagQueryResult.names.length > 0 &&
+              tagQueryResult.names[0].word
+                ? tagQueryResult.names[0].word
+                : null,
             order,
-            tagImage: tagQueryResult.tagImage,
+            tagImage: tagQueryResult.tagImage
+              ? S3_URL + tagQueryResult.tagImage
+              : null,
             classId: tagQueryResult.classId,
           });
 

@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getPostsbyShop = queryField("getPostsbyShop", {
   type: "PostList",
@@ -80,9 +81,24 @@ export const getPostsbyShop = queryField("getPostsbyShop", {
         if (mainProduct && shopResult) {
           let tmp = {
             postId: eachPost.id,
-            productName: mainProduct.names[0].word,
-            shopName: shopResult.names[0].word,
-            postImage: eachPost.images[0].url,
+            productName:
+              mainProduct.names &&
+              mainProduct.names.length > 0 &&
+              mainProduct.names[0].word
+                ? mainProduct.names[0].word
+                : null,
+            shopName:
+              shopResult.names &&
+              shopResult.names.length > 0 &&
+              shopResult.names[0].word
+                ? shopResult.names[0].word
+                : null,
+            postImage:
+              eachPost.images &&
+              eachPost.images.length > 0 &&
+              eachPost.images[0].url
+                ? S3_URL + eachPost.images[0].url
+                : null,
             price: eachPost.mainProductPrice,
             isLikePost: likeResult > 0 ? true : false,
           };

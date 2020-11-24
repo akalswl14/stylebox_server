@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getPostDetail = queryField("getPostDetail", {
   type: "PostDetail",
@@ -109,7 +110,7 @@ export const getPostDetail = queryField("getPostDetail", {
         postImages.push({
           id: eachImage.id,
           order: eachImage.order,
-          url: eachImage.url,
+          url: S3_URL + eachImage.url,
         });
       }
 
@@ -156,7 +157,7 @@ export const getPostDetail = queryField("getPostDetail", {
         shopId: postPrismaResult.shopId,
         shopName: postPrismaResult.Shop?.names[0].word,
         shopLogoUrl: postPrismaResult.Shop?.logoUrl
-          ? postPrismaResult.Shop?.logoUrl
+          ? S3_URL + postPrismaResult.Shop?.logoUrl
           : "",
         shopTags,
         description: postPrismaResult.text ? postPrismaResult.text : "",

@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getShopDetail = queryField("getShopDetail", {
   type: "ShopDetail",
@@ -66,7 +67,7 @@ export const getShopDetail = queryField("getShopDetail", {
       for (const eachImage of queryResult.images) {
         shopImages.push({
           id: eachImage.id,
-          url: eachImage.url,
+          url: S3_URL + eachImage.url,
           order: eachImage.order,
         });
       }
@@ -154,8 +155,13 @@ export const getShopDetail = queryField("getShopDetail", {
       });
       let rtn = {
         shopId,
-        logoUrl: queryResult.logoUrl,
-        shopName: queryResult.names[0].word,
+        logoUrl: queryResult.logoUrl ? S3_URL + queryResult.logoUrl : null,
+        shopName:
+          queryResult.names &&
+          queryResult.names.length > 0 &&
+          queryResult.names[0].word
+            ? queryResult.names[0].word
+            : null,
         isLikeShop,
         lastUpdateDate:
           queryResult.posts.length > 0 && queryResult.posts[0].createdAt

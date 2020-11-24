@@ -1,5 +1,6 @@
 import { queryField, intArg, stringArg, arg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getSimilarPosts = queryField("getSimilarPosts", {
   type: "PostList",
@@ -110,6 +111,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
       if (!similarPostPrismaResult) return null;
 
       for (const item of similarPostPrismaResult) {
+        if (!item) continue;
         if (!item.mainProductId) return null;
         mainProductName = await ctx.prisma.product.findOne({
           where: { id: item.mainProductId },
@@ -129,9 +131,24 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
 
         posts.push({
           postId: item.id,
-          postImage: item.images[0].url,
-          shopName: item.Shop?.names[0].word,
-          productName: mainProductName.names[0].word,
+          postImage:
+            item.images && item.images.length > 0 && item.images[0].url
+              ? S3_URL + item.images[0].url
+              : null,
+          shopName:
+            item.Shop &&
+            item.Shop.names &&
+            item.Shop.names.length > 0 &&
+            item.Shop.names[0].word
+              ? item.Shop.names[0].word
+              : null,
+          productName:
+            mainProductName &&
+            mainProductName.names &&
+            mainProductName.names.length > 0 &&
+            mainProductName.names[0].word
+              ? mainProductName.names[0].word
+              : null,
           price: item.mainProductPrice,
           isLikePost,
         });

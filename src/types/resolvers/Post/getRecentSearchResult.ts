@@ -1,6 +1,7 @@
 import { queryField, stringArg, intArg, arg } from "@nexus/schema";
 import { Context } from "nexus-prisma/dist/utils";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getRecentSearchResult = queryField("getRecentSearchResult", {
   type: "searchResultList",
@@ -139,8 +140,16 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           posts.push({
             postId: eachPost.id,
             productName,
-            shopName: shopResult[0].word,
-            postImage: eachPost.images[0].url,
+            shopName:
+              shopResult.length > 0 && shopResult[0].word
+                ? shopResult[0].word
+                : null,
+            postImage:
+              eachPost.images &&
+              eachPost.images.length > 0 &&
+              eachPost.images[0].url
+                ? S3_URL + eachPost.images[0].url
+                : null,
             price: eachPost.mainProductPrice,
             isLikePost,
           });

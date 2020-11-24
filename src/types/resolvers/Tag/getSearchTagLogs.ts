@@ -51,7 +51,12 @@ export const getSearchTagLogs = queryField("getSearchTagLogs", {
         if (!eachTag.Tag) continue;
         tags.push({
           id: eachTag.Tag.id,
-          tagName: eachTag.Tag.names[0].word,
+          tagName:
+            eachTag.Tag.names &&
+            eachTag.Tag.names.length > 0 &&
+            eachTag.Tag.names[0].word
+              ? eachTag.Tag.names[0].word
+              : null,
           order,
         });
         order++;

@@ -24,7 +24,10 @@ export const getPopularTags = queryField("getPopularTags", {
       for (const eachTag of tagResult) {
         tags.push({
           id: eachTag.id,
-          tagName: eachTag.names[0].word,
+          tagName:
+            eachTag.names && eachTag.names.length > 0 && eachTag.names[0].word
+              ? eachTag.names[0].word
+              : null,
           order: eachTag.isRecommendation,
         });
       }

@@ -37,8 +37,14 @@ export const getRecommendShopTags = queryField("getRecommendShopTags", {
       if (!queryResult) return null;
       for (const eachTag of queryResult) {
         tags.push({
-          id: eachTag.shops[0].id,
-          tagName: eachTag.names[0].word,
+          id:
+            eachTag.shops && eachTag.shops.length > 0 && eachTag.shops[0].id
+              ? eachTag.shops[0].id
+              : null,
+          tagName:
+            eachTag.names && eachTag.names.length > 0 && eachTag.names[0].word
+              ? eachTag.names[0].word
+              : null,
           isClass: eachTag.isClass,
         });
       }

@@ -1,4 +1,5 @@
 import { queryField, stringArg } from "@nexus/schema";
+import { S3_URL } from "../AWS_IAM";
 
 export const getMainBubbles = queryField("getMainBubbles", {
   type: "ClassTagDetail",
@@ -44,8 +45,15 @@ export const getMainBubbles = queryField("getMainBubbles", {
             rtn.push({
               id: eachId,
               order,
-              tagImage: prismaResult?.tagImage,
-              tagName: prismaResult.names[0].word,
+              tagImage: prismaResult.tagImage
+                ? S3_URL + prismaResult.tagImage
+                : null,
+              tagName:
+                prismaResult.names &&
+                prismaResult.names.length > 0 &&
+                prismaResult.names[0].word
+                  ? prismaResult.names[0].word
+                  : null,
               classId: prismaResult.classId,
             });
 

@@ -1,4 +1,5 @@
 import { queryField, stringArg, booleanArg } from "@nexus/schema";
+import { S3_URL } from "../AWS_IAM";
 
 export const getShopBubbles = queryField("getShopBubbles", {
   type: "ClassTagDetail",
@@ -28,6 +29,7 @@ export const getShopBubbles = queryField("getShopBubbles", {
           }
         }
         for (const eachTagId of tagIdList) {
+          if (!eachTagId || !eachTagId.id) continue;
           queryResult = await ctx.prisma.tag.findOne({
             where: { id: eachTagId.id },
             select: {
@@ -38,14 +40,22 @@ export const getShopBubbles = queryField("getShopBubbles", {
               category: true,
             },
           });
+          if (!queryResult) continue;
           let tmp = {
             id: eachTagId.id,
-            tagName: queryResult?.names[0].word,
-            tagImage: queryResult?.tagImage,
+            tagName:
+              queryResult.names &&
+              queryResult.names.length > 0 &&
+              queryResult.names[0].word
+                ? queryResult.names[0].word
+                : null,
+            tagImage: queryResult.tagImage
+              ? S3_URL + queryResult.tagImage
+              : null,
             order: eachTagId.order,
-            isClass: queryResult?.isClass,
-            classId: queryResult?.classId,
-            category: queryResult?.category,
+            isClass: queryResult.isClass,
+            classId: queryResult.classId,
+            category: queryResult.category,
           };
           rtn.push(tmp);
         }

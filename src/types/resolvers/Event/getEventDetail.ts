@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getEventDetail = queryField("getEventDetail", {
   type: "EventDetail",
@@ -59,14 +60,14 @@ export const getEventDetail = queryField("getEventDetail", {
         for (const eachImage of queryResult.images) {
           eventImages.push({
             id: eachImage.id,
-            url: eachImage.url,
+            url: S3_URL + eachImage.url,
             order: eachImage.order,
           });
         }
         for (const eachContentsImage of queryResult.contentsImages) {
           eventContentsImage.push({
             id: eachContentsImage.id,
-            url: eachContentsImage.url,
+            url: S3_URL + eachContentsImage.url,
             order: eachContentsImage.order,
           });
         }

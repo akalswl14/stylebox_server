@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getBestPosts = queryField("getBestPosts", {
   type: "postNumPostList",
@@ -115,13 +116,20 @@ export const getBestPosts = queryField("getBestPosts", {
           },
         });
         if (shopResult.length <= 0 || !shopResult) continue;
-        if (!eachPost.mainProductPrice) continue;
         let tmp = {
           postId: eachPost.id,
           productName,
-          shopName: shopResult[0].names[0].word,
-          postImage: eachPost.images[0].url,
-          price: eachPost.mainProductPrice,
+          shopName:
+            shopResult[0].names &&
+            shopResult[0].names.length > 0 &&
+            shopResult[0].names[0].word
+              ? shopResult[0].names[0].word
+              : null,
+          postImage:
+            eachPost.images && eachPost.images.length > 0
+              ? S3_URL + eachPost.images[0].url
+              : null,
+          price: eachPost.mainProductPrice ?? null,
           isLikePost,
         };
         posts.push(tmp);

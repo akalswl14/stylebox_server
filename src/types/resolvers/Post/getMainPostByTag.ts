@@ -1,6 +1,7 @@
 import { queryField, intArg, stringArg, arg } from "@nexus/schema";
 import { Context } from "nexus-prisma/dist/utils";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getMainPostByTag = queryField("getMainPostByTag", {
   type: "priorityPostList",
@@ -103,7 +104,7 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
                 : null,
             postImage:
               eachPost.images.length > 0 && eachPost.images[0].url
-                ? eachPost.images[0].url
+                ? S3_URL + eachPost.images[0].url
                 : null,
             price: eachPost.mainProductPrice,
             isLikePost,

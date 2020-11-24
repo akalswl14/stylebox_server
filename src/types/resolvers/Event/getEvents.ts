@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg, booleanArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getEvents = queryField("getEvents", {
   type: "EventList",
@@ -198,7 +199,7 @@ export const getEvents = queryField("getEvents", {
 
         events.push({
           eventId: item.id,
-          bannerImage: item.bannerImage,
+          bannerImage: S3_URL + item.bannerImage,
           isLikeEvent,
           Dday,
         });
@@ -221,7 +222,7 @@ export const getEvents = queryField("getEvents", {
 
             events.push({
               eventId: item.id,
-              bannerImage: item.bannerImage,
+              bannerImage: S3_URL + item.bannerImage,
               isLikeEvent,
               Dday,
             });

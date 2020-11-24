@@ -1,4 +1,5 @@
 import { queryField } from "@nexus/schema";
+import { S3_URL } from "../AWS_IAM";
 
 export const getEventBanners = queryField("getEventBanners", {
   type: "EventBanner",
@@ -34,7 +35,9 @@ export const getEventBanners = queryField("getEventBanners", {
             order?: number | null;
           } | null = {
             eventId: prismaResult.id,
-            bannerImage: prismaResult.bannerImage,
+            bannerImage: prismaResult.bannerImage
+              ? S3_URL + prismaResult.bannerImage
+              : null,
             order: order,
           };
 

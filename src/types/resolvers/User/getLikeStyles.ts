@@ -1,5 +1,6 @@
 import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
+import { S3_URL } from "../AWS_IAM";
 
 export const getLikeStyles = queryField("getLikeStyles", {
   type: "PostList",
@@ -87,6 +88,7 @@ export const getLikeStyles = queryField("getLikeStyles", {
       });
 
       for (const eachPost of QueryResult) {
+        if (!eachPost) continue;
         if (eachPost.mainProductId) {
           mainProduct = await ctx.prisma.product.findOne({
             where: { id: eachPost.mainProductId },
@@ -95,7 +97,7 @@ export const getLikeStyles = queryField("getLikeStyles", {
             },
           });
 
-          if (!mainProduct) return null;
+          if (!mainProduct) continue;
 
           isLikePost =
             (await ctx.prisma.like.count({
@@ -106,9 +108,25 @@ export const getLikeStyles = queryField("getLikeStyles", {
 
           posts.push({
             postId: eachPost.id,
-            productName: mainProduct.names[0].word,
-            shopName: eachPost.Shop?.names[0].word,
-            postImage: eachPost.images[0].url,
+            productName:
+              mainProduct.names &&
+              mainProduct.names.length > 0 &&
+              mainProduct.names[0].word
+                ? mainProduct.names[0].word
+                : null,
+            shopName:
+              eachPost.Shop &&
+              eachPost.Shop.names &&
+              eachPost.Shop.names.length > 0 &&
+              eachPost.Shop.names[0].word
+                ? eachPost.Shop.names[0].word
+                : null,
+            postImage:
+              eachPost.images &&
+              eachPost.images.length > 0 &&
+              eachPost.images[0].url
+                ? S3_URL + eachPost.images[0].url
+                : null,
             price: eachPost.mainProductPrice,
             isLikePost,
           });
