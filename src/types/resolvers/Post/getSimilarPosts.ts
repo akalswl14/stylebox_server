@@ -1,21 +1,12 @@
-import { queryField, intArg, stringArg, arg } from "@nexus/schema";
+import { queryField, intArg, stringArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
 
 export const getSimilarPosts = queryField("getSimilarPosts", {
   type: "PostList",
   args: {
-    LocationTagId: arg({
-      type: "idDicInputType",
-      list: [true],
-      required: true,
-    }),
     lang: stringArg({ nullable: true }),
-    productClassTagId: arg({
-      type: "idDicInputType",
-      list: [true],
-      required: true,
-    }),
-    styleTagId: arg({ type: "idDicInputType", list: [true], required: true }),
+    TagIds: intArg({ list: true, nullable: true }),
+    postId: intArg({ required: true }),
     cursorId: intArg({ nullable: true }),
   },
   nullable: true,
@@ -25,8 +16,12 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
       if (!userId) {
         return null;
       }
-      const { productClassTagId, styleTagId, LocationTagId } = args;
-      let { lang, cursorId } = args;
+
+      const { TagIds } = args;
+
+      let tagIds: number[] = [];
+
+      let { lang, cursorId, postId } = args;
       let similarPostPrismaResult,
         posts = [],
         isLikePost,
@@ -37,9 +32,50 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         filterArrayOne: any[] = [],
         filterArrayTwo: any[] = [],
         skipNum,
-        cursorOption;
+        cursorOption,
+        result1,
+        result2,
+        result3;
 
       if (!lang) lang = "VI";
+
+      if (TagIds) {
+        for (const tagId of TagIds) {
+          if (tagId) tagIds.push(tagId);
+        }
+      } else {
+        return null;
+      }
+
+      let productClassTagId = await ctx.prisma.tag.findMany({
+        where: {
+          id: { in: tagIds },
+          category: "ProductClass",
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      let LocationTagId = await ctx.prisma.tag.findMany({
+        where: {
+          id: { in: tagIds },
+          category: "Location",
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      let styleTagId = await ctx.prisma.tag.findMany({
+        where: {
+          id: { in: tagIds },
+          category: "Style",
+        },
+        select: {
+          id: true,
+        },
+      });
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -50,38 +86,132 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         ? settingQueryResult.loadingPostNum
         : 20;
 
-      let result1 = await ctx.prisma.post.findMany({
-        where: {
-          tags: { some: { OR: LocationTagId, category: "Location" } },
-        },
-        select: { id: true },
-      });
+      if (
+        LocationTagId.length > 0 &&
+        productClassTagId.length > 0 &&
+        styleTagId.length > 0
+      ) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: LocationTagId, category: "Location" } },
+          },
+          select: { id: true },
+        });
 
-      let result2 = await ctx.prisma.post.findMany({
-        where: {
-          tags: { some: { OR: productClassTagId, category: "ProductClass" } },
-        },
-        select: { id: true },
-      });
+        result2 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: productClassTagId, category: "ProductClass" } },
+          },
+          select: { id: true },
+        });
 
-      for (const one of result1) {
-        result2.filter((item) =>
-          item.id === one.id ? filterArrayOne.push(item) : true
-        );
+        for (const one of result1) {
+          result2.filter((item) =>
+            item.id === one.id ? filterArrayOne.push(item) : true
+          );
+        }
+
+        result3 = await ctx.prisma.post.findMany({
+          where: { tags: { some: { OR: styleTagId, category: "Style" } } },
+          select: { id: true },
+        });
+
+        for (const one of result3) {
+          filterArrayOne.filter((item) =>
+            item.id === one.id ? filterArrayTwo.push(item) : true
+          );
+        }
+      } else if (LocationTagId.length > 0 && productClassTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: LocationTagId, category: "Location" } },
+          },
+          select: { id: true },
+        });
+        result2 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: productClassTagId, category: "ProductClass" } },
+          },
+          select: { id: true },
+        });
+        for (const one of result1) {
+          result2.filter((item) =>
+            item.id === one.id ? filterArrayOne.push(item) : true
+          );
+        }
+        filterArrayTwo = filterArrayOne;
+      } else if (LocationTagId.length > 0 && styleTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: LocationTagId, category: "Location" } },
+          },
+          select: { id: true },
+        });
+        result2 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: styleTagId, category: "Style" } },
+          },
+          select: { id: true },
+        });
+        for (const one of result1) {
+          result2.filter((item) =>
+            item.id === one.id ? filterArrayOne.push(item) : true
+          );
+        }
+        filterArrayTwo = filterArrayOne;
+      } else if (productClassTagId.length > 0 && styleTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: styleTagId, category: "Style" } },
+          },
+          select: { id: true },
+        });
+        result2 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: productClassTagId, category: "ProductClass" } },
+          },
+          select: { id: true },
+        });
+        for (const one of result1) {
+          result2.filter((item) =>
+            item.id === one.id ? filterArrayOne.push(item) : true
+          );
+        }
+        filterArrayTwo = filterArrayOne;
+      } else if (LocationTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: LocationTagId, category: "Location" } },
+          },
+          select: { id: true },
+        });
+        filterArrayTwo = result1;
+      } else if (productClassTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: {
+            tags: { some: { OR: productClassTagId, category: "ProductClass" } },
+          },
+          select: { id: true },
+        });
+        filterArrayTwo = result1;
+      } else if (styleTagId.length > 0) {
+        result1 = await ctx.prisma.post.findMany({
+          where: { tags: { some: { OR: styleTagId, category: "Style" } } },
+          select: { id: true },
+        });
+        filterArrayTwo = result1;
       }
 
-      let result3 = await ctx.prisma.post.findMany({
-        where: { tags: { some: { OR: styleTagId, category: "Style" } } },
-        select: { id: true },
-      });
+      let similarArr: { id: number }[] = [];
 
-      for (const one of result3) {
-        filterArrayOne.filter((item) =>
-          item.id === one.id ? filterArrayTwo.push(item) : true
-        );
+      for (const eachItem of filterArrayTwo) {
+        if (eachItem.id !== postId) {
+          similarArr.push(eachItem);
+        }
       }
 
-      if (!filterArrayTwo) return { totalPostNum: 0, posts: [] };
+      if (!filterArrayTwo) return null;
+      if (!similarArr) return null;
 
       if (cursorId) {
         skipNum = 1;
@@ -94,7 +224,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         skip: skipNum,
         cursor: cursorOption,
         where: {
-          OR: filterArrayTwo,
+          OR: similarArr,
         },
         select: {
           mainProductPrice: true,
@@ -129,7 +259,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
 
         posts.push({
           postId: item.id,
-          postImage: item.images[0].url,
+          postImage: item.images.length > 0 ? item.images[0].url : "",
           shopName: item.Shop?.names[0].word,
           productName: mainProductName.names[0].word,
           price: item.mainProductPrice,
@@ -139,7 +269,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
 
       totalPostNum = await ctx.prisma.post.count({
         where: {
-          OR: filterArrayTwo,
+          OR: similarArr,
         },
       });
 
@@ -147,6 +277,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         totalPostNum,
         posts,
       };
+
       return rtn ? rtn : null;
     } catch (e) {
       console.log(e);
