@@ -49,7 +49,6 @@ export const createPostManage = mutationField("createPostManage", {
         order: number;
         url: string;
       }[] = [];
-      let SubProductArray: { id: number }[] = [];
 
       if (images) {
         for (const eachItem of images) {
@@ -66,21 +65,12 @@ export const createPostManage = mutationField("createPostManage", {
       if (externalLinks) {
         for (const eachItem of externalLinks) {
           if (eachItem) {
-            if (eachItem.isShown)
-              ExternalLinkArray.push({
-                isShown: eachItem.isShown,
-                linkType: eachItem.linkType,
-                order: eachItem.order,
-                url: eachItem.url,
-              });
-          }
-        }
-      }
-
-      if (subProducts) {
-        for (const eachItem of subProducts) {
-          if (eachItem) {
-            SubProductArray.push(eachItem);
+            ExternalLinkArray.push({
+              isShown: eachItem.isShown ? true : false,
+              linkType: eachItem.linkType,
+              order: eachItem.order,
+              url: eachItem.url,
+            });
           }
         }
       }
@@ -96,7 +86,7 @@ export const createPostManage = mutationField("createPostManage", {
 
       let isOnline = true;
       let onDetailTagId: number[] = [],
-        products = [],
+        products: { id: number }[] = [],
         shopId,
         price;
 
@@ -152,7 +142,7 @@ export const createPostManage = mutationField("createPostManage", {
           tags: { connect: tagsId },
           postExternalLinks: { create: ExternalLinkArray },
           videos: { create: VideoArray },
-          products: { connect: SubProductArray },
+          products: { connect: products },
           onDetailTagId: { set: onDetailTagId },
           externalLinkClickNum,
           weeklyRankScore,

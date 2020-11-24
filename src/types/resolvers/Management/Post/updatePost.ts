@@ -64,13 +64,12 @@ export const updatePostManage = mutationField("updatePostManage", {
 
         for (const eachItem of externalLinks) {
           if (eachItem) {
-            if (eachItem.isShown)
-              ExternalLinkArray.push({
-                isShown: eachItem.isShown,
-                linkType: eachItem.linkType,
-                order: eachItem.order,
-                url: eachItem.url,
-              });
+            ExternalLinkArray.push({
+              isShown: eachItem.isShown ? true : false,
+              linkType: eachItem.linkType,
+              order: eachItem.order,
+              url: eachItem.url,
+            });
           }
         }
 
@@ -85,73 +84,79 @@ export const updatePostManage = mutationField("updatePostManage", {
       }
 
       if (images) {
-        let ImageArray: { url: string; order: number }[] = [];
-        for (const eachItem of images) {
-          if (eachItem) ImageArray.push(eachItem);
+        if (images.length > 0) {
+          let ImageArray: { url: string; order: number }[] = [];
+          for (const eachItem of images) {
+            if (eachItem) ImageArray.push(eachItem);
+          }
+          await ctx.prisma.postImage.deleteMany({
+            where: { postId: id },
+          });
+          queryResult = await ctx.prisma.post.update({
+            where: { id },
+            data: { images: { create: ImageArray } },
+          });
+          if (!queryResult) return false;
         }
-        await ctx.prisma.postImage.deleteMany({
-          where: { postId: id },
-        });
-        queryResult = await ctx.prisma.post.update({
-          where: { id },
-          data: { images: { create: ImageArray } },
-        });
-        if (!queryResult) return false;
       }
 
       if (videos) {
-        let VideoArray: {
-          isYoutube: boolean;
-          order: number;
-          url: string;
-        }[] = [];
-        for (const eachItem of videos) {
-          if (eachItem) VideoArray.push(eachItem);
+        if (videos.length > 0) {
+          let VideoArray: {
+            isYoutube: boolean;
+            order: number;
+            url: string;
+          }[] = [];
+          for (const eachItem of videos) {
+            if (eachItem) VideoArray.push(eachItem);
+          }
+          await ctx.prisma.postVideo.deleteMany({
+            where: { postId: id },
+          });
+          queryResult = await ctx.prisma.post.update({
+            where: { id },
+            data: { videos: { create: VideoArray } },
+          });
+          if (!queryResult) return false;
         }
-        await ctx.prisma.postVideo.deleteMany({
-          where: { postId: id },
-        });
-        queryResult = await ctx.prisma.post.update({
-          where: { id },
-          data: { videos: { create: VideoArray } },
-        });
-        if (!queryResult) return false;
       }
 
       if (subProducts) {
-        let SubProductArray: { id: number }[] = [];
-        for (const eachItem of subProducts) {
-          if (eachItem) {
-            SubProductArray.push(eachItem);
+        if (subProducts.length > 0) {
+          let SubProductArray: { id: number }[] = [];
+          for (const eachItem of subProducts) {
+            if (eachItem) {
+              SubProductArray.push(eachItem);
+            }
           }
+          let Products = await ctx.prisma.post.findOne({
+            where: { id },
+            select: {
+              products: { select: { id: true } },
+              mainProductId: true,
+            },
+          });
+
+          if (!Products) return false;
+
+          let disconnect = await ctx.prisma.post.update({
+            where: { id },
+            data: { products: { disconnect: Products.products } },
+          });
+
+          if (Products.mainProductId) {
+            SubProductArray.push({ id: Products.mainProductId });
+          } else {
+            return false;
+          }
+
+          queryResult = await ctx.prisma.post.update({
+            where: { id },
+            data: { products: { connect: SubProductArray } },
+          });
+
+          if (!disconnect || !queryResult) return false;
         }
-        let Products = await ctx.prisma.post.findOne({
-          where: { id },
-          select: {
-            products: { select: { id: true } },
-            mainProductId: true,
-          },
-        });
-
-        if (!Products) return false;
-
-        let disconnect = await ctx.prisma.post.update({
-          where: { id },
-          data: { products: { disconnect: Products.products } },
-        });
-
-        if (Products.mainProductId) {
-          SubProductArray.push({ id: Products.mainProductId });
-        } else {
-          return false;
-        }
-
-        queryResult = await ctx.prisma.post.update({
-          where: { id },
-          data: { products: { connect: SubProductArray } },
-        });
-
-        if (!disconnect || !queryResult) return false;
       }
 
       if (priority) {
@@ -171,46 +176,48 @@ export const updatePostManage = mutationField("updatePostManage", {
       }
 
       if (tags) {
-        let tagsId: { id: number }[] = [];
-        for (const tag of tags) {
-          if (tag) {
-            if (tag.id) tagsId.push({ id: tag.id });
+        if (tags.length > 0) {
+          let tagsId: { id: number }[] = [];
+          for (const tag of tags) {
+            if (tag) {
+              if (tag.id) tagsId.push({ id: tag.id });
+            }
           }
-        }
-        let TagsArray: { id: number; order: number }[] = [];
-        for (const tag of tags) {
-          if (tag) {
-            if (tag.id && tag.order)
-              TagsArray.push({ id: tag.id, order: tag.order });
+          let TagsArray: { id: number; order: number }[] = [];
+          for (const tag of tags) {
+            if (tag) {
+              if (tag.id && tag.order)
+                TagsArray.push({ id: tag.id, order: tag.order });
+            }
           }
+
+          TagsArray.sort((a, b) =>
+            a.order < b.order ? -1 : a.order > b.order ? 1 : 0
+          );
+
+          for (const tag of TagsArray) {
+            onDetailTagId.push(tag.id);
+          }
+
+          let originalTags = await ctx.prisma.tag.findMany({
+            where: { posts: { some: { id } } },
+            select: { id: true },
+          });
+          let disconnectResult = await ctx.prisma.post.update({
+            where: { id: id },
+            data: { tags: { disconnect: originalTags } },
+          });
+
+          queryResult = await ctx.prisma.post.update({
+            where: { id },
+            data: {
+              tags: { connect: tagsId },
+              onDetailTagId: { set: onDetailTagId },
+            },
+          });
+
+          if (!disconnectResult || !queryResult) return false;
         }
-
-        TagsArray.sort((a, b) =>
-          a.order < b.order ? -1 : a.order > b.order ? 1 : 0
-        );
-
-        for (const tag of TagsArray) {
-          onDetailTagId.push(tag.id);
-        }
-
-        let originalTags = await ctx.prisma.tag.findMany({
-          where: { posts: { some: { id } } },
-          select: { id: true },
-        });
-        let disconnectResult = await ctx.prisma.post.update({
-          where: { id: id },
-          data: { tags: { disconnect: originalTags } },
-        });
-
-        queryResult = await ctx.prisma.post.update({
-          where: { id },
-          data: {
-            tags: { connect: tagsId },
-            onDetailTagId: { set: onDetailTagId },
-          },
-        });
-
-        if (!disconnectResult || !queryResult) return false;
       }
 
       if (mainProductId) {
