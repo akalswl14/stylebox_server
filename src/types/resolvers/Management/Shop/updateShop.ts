@@ -125,7 +125,7 @@ export const updateShop = mutationField("updateShop", {
         });
         if (!queryResult) return false;
       }
-      if (mainBranchMapUrl) {
+      if (mainBranchMapUrl || mainBranchMapUrl === "") {
         let branchResult = await ctx.prisma.branch.findMany({
           where: { shopId, isMain: true },
           select: { id: true },
@@ -185,8 +185,7 @@ export const updateShop = mutationField("updateShop", {
           if (
             !eachBranch.branchName ||
             !eachBranch.branchPhoneNumber ||
-            !eachBranch.branchAddress ||
-            !eachBranch.branchGoogleMapUrl
+            !eachBranch.branchAddress
           )
             continue;
           queryResult = await ctx.prisma.branch.create({
