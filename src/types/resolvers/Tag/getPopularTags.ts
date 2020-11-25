@@ -1,5 +1,4 @@
 import { queryField, stringArg } from "@nexus/schema";
-
 export const getPopularTags = queryField("getPopularTags", {
   type: "ClassTagDetail",
   args: {
@@ -16,6 +15,9 @@ export const getPopularTags = queryField("getPopularTags", {
         where: { isRecommendation: { gt: 0 } },
         select: {
           id: true,
+          category: true,
+          isClass: true,
+          classId: true,
           names: { where: { lang }, select: { word: true } },
           isRecommendation: true,
         },
@@ -29,6 +31,9 @@ export const getPopularTags = queryField("getPopularTags", {
               ? eachTag.names[0].word
               : null,
           order: eachTag.isRecommendation,
+          category: eachTag.category,
+          isClass: eachTag.isClass,
+          classId: eachTag.classId,
         });
       }
       return tags ? tags : null;
