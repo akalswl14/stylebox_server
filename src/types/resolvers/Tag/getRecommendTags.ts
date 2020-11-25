@@ -38,6 +38,8 @@ export const getRecommendTags = queryField("getRecommendTags", {
           id: true,
           names: { where: { lang }, select: { word: true } },
           isClass: true,
+          category: true,
+          classId: true,
         },
         take,
       });
@@ -50,6 +52,8 @@ export const getRecommendTags = queryField("getRecommendTags", {
               ? eachTag.names[0].word
               : null,
           isClass: eachTag.isClass,
+          category: eachTag.category,
+          classId: eachTag.classId,
         });
       }
       return tags ? tags : null;

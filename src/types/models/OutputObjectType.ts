@@ -158,6 +158,8 @@ export const RecommendTagThumbnail = objectType({
     t.int("id");
     t.string("tagName");
     t.boolean("isClass");
+    t.int("classId");
+    t.string("category");
   },
 });
 
