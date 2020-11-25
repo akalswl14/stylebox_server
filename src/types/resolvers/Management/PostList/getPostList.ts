@@ -30,6 +30,8 @@ export const getPostList = queryField("getPostList", {
       let { pageNum } = args;
       if (!pageNum) pageNum = 1;
 
+      let FirstCapital, AllCapital;
+
       const take = 13;
       const skip = (pageNum - 1) * take;
       let selectOption = {
@@ -51,9 +53,25 @@ export const getPostList = queryField("getPostList", {
         | { id: "asc" | "desc" } = { id: "asc" };
 
       if (mainProductName) {
+        FirstCapital =
+          mainProductName.length > 1
+            ? mainProductName.charAt(0).toUpperCase() + mainProductName.slice(1)
+            : mainProductName.length === 1
+            ? mainProductName.toUpperCase()
+            : "";
+        AllCapital =
+          mainProductName.length >= 1 ? mainProductName.toUpperCase() : "";
         let productIdDicList = await ctx.prisma.product.findMany({
           where: {
-            names: { some: { word: { contains: mainProductName } } },
+            names: {
+              some: {
+                OR: [
+                  { word: { startsWith: mainProductName } },
+                  { word: { startsWith: FirstCapital } },
+                  { word: { startsWith: AllCapital } },
+                ],
+              },
+            },
           },
           select: { id: true },
         });
@@ -177,12 +195,31 @@ export const getPostList = queryField("getPostList", {
             select: { productId: true },
             orderBy: { word: mainProductNameAsc ? "asc" : "desc" },
           });
+          if (shopName) {
+            FirstCapital =
+              shopName.length > 1
+                ? shopName.charAt(0).toUpperCase() + shopName.slice(1)
+                : shopName.length === 1
+                ? shopName.toUpperCase()
+                : "";
+            AllCapital = shopName.length >= 1 ? shopName.toUpperCase() : "";
+          }
           for (const eachProduct of productNameResult) {
             let queryResult = await ctx.prisma.post.findMany({
               where: {
                 mainProductId: eachProduct.productId,
                 Shop: shopName
-                  ? { names: { some: { word: { contains: shopName } } } }
+                  ? {
+                      names: {
+                        some: {
+                          OR: [
+                            { word: { startsWith: shopName } },
+                            { word: { startsWith: FirstCapital } },
+                            { word: { startsWith: AllCapital } },
+                          ],
+                        },
+                      },
+                    }
                   : {},
                 id: postId ? postId : undefined,
               },
@@ -204,6 +241,15 @@ export const getPostList = queryField("getPostList", {
           } else postIdList = [];
         } else if (typeof shopNameAsc === "boolean") {
           let queryResult;
+          if (shopName) {
+            FirstCapital =
+              shopName.length > 1
+                ? shopName.charAt(0).toUpperCase() + shopName.slice(1)
+                : shopName.length === 1
+                ? shopName.toUpperCase()
+                : "";
+            AllCapital = shopName.length >= 1 ? shopName.toUpperCase() : "";
+          }
           queryResult = await ctx.prisma.shopName.findMany({
             orderBy: { word: shopNameAsc ? "asc" : "desc" },
             select: {
@@ -212,7 +258,17 @@ export const getPostList = queryField("getPostList", {
                   posts: {
                     where: {
                       Shop: shopName
-                        ? { names: { some: { word: { contains: shopName } } } }
+                        ? {
+                            names: {
+                              some: {
+                                OR: [
+                                  { word: { startsWith: shopName } },
+                                  { word: { startsWith: FirstCapital } },
+                                  { word: { startsWith: AllCapital } },
+                                ],
+                              },
+                            },
+                          }
                         : {},
                       id: postId ? postId : undefined,
                     },
@@ -256,10 +312,29 @@ export const getPostList = queryField("getPostList", {
           if (typeof priorityAsc === "boolean") {
             orderByOption = { priority: priorityAsc ? "asc" : "desc" };
           }
+          if (shopName) {
+            FirstCapital =
+              shopName.length > 1
+                ? shopName.charAt(0).toUpperCase() + shopName.slice(1)
+                : shopName.length === 1
+                ? shopName.toUpperCase()
+                : "";
+            AllCapital = shopName.length >= 1 ? shopName.toUpperCase() : "";
+          }
           totalPostNum = await ctx.prisma.post.count({
             where: {
               Shop: shopName
-                ? { names: { some: { word: { contains: shopName } } } }
+                ? {
+                    names: {
+                      some: {
+                        OR: [
+                          { word: { startsWith: shopName } },
+                          { word: { startsWith: FirstCapital } },
+                          { word: { startsWith: AllCapital } },
+                        ],
+                      },
+                    },
+                  }
                 : {},
               id: postId ? postId : undefined,
             },
@@ -267,7 +342,17 @@ export const getPostList = queryField("getPostList", {
           postIdList = await ctx.prisma.post.findMany({
             where: {
               Shop: shopName
-                ? { names: { some: { word: { contains: shopName } } } }
+                ? {
+                    names: {
+                      some: {
+                        OR: [
+                          { word: { startsWith: shopName } },
+                          { word: { startsWith: FirstCapital } },
+                          { word: { startsWith: AllCapital } },
+                        ],
+                      },
+                    },
+                  }
                 : {},
               id: postId ? postId : undefined,
             },
