@@ -26,9 +26,9 @@ export const getRecommendTags = queryField("getRecommendTags", {
           names: {
             some: {
               OR: [
-                { word: { contains: word }, lang },
-                { word: { contains: FirstCapital }, lang },
-                { word: { contains: AllCapital }, lang },
+                { word: { startsWith: word }, lang },
+                { word: { startsWith: FirstCapital }, lang },
+                { word: { startsWith: AllCapital }, lang },
               ],
             },
           },
