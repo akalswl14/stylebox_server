@@ -10,7 +10,7 @@ export const updateShops = mutationField("updateShops", {
     try {
       const shops = args.shops ?? [];
       for (const eachShop of shops) {
-        if (!eachShop.id || !eachShop.value) continue;
+        if (!eachShop.id || !Number.isInteger(eachShop.value)) continue;
         let queryResult = await ctx.prisma.shop.update({
           where: { id: eachShop.id },
           data: {

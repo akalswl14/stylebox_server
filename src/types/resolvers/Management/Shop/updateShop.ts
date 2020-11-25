@@ -415,7 +415,7 @@ export const updateShop = mutationField("updateShop", {
           logoUrl: isLogoUrlChange ? { set: logoUrl } : undefined,
           description: isDescriptionChange ? { set: description } : undefined,
           phoneNumber: phoneNumber ?? undefined,
-          priority: weight ? { set: weight } : undefined,
+          priority: Number.isInteger(weight) ? { set: weight } : undefined,
         },
       });
       return queryResult ? true : false;
