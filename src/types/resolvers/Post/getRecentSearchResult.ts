@@ -85,9 +85,13 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
         if (queryResult.length > 0) {
           functionOption = { cursorId: queryResult[queryResult.length - 1].id };
         } else {
+          queryDate.setUTCDate(queryDate.getUTCDate() - 1);
+          queryDateTomorrow.setTime(queryDate.getTime());
+          queryDateTomorrow.setUTCHours(24, 0, 0, 0);
           functionOption = {};
         }
       }
+      console.log(PostResult);
       while (
         PostResult.length < loadingPostNum &&
         queryDate.getTime() >= searchDate.getTime()
@@ -100,6 +104,7 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           queryDateTomorrow,
           functionOption
         );
+        console.log(queryResult);
         PostResult.push(...queryResult);
         queryLoadingPostNum = loadingPostNum - PostResult.length;
         if (queryResult.length > 0) {
