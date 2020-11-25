@@ -33,7 +33,7 @@ export const getSettingPopularTags = queryField("getSettingPopularTags", {
       for (const eachPopularTag of popularTags) {
         tags.push({
           order,
-          category: eachPopularTag.category,
+          category: String(eachPopularTag.category),
           classId: eachPopularTag.classId,
           className: eachPopularTag.Class.names[0].word,
           id: eachPopularTag.id,

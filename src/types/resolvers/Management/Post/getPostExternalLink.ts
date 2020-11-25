@@ -10,7 +10,7 @@ export const getPostExternalLink = queryField("getPostExternalLink", {
     try {
       const { id } = args;
 
-      let links : any = [];
+      let links: any = [];
 
       let externalLink = await ctx.prisma.post.findOne({
         where: { id },
@@ -41,11 +41,11 @@ export const getPostExternalLink = queryField("getPostExternalLink", {
 
       for (const link of links) {
         if (link) {
-          if (link.linkType && link.url && link.isShown && link.order) {
+          if (link.linkType && link.url && link.order) {
             Links.push({
               url: link.url,
               linkType: link.linkType,
-              isShown: link.isShown,
+              isShown: link.isShown ? true : false,
               order: link.order,
             });
           }
