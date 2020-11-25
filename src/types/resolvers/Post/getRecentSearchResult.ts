@@ -91,7 +91,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           functionOption = {};
         }
       }
-      console.log(PostResult);
       while (
         PostResult.length < loadingPostNum &&
         queryDate.getTime() >= searchDate.getTime()
@@ -104,7 +103,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           queryDateTomorrow,
           functionOption
         );
-        console.log(queryResult);
         PostResult.push(...queryResult);
         queryLoadingPostNum = loadingPostNum - PostResult.length;
         if (queryResult.length > 0) {

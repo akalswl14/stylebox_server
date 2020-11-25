@@ -67,22 +67,28 @@ export const getBestPosts = queryField("getBestPosts", {
           tagResult.push({ id: eachTag.id });
         }
       }
-      if (periodFilter == 1) {
+      if (periodFilter === 1) {
         orderOption = [{ weeklyRankScore: "desc" }, { createdAt: "asc" }];
-      } else if (periodFilter == 2) {
+      } else if (periodFilter === 2) {
         orderOption = [{ monthlyRankScore: "desc" }, { createdAt: "asc" }];
       } else {
         orderOption = [{ lifeTimeRankScore: "desc" }, { createdAt: "asc" }];
       }
-      let totalPostNum = await ctx.prisma.post.count({
-        where: {
-          tags: { some: { OR: tagResult } },
-        },
-      });
+      let totalPostNum = await ctx.prisma.post.count(
+        classId
+          ? {
+              where: {
+                tags: { some: { OR: tagResult } },
+              },
+            }
+          : undefined
+      );
       let postResult = await ctx.prisma.post.findMany({
-        where: {
-          tags: { some: { OR: tagResult } },
-        },
+        where: classId
+          ? {
+              tags: { some: { OR: tagResult } },
+            }
+          : undefined,
         select: {
           id: true,
           images: { select: { url: true }, take: 1 },
