@@ -46,10 +46,6 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       let queryDate = new Date(new Date().setUTCHours(0, 0, 0, 0));
       let queryDateTomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
       inputLastDate = lastPostDate ? new Date(lastPostDate) : new Date();
-      inputLastDate.setUTCHours(0, 0, 0, 0);
-      let inputLastDateTomorrow = new Date(
-        inputLastDate.setUTCHours(24, 0, 0, 0)
-      );
       for (const eachTag of tags) {
         if (eachTag.isClass && eachTag.classId) {
           ClassResult = await ctx.prisma.class.findOne({
@@ -75,9 +71,22 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
       if (cursorId && lastPostDate) {
         queryDate.setTime(inputLastDate.getTime());
         queryDate.setUTCHours(0, 0, 0, 0);
-        queryDateTomorrow.setTime(queryDate.getTime());
-        queryDateTomorrow.setUTCHours(24, 0, 0, 0);
-        functionOption = { cursorId };
+        queryDateTomorrow.setTime(inputLastDate.getTime());
+        queryResult = await getResult(
+          ctx,
+          queryLoadingPostNum,
+          tagIds,
+          queryDate,
+          queryDateTomorrow,
+          { cursorId }
+        );
+        PostResult.push(...queryResult);
+        queryLoadingPostNum = loadingPostNum - PostResult.length;
+        if (queryResult.length > 0) {
+          functionOption = { cursorId: queryResult[queryResult.length - 1].id };
+        } else {
+          functionOption = {};
+        }
       }
       while (
         PostResult.length < loadingPostNum &&
@@ -87,9 +96,9 @@ export const getRecentSearchResult = queryField("getRecentSearchResult", {
           ctx,
           queryLoadingPostNum,
           tagIds,
-          cursorId && lastPostDate ? inputLastDate : queryDate,
-          cursorId && lastPostDate ? inputLastDateTomorrow : queryDateTomorrow,
-          cursorId && lastPostDate ? { cursorId } : {}
+          queryDate,
+          queryDateTomorrow,
+          functionOption
         );
         PostResult.push(...queryResult);
         queryLoadingPostNum = loadingPostNum - PostResult.length;
