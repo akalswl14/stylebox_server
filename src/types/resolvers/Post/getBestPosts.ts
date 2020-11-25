@@ -64,11 +64,8 @@ export const getBestPosts = queryField("getBestPosts", {
           select: { id: true },
         });
         for (const eachTag of classTags) {
-          tagResult.push({ tags: { some: { id: eachTag.id } } });
+          tagResult.push({ id: eachTag.id });
         }
-      }
-      if (locationTagId) {
-        tagResult.push({ tags: { some: { id: locationTagId } } });
       }
       if (periodFilter == 1) {
         orderOption = [{ weeklyRankScore: "desc" }, { createdAt: "asc" }];
@@ -79,12 +76,12 @@ export const getBestPosts = queryField("getBestPosts", {
       }
       let totalPostNum = await ctx.prisma.post.count({
         where: {
-          AND: tagResult,
+          tags: { some: { OR: tagResult } },
         },
       });
       let postResult = await ctx.prisma.post.findMany({
         where: {
-          AND: tagResult,
+          tags: { some: { OR: tagResult } },
         },
         select: {
           id: true,
@@ -93,10 +90,43 @@ export const getBestPosts = queryField("getBestPosts", {
           mainProductPrice: true,
         },
         orderBy: orderOption,
-        take: loadingPostNum,
-        cursor: cursorId ? { id: cursorId } : undefined,
-        skip: cursorId ? 1 : undefined,
+        take: locationTagId ? undefined : loadingPostNum,
+        cursor: locationTagId
+          ? undefined
+          : cursorId
+          ? { id: cursorId }
+          : undefined,
+        skip: locationTagId ? undefined : cursorId ? 1 : undefined,
       });
+      if (locationTagId) {
+        let prePostIds = postResult.map((eachPost) => ({ id: eachPost.id }));
+        totalPostNum = await ctx.prisma.post.count({
+          where: {
+            OR: prePostIds,
+            tags: { some: { id: locationTagId } },
+          },
+        });
+        postResult = await ctx.prisma.post.findMany({
+          where: {
+            OR: prePostIds,
+            tags: { some: { id: locationTagId } },
+          },
+          select: {
+            id: true,
+            images: { select: { url: true }, take: 1 },
+            mainProductId: true,
+            mainProductPrice: true,
+          },
+          orderBy: orderOption,
+          take: locationTagId ? undefined : loadingPostNum,
+          cursor: locationTagId
+            ? undefined
+            : cursorId
+            ? { id: cursorId }
+            : undefined,
+          skip: locationTagId ? undefined : cursorId ? 1 : undefined,
+        });
+      }
       for (const eachPost of postResult) {
         let likeResult = await ctx.prisma.like.count({
           where: { userId, postId: eachPost.id },
