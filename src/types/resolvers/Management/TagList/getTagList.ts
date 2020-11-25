@@ -38,18 +38,54 @@ export const getTagList = queryField("getTagList", {
       let orderByOption = {},
         whereOption = {};
 
+      let FirstCapital, AllCapital;
+
       if (tagId) {
         whereOption = { id: tagId };
       }
       if (tagName) {
-        whereOption = { names: { some: { word: { contains: tagName } } } };
+        FirstCapital =
+          tagName.length > 1
+            ? tagName.charAt(0).toUpperCase() + tagName.slice(1)
+            : tagName.length === 1
+            ? tagName.toUpperCase()
+            : "";
+        AllCapital = tagName.length >= 1 ? tagName.toUpperCase() : "";
+        whereOption = {
+          names: {
+            some: {
+              OR: [
+                { word: { startsWith: tagName }, lang },
+                { word: { startsWith: FirstCapital }, lang },
+                { word: { startsWith: AllCapital }, lang },
+              ],
+            },
+          },
+        };
       }
       if (category) {
         whereOption = { category: category };
       }
       if (className) {
+        FirstCapital =
+          className.length > 1
+            ? className.charAt(0).toUpperCase() + className.slice(1)
+            : className.length === 1
+            ? className.toUpperCase()
+            : "";
+        AllCapital = className.length >= 1 ? className.toUpperCase() : "";
         whereOption = {
-          Class: { names: { some: { word: { contains: className } } } },
+          Class: {
+            names: {
+              some: {
+                OR: [
+                  { word: { startsWith: className }, lang },
+                  { word: { startsWith: FirstCapital }, lang },
+                  { word: { startsWith: AllCapital }, lang },
+                ],
+              },
+            },
+          },
         };
       }
 

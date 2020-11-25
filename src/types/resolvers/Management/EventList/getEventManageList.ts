@@ -34,11 +34,26 @@ export const getEventManageList = queryField("getEventManageList", {
       let whereOption = {},
         orderByOption = {};
 
+      let FirstCapital, AllCapital;
+
       if (eventId) {
         whereOption = { id: eventId };
       }
       if (eventTitle) {
-        whereOption = { title: { contains: eventTitle } };
+        FirstCapital =
+          eventTitle.length > 1
+            ? eventTitle.charAt(0).toUpperCase() + eventTitle.slice(1)
+            : eventTitle.length === 1
+            ? eventTitle.toUpperCase()
+            : "";
+        AllCapital = eventTitle.length >= 1 ? eventTitle.toUpperCase() : "";
+        whereOption = {
+          OR: [
+            { title: { startsWith: eventTitle } },
+            { title: { startsWith: FirstCapital } },
+            { title: { startsWith: AllCapital } },
+          ],
+        };
       }
       if (typeof eventIdAsc === "boolean") {
         orderByOption = eventIdAsc ? { id: "asc" } : { id: "desc" };
