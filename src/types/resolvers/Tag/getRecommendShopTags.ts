@@ -21,9 +21,24 @@ export const getRecommendShopTags = queryField("getRecommendShopTags", {
       for (const eachShop of shopResult) {
         shopList.push(eachShop.id);
       }
+      const FirstCapital =
+        word.length > 1
+          ? word.charAt(0).toUpperCase() + word.slice(1)
+          : word.length === 1
+          ? word.toUpperCase()
+          : "";
+      const AllCapital = word.length >= 1 ? word.toUpperCase() : "";
       let queryResult = await ctx.prisma.tag.findMany({
         where: {
-          names: { some: { word: { contains: word }, lang } },
+          names: {
+            some: {
+              OR: [
+                { word: { contains: word }, lang },
+                { word: { contains: FirstCapital }, lang },
+                { word: { contains: AllCapital }, lang },
+              ],
+            },
+          },
           category: "ShopName",
           shops: { every: { id: { in: shopList } } },
         },
