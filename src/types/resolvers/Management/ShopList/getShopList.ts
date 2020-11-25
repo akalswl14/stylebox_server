@@ -63,8 +63,23 @@ export const getShopList = queryField("getShopList", {
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
+        const FirstCapital =
+          shopName.length > 1
+            ? shopName.charAt(0).toUpperCase() + shopName.slice(1)
+            : shopName.length === 1
+            ? shopName.toUpperCase()
+            : "";
+        const AllCapital = shopName.length >= 1 ? shopName.toUpperCase() : "";
         whereOption = {
-          names: { some: { word: { contains: shopName } } },
+          names: {
+            some: {
+              OR: [
+                { word: { startsWith: shopName } },
+                { word: { startsWith: FirstCapital } },
+                { word: { startsWith: AllCapital } },
+              ],
+            },
+          },
         };
       }
       if (phoneNumber) {
