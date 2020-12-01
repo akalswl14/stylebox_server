@@ -1,5 +1,5 @@
 import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
-import { ShopVideo } from "@prisma/client";
+import { ShopExternalLink, ShopVideo } from "@prisma/client";
 
 export const createShop = mutationField("createShop", {
   type: "ShopIdInfo",
@@ -134,7 +134,6 @@ export const createShop = mutationField("createShop", {
       }
       let queryResult = await ctx.prisma.shop.create({
         data: {
-          names: { create: { lang: "VI", word: shopName } },
           description,
           phoneNumber,
           monthlyRankNum: 0,
@@ -144,6 +143,12 @@ export const createShop = mutationField("createShop", {
           externalLinkClickNum: 0,
         },
         select: { id: true },
+      });
+      let shopNameResult = await ctx.prisma.shop.update({
+        where: { id: queryResult.id },
+        data: {
+          names: { create: { lang: "VI", word: shopName } },
+        },
       });
       if (!queryResult) return null;
       let tagConnectResult = await ctx.prisma.shop.update({
@@ -177,7 +182,7 @@ export const createShop = mutationField("createShop", {
           },
         });
       }
-      let linkResult;
+      let linkResult: ShopExternalLink | Boolean = true;
       for (const eachLink of linkList) {
         linkResult = await ctx.prisma.shopExternalLink.create({
           data: {
@@ -206,6 +211,7 @@ export const createShop = mutationField("createShop", {
         },
       });
       return queryResult &&
+        shopNameResult &&
         tagConnectResult &&
         classCreateResult &&
         tagCreateResult &&
