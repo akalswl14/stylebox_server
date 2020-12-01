@@ -214,12 +214,6 @@ export const getShopList = queryField("getShopList", {
           let viewNum = await ctx.prisma.view.count({
             where: { shopId: eachShop.id },
           });
-          let tagResult = await ctx.prisma.tag.findMany({
-            where: { shops: { some: { id: eachShop.id } } },
-            select: {
-              names: { where: { lang: "VI" }, select: { word: true } },
-            },
-          });
           let mainBranchResult = await ctx.prisma.branch.findMany({
             where: { isMain: true, shopId: eachShop.id },
             select: { address: true },
@@ -228,11 +222,28 @@ export const getShopList = queryField("getShopList", {
             where: { shopId: eachShop.id, lang: "VI" },
             select: { word: true },
           });
-          for (const eachTag of tagResult) {
-            tagNames.push(eachTag.names[0].word);
-            if (tagNames.length == 3) break;
+          let tagListQueryResult = await ctx.prisma.shop.findOne({
+            where: { id: eachShop.id },
+            select: {
+              onDetailTagId: true,
+            },
+          });
+          if (tagListQueryResult) {
+            for (const eachTag of tagListQueryResult.onDetailTagId) {
+              let tagResult = await ctx.prisma.tag.findOne({
+                where: { id: eachTag },
+                select: {
+                  names: { where: { lang: "VI" }, select: { word: true } },
+                },
+              });
+              if (tagResult && tagResult.names[0].word) {
+                tagNames.push(tagResult.names[0].word);
+              }
+              if (tagNames.length == 3) break;
+            }
           }
-          if (!(tagResult && mainBranchResult && shopNameResult)) continue;
+          if (!(tagListQueryResult && mainBranchResult && shopNameResult))
+            continue;
           shops.push({
             No,
             shopId: eachShop.id,
