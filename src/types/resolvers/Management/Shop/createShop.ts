@@ -49,6 +49,10 @@ export const createShop = mutationField("createShop", {
           isMain: true,
         },
       ];
+      let shopNameExists = await ctx.prisma.shopName.count({
+        where: { word: { equals: shopName } },
+      });
+      if (shopNameExists > 0) return null;
       let rtnVideoList: {
         order: number;
         url: string;

@@ -59,58 +59,63 @@ export const updateShop = mutationField("updateShop", {
       } = args;
       let queryResult;
       if (shopName) {
-        let nameResult = await ctx.prisma.shopName.findMany({
-          where: { shopId },
-          select: { id: true },
+        let shopNameExists = await ctx.prisma.shopName.count({
+          where: { word: { equals: shopName } },
         });
-        queryResult = await ctx.prisma.shopName.update({
-          where: { id: nameResult[0].id },
-          data: {
-            word: shopName,
-          },
-        });
-        if (!queryResult) return false;
-        let tagResult = await ctx.prisma.tag.findMany({
-          where: { category: "ShopName", shops: { some: { id: shopId } } },
-          select: {
-            id: true,
-            names: { select: { id: true } },
-          },
-        });
-        queryResult = await ctx.prisma.tagName.update({
-          where: { id: tagResult[0].names[0].id },
-          data: {
-            word: shopName,
-          },
-        });
-        if (!queryResult) return false;
-        let classResult = await ctx.prisma.class.findMany({
-          where: {
-            category: "ShopName",
-            tags: { some: { id: tagResult[0].id } },
-          },
-          select: {
-            names: { select: { id: true } },
-          },
-        });
-        queryResult = await ctx.prisma.className.update({
-          where: { id: classResult[0].names[0].id },
-          data: {
-            word: shopName,
-          },
-        });
-        if (!queryResult) return false;
-        let branchResult = await ctx.prisma.branch.findMany({
-          where: { shopId, isMain: true },
-          select: { names: { select: { id: true } } },
-        });
-        queryResult = await ctx.prisma.branchName.update({
-          where: { id: branchResult[0].names[0].id },
-          data: {
-            word: shopName,
-          },
-        });
-        if (!queryResult) return false;
+        if (shopNameExists === 0) {
+          let nameResult = await ctx.prisma.shopName.findMany({
+            where: { shopId },
+            select: { id: true },
+          });
+          queryResult = await ctx.prisma.shopName.update({
+            where: { id: nameResult[0].id },
+            data: {
+              word: shopName,
+            },
+          });
+          if (!queryResult) return false;
+          let tagResult = await ctx.prisma.tag.findMany({
+            where: { category: "ShopName", shops: { some: { id: shopId } } },
+            select: {
+              id: true,
+              names: { select: { id: true } },
+            },
+          });
+          queryResult = await ctx.prisma.tagName.update({
+            where: { id: tagResult[0].names[0].id },
+            data: {
+              word: shopName,
+            },
+          });
+          if (!queryResult) return false;
+          let classResult = await ctx.prisma.class.findMany({
+            where: {
+              category: "ShopName",
+              tags: { some: { id: tagResult[0].id } },
+            },
+            select: {
+              names: { select: { id: true } },
+            },
+          });
+          queryResult = await ctx.prisma.className.update({
+            where: { id: classResult[0].names[0].id },
+            data: {
+              word: shopName,
+            },
+          });
+          if (!queryResult) return false;
+          let branchResult = await ctx.prisma.branch.findMany({
+            where: { shopId, isMain: true },
+            select: { names: { select: { id: true } } },
+          });
+          queryResult = await ctx.prisma.branchName.update({
+            where: { id: branchResult[0].names[0].id },
+            data: {
+              word: shopName,
+            },
+          });
+          if (!queryResult) return false;
+        }
       }
       if (mainBranchAddress) {
         let branchResult = await ctx.prisma.branch.findMany({
