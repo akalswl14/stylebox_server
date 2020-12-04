@@ -47,7 +47,7 @@ export const deleteShops = mutationField("deleteShops", {
             videos: { select: { id: true } },
           },
         });
-        if (!postInfo) return false;
+        if (!postInfo) continue;
         let postUpdateResult = await ctx.prisma.post.update({
           where: { id: eachPost.id },
           data: {
@@ -63,10 +63,9 @@ export const deleteShops = mutationField("deleteShops", {
         let postResult = await ctx.prisma.post.delete({
           where: { id: eachPost.id },
         });
-        if (!postUpdateResult && !postResult) return false;
+        if (!postUpdateResult && !postResult) continue;
       }
       for (const eachProduct of productList) {
-        console.log("product : ", eachProduct.id);
         let productInfo = await ctx.prisma.product.findOne({
           where: { id: eachProduct.id },
           select: {
@@ -80,7 +79,7 @@ export const deleteShops = mutationField("deleteShops", {
             externalLink: { select: { id: true } },
           },
         });
-        if (!productInfo) return false;
+        if (!productInfo) continue;
         let productUpdateResult = await ctx.prisma.product.update({
           where: { id: eachProduct.id },
           data: {
@@ -100,7 +99,7 @@ export const deleteShops = mutationField("deleteShops", {
           where: { id: productInfo.externalLink.id },
         });
         if (!productLinkResult && !productUpdateResult && !productResult) {
-          return false;
+          continue;
         }
       }
       for (const eachBranch of branchList) {
@@ -114,7 +113,7 @@ export const deleteShops = mutationField("deleteShops", {
         let branchResult = await ctx.prisma.branch.delete({
           where: { id: eachBranch.id },
         });
-        if (!branchUpdateResult && !branchResult) return false;
+        if (!branchUpdateResult && !branchResult) continue;
       }
       for (const eachTag of tagInfo) {
         if (eachTag.id && eachTag.classId) {
@@ -136,7 +135,7 @@ export const deleteShops = mutationField("deleteShops", {
             !classNameResult ||
             !classResult
           )
-            return false;
+            continue;
         }
       }
       let generalTags = await ctx.prisma.tag.findMany({
@@ -151,7 +150,7 @@ export const deleteShops = mutationField("deleteShops", {
           where: { id: eachShop },
           data: { tags: { disconnect: generalTags } },
         });
-        if (!tagDisconnectResult) return false;
+        if (!tagDisconnectResult) continue;
       }
       let imageResult = await ctx.prisma.shopImage.deleteMany({
         where: { shopId: { in: shopIds } },

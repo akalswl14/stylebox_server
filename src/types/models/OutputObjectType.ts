@@ -298,9 +298,9 @@ export const ShopManagementShops = objectType({
   definition(t) {
     t.int("No", { nullable: true });
     t.int("shopId");
-    t.string("shopName");
-    t.string("phoneNumber");
-    t.string("address");
+    t.string("shopName", { nullable: true });
+    t.string("phoneNumber", { nullable: true });
+    t.string("address", { nullable: true });
     t.string("tagNames", { list: true });
     t.int("rankNum");
     t.int("weight");

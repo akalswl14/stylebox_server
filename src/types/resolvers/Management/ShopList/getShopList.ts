@@ -134,9 +134,10 @@ export const getShopList = queryField("getShopList", {
             where: { shopId: eachShop.shopId },
             select: { id: true },
           });
-          if (!queryResult) continue;
-          for (const eachBranch of queryResult) {
-            branchList.push(eachBranch.id);
+          if (queryResult) {
+            for (const eachBranch of queryResult) {
+              branchList.push(eachBranch.id);
+            }
           }
           let postNum = await ctx.prisma.post.count({
             where: { shopId: eachShop.shopId },
@@ -150,7 +151,7 @@ export const getShopList = queryField("getShopList", {
           let viewNum = await ctx.prisma.view.count({
             where: { shopId: eachShop.shopId },
           });
-          let tagReuslt = await ctx.prisma.tag.findMany({
+          let tagResult = await ctx.prisma.tag.findMany({
             where: { shops: { some: { id: eachShop.shopId } } },
             select: {
               names: { where: { lang: "VI" }, select: { word: true } },
@@ -168,20 +169,31 @@ export const getShopList = queryField("getShopList", {
               priority: true,
             },
           });
-          if (!(tagReuslt && mainBranchResult && shopDetail)) continue;
-          for (const eachTag of tagReuslt) {
-            tagNames.push(eachTag.names[0].word);
-            if (tagNames.length == 3) break;
+          if (!(tagResult && mainBranchResult && shopDetail)) continue;
+          if (tagResult) {
+            for (const eachTag of tagResult) {
+              tagNames.push(eachTag.names[0].word);
+              if (tagNames.length == 3) break;
+            }
           }
           shops.push({
             No,
             shopId: eachShop.shopId,
-            shopName: eachShop.word,
-            phoneNumber: shopDetail.phoneNumber,
-            address: mainBranchResult[0].address,
+            shopName: eachShop.word ?? null,
+            phoneNumber: shopDetail ? shopDetail.phoneNumber : null,
+            address:
+              mainBranchResult &&
+              mainBranchResult.length > 0 &&
+              mainBranchResult[0].address
+                ? mainBranchResult[0].address
+                : null,
             tagNames,
-            rankNum: shopDetail.monthlyRankNum,
-            weight: shopDetail.priority,
+            rankNum:
+              typeof shopDetail.monthlyRankNum === "number"
+                ? shopDetail.monthlyRankNum
+                : 0,
+            weight:
+              typeof shopDetail.priority === "number" ? shopDetail.priority : 0,
             postNum,
             productNum,
             likeNum,
@@ -198,9 +210,10 @@ export const getShopList = queryField("getShopList", {
             where: { shopId: eachShop.id },
             select: { id: true },
           });
-          if (!queryResult) continue;
-          for (const eachBranch of queryResult) {
-            branchList.push(eachBranch.id);
+          if (queryResult) {
+            for (const eachBranch of queryResult) {
+              branchList.push(eachBranch.id);
+            }
           }
           let postNum = await ctx.prisma.post.count({
             where: { shopId: eachShop.id },
@@ -242,17 +255,29 @@ export const getShopList = queryField("getShopList", {
               if (tagNames.length == 3) break;
             }
           }
-          if (!(tagListQueryResult && mainBranchResult && shopNameResult))
-            continue;
           shops.push({
             No,
             shopId: eachShop.id,
-            shopName: shopNameResult[0].word,
+            shopName:
+              shopNameResult &&
+              shopNameResult.length > 0 &&
+              shopNameResult[0].word
+                ? shopNameResult[0].word
+                : null,
             phoneNumber: eachShop.phoneNumber,
-            address: mainBranchResult[0].address,
+            address:
+              mainBranchResult &&
+              mainBranchResult.length > 0 &&
+              mainBranchResult[0].address
+                ? mainBranchResult[0].address
+                : null,
             tagNames,
-            rankNum: eachShop.monthlyRankNum,
-            weight: eachShop.priority,
+            rankNum:
+              typeof eachShop.monthlyRankNum === "number"
+                ? eachShop.monthlyRankNum
+                : 0,
+            weight:
+              typeof eachShop.priority === "number" ? eachShop.priority : 0,
             postNum,
             productNum,
             likeNum,
