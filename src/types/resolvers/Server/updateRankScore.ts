@@ -193,7 +193,7 @@ export const updateRankScore = mutationField("updateRankScore", {
           );
         order++;
       }
-      order = 0;
+      order = 1;
       postResult = await ctx.prisma.post.findMany({
         orderBy: {
           monthlyRankScore: "desc",
@@ -213,7 +213,7 @@ export const updateRankScore = mutationField("updateRankScore", {
           );
         order++;
       }
-      order = 0;
+      order = 1;
       postResult = await ctx.prisma.post.findMany({
         orderBy: {
           lifeTimeRankScore: "desc",
@@ -233,7 +233,7 @@ export const updateRankScore = mutationField("updateRankScore", {
           );
         order++;
       }
-      order = 0;
+      order = 1;
       shopListResult = await ctx.prisma.shop.findMany({
         orderBy: {
           monthlyRankScore: "desc",
