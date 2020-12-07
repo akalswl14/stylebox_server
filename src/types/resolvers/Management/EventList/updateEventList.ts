@@ -13,24 +13,15 @@ export const updateEventList = mutationField("updateEventList", {
 
       for (const event of events) {
         if (event) {
-          if (event.isOnList) {
-            updateQuery = await ctx.prisma.event.update({
-              where: { id: event.eventId },
-              data: {
-                startDate: { set: event.eventStart },
-                dueDate: { set: event.eventEnd },
-                isOnList: event.isOnList,
-              },
-            });
-          } else {
-            updateQuery = await ctx.prisma.event.update({
-              where: { id: event.eventId },
-              data: {
-                startDate: { set: event.eventStart },
-                dueDate: { set: event.eventEnd },
-              },
-            });
-          }
+          updateQuery = await ctx.prisma.event.update({
+            where: { id: event.eventId },
+            data: {
+              startDate: { set: event.eventStart },
+              dueDate: { set: event.eventEnd },
+              isOnList:
+                typeof event.isOnList === "boolean" ? event.isOnList : true,
+            },
+          });
         }
       }
 
