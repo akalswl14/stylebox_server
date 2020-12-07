@@ -33,12 +33,18 @@ export const getShopList = queryField("getShopList", {
       const loadingNum = 13;
       let skipNum = loadingNum * (pageNum - 1);
       let orderByOption:
-          | {
-              monthlyRankScore: "asc" | "desc";
-            }
-          | {
-              priority: "asc" | "desc";
-            }
+          | [
+              {
+                monthlyRankScore: "asc" | "desc";
+              },
+              { id: "asc" }
+            ]
+          | [
+              {
+                priority: "asc" | "desc";
+              },
+              { id: "asc" }
+            ]
           | {
               id: "asc" | "desc";
             }
@@ -54,12 +60,14 @@ export const getShopList = queryField("getShopList", {
         orderByOption = shopIdAsc ? { id: "asc" } : { id: "desc" };
       }
       if (typeof weightAsc === "boolean") {
-        orderByOption = weightAsc ? { priority: "asc" } : { priority: "desc" };
+        orderByOption = weightAsc
+          ? [{ priority: "asc" }, { id: "asc" }]
+          : [{ priority: "desc" }, { id: "asc" }];
       }
       if (typeof rankAsc === "boolean") {
         orderByOption = rankAsc
-          ? { monthlyRankScore: "desc" }
-          : { monthlyRankScore: "asc" };
+          ? [{ monthlyRankScore: "desc" }, { id: "asc" }]
+          : [{ monthlyRankScore: "asc" }, { id: "asc" }];
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
