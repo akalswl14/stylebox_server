@@ -122,7 +122,7 @@ export const updateRankScore = mutationField("updateRankScore", {
             false,
             "Error while updating post data."
           );
-        if (eachPost.shopId) {
+        if (typeof eachPost.shopId === "number") {
           ShopMonthLikeNum = await ctx.prisma.like.count({
             where: {
               shopId: eachPost.shopId,
@@ -152,13 +152,18 @@ export const updateRankScore = mutationField("updateRankScore", {
           let shopPriority =
             shopResult && shopResult.priority ? shopResult.priority : 1;
           ShopmonthlyRankScore =
-            (shopConstA * ShopMonthViewNum +
-              shopConstB +
-              ShopMonthLikeNum +
-              shopConstC * monthlyRankScore) /
-              ShopPostNum +
-            shopPriority;
-          if (eachPost.Shop && eachPost.Shop.monthlyRankScore) {
+            ShopPostNum > 0
+              ? (shopConstA * ShopMonthViewNum +
+                  shopConstB +
+                  ShopMonthLikeNum +
+                  shopConstC * monthlyRankScore) /
+                ShopPostNum
+              : 0;
+          ShopmonthlyRankScore += shopPriority;
+          if (
+            eachPost.Shop &&
+            typeof eachPost.Shop.monthlyRankScore === "number"
+          ) {
             ShopmonthlyRankScore += eachPost.Shop.monthlyRankScore;
           }
           queryResult = await ctx.prisma.shop.update({
