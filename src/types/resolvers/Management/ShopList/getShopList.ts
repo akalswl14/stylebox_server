@@ -34,7 +34,7 @@ export const getShopList = queryField("getShopList", {
       let skipNum = loadingNum * (pageNum - 1);
       let orderByOption:
           | {
-              monthlyRankNum: "asc" | "desc";
+              monthlyRankScore: "asc" | "desc";
             }
           | {
               priority: "asc" | "desc";
@@ -58,8 +58,8 @@ export const getShopList = queryField("getShopList", {
       }
       if (typeof rankAsc === "boolean") {
         orderByOption = rankAsc
-          ? { monthlyRankNum: "asc" }
-          : { monthlyRankNum: "desc" };
+          ? { monthlyRankScore: "desc" }
+          : { monthlyRankScore: "asc" };
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
