@@ -139,72 +139,22 @@ export const getShops = queryField("getShops", {
             countQueryOption = { tags: { some: { OR: classTags } } };
           }
         }
-        let queryOption: {
-          orderBy: {
-            monthlyRankScore: "asc" | "desc";
-          };
-          take: number;
-          select: {
-            id: boolean;
-            logoUrl: boolean;
-            names: {
-              select: {
-                word: boolean;
-              };
-              where: {
-                lang: string;
-              };
-            };
-            onDetailTagId: boolean;
-          };
-          cursor: { id: number } | undefined;
-          skip: number | undefined;
-          where:
-            | {
-                tags: {
-                  some: {
-                    AND: {
-                      id: number;
-                    }[];
-                    OR: {
-                      id: number;
-                    }[];
-                  };
-                };
-              }
-            | {
-                tags: {
-                  some: {
-                    AND: {
-                      id: number;
-                    }[];
-                  };
-                };
-              }
-            | {
-                tags: {
-                  some: {
-                    OR: {
-                      id: number;
-                    }[];
-                  };
-                };
-              }
-            | undefined;
-        } = {
-          orderBy: { monthlyRankScore: "desc" },
+        shopResults = await ctx.prisma.shop.findMany({
+          orderBy: [{ monthlyRankScore: "desc" }, { id: "asc" }],
           take: loadingPostNum,
           select: {
             id: true,
             logoUrl: true,
-            names: { select: { word: true }, where: { lang } },
+            names: {
+              select: { word: true },
+              where: { lang },
+            },
             onDetailTagId: true,
           },
           where: queryWhereOption,
-          cursor: cursorId ? { id: cursorId } : undefined,
-          skip: cursorId ? 1 : undefined,
-        };
-        shopResults = await ctx.prisma.shop.findMany(queryOption);
+          cursor: typeof cursorId === "number" ? { id: cursorId } : undefined,
+          skip: typeof cursorId === "number" ? 1 : undefined,
+        });
         for (const eachShop of shopResults) {
           let isLikeShop,
             queryResult,
