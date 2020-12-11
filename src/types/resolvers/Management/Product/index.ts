@@ -5,3 +5,4 @@ export * from "./getProductBasicStatus";
 export * from "./getProductDescription";
 export * from "./getProductTagInfo";
 export * from "./getProductSellingShopBranch";
+export * from "./getTagsbyShop";
