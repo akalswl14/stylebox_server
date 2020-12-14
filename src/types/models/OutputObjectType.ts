@@ -33,7 +33,7 @@ export const ProductThumbnail = objectType({
   definition(t) {
     t.int("productId");
     t.string("productName");
-    t.string("price");
+    t.int("price");
     t.field("productExternalLink", { type: "ExternalLink" });
   },
 });
