@@ -37,7 +37,7 @@ export const getShopList = queryField("getShopList", {
               {
                 monthlyRankScore: "asc" | "desc";
               },
-              { id: "asc" }
+              { monthlyRankNum: "asc" | "desc" }
             ]
           | [
               {
@@ -66,8 +66,8 @@ export const getShopList = queryField("getShopList", {
       }
       if (typeof rankAsc === "boolean") {
         orderByOption = rankAsc
-          ? [{ monthlyRankScore: "desc" }, { id: "asc" }]
-          : [{ monthlyRankScore: "asc" }, { id: "asc" }];
+          ? [{ monthlyRankScore: "desc" }, { monthlyRankNum: "asc" }]
+          : [{ monthlyRankScore: "asc" }, { monthlyRankNum: "desc" }];
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
