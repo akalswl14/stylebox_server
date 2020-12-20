@@ -11,3 +11,4 @@ export * from "./updatePost";
 export * from "./getProductByName";
 export * from "./getShopByProductName";
 export * from "./getSubProductTag";
+export * from "./getProdDescription";
