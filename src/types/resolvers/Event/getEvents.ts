@@ -1,4 +1,4 @@
-import { queryField, stringArg, intArg, booleanArg } from "@nexus/schema";
+import { queryField, stringArg, intArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
 import { S3_URL } from "../AWS_IAM";
 
@@ -28,7 +28,6 @@ export const getEvents = queryField("getEvents", {
         settingQueryResult,
         loadingPostNum,
         checkEventIdResult,
-        lastPostInResults,
         loadingEventNum,
         myCursor,
         check,
@@ -86,11 +85,8 @@ export const getEvents = queryField("getEvents", {
           },
         });
 
-        if (!checkEventIdResult) return null;
-
         const idx = checkEventIdResult.length - 1;
-        lastPostInResults = checkEventIdResult[idx];
-        myCursor = lastPostInResults.id; //기간 지나지 않은것들중 마지막 Id
+        myCursor = idx > 0 ? checkEventIdResult[idx].id : 0; //기간 지나지 않은것들중 마지막 Id
 
         if (!cursorId) {
           prismaQueryResults = await ctx.prisma.event.findMany({
@@ -104,8 +100,7 @@ export const getEvents = queryField("getEvents", {
           });
 
           const idx1 = prismaQueryResults.length - 1;
-          let lastPostInResults1 = prismaQueryResults[idx1];
-          let myCursor1 = lastPostInResults1.id;
+          let myCursor1 = idx1 > 0 ? prismaQueryResults[idx1].id : 0;
 
           if (myCursor === myCursor1) {
             DdayEventCheck = true;
