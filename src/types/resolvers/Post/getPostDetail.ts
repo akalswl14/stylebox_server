@@ -79,12 +79,14 @@ export const getPostDetail = queryField("getPostDetail", {
       if (!postPrismaResult) return null;
 
       for (const eachProduct of postPrismaResult.products) {
-        products.push({
-          productId: eachProduct.id,
-          productName: eachProduct.names[0].word,
-          price: eachProduct.price,
-          productExternalLink: eachProduct.externalLink,
-        });
+        if (eachProduct.id !== postPrismaResult.mainProductId) {
+          products.push({
+            productId: eachProduct.id,
+            productName: eachProduct.names[0].word,
+            price: eachProduct.price,
+            productExternalLink: eachProduct.externalLink,
+          });
+        }
       }
 
       for (const eachTag of postPrismaResult.onDetailTagId) {
