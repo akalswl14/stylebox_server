@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20201122132600-initial-migration
+20201221072844-add-on-detail-tag-id-in-product
