@@ -121,44 +121,6 @@ export const updatePostManage = mutationField("updatePostManage", {
         }
       }
 
-      if (subProducts) {
-        if (subProducts.length > 0) {
-          let SubProductArray: { id: number }[] = [];
-          for (const eachItem of subProducts) {
-            if (eachItem) {
-              SubProductArray.push(eachItem);
-            }
-          }
-          let Products = await ctx.prisma.post.findOne({
-            where: { id },
-            select: {
-              products: { select: { id: true } },
-              mainProductId: true,
-            },
-          });
-
-          if (!Products) return false;
-
-          let disconnect = await ctx.prisma.post.update({
-            where: { id },
-            data: { products: { disconnect: Products.products } },
-          });
-
-          if (Products.mainProductId) {
-            SubProductArray.push({ id: Products.mainProductId });
-          } else {
-            return false;
-          }
-
-          queryResult = await ctx.prisma.post.update({
-            where: { id },
-            data: { products: { connect: SubProductArray } },
-          });
-
-          if (!disconnect || !queryResult) return false;
-        }
-      }
-
       if (priority) {
         queryResult = await ctx.prisma.post.update({
           where: { id },
@@ -221,7 +183,6 @@ export const updatePostManage = mutationField("updatePostManage", {
       }
 
       if (mainProductId) {
-        let products = [];
         let isOnline = true;
         let mainProductInfo = await ctx.prisma.product.findOne({
           where: { id: mainProductId },
@@ -268,7 +229,6 @@ export const updatePostManage = mutationField("updatePostManage", {
           select: { products: { select: { id: true } } },
         });
         if (!subProducts) return false;
-        products = [...subProducts?.products, { id: mainProductId }];
 
         let subProductDisconnect = await ctx.prisma.post.update({
           where: { id },
@@ -277,8 +237,9 @@ export const updatePostManage = mutationField("updatePostManage", {
 
         let productsResult = await ctx.prisma.post.update({
           where: { id },
-          data: { products: { connect: products } },
+          data: { products: { connect: [{ id: mainProductId }] } },
         });
+
         if (
           !productsResult ||
           !subProductDisconnect ||
@@ -287,6 +248,45 @@ export const updatePostManage = mutationField("updatePostManage", {
         )
           return false;
       }
+
+      if (subProducts) {
+        if (subProducts.length > 0) {
+          let SubProductArray: { id: number }[] = [];
+          for (const eachItem of subProducts) {
+            if (eachItem) {
+              SubProductArray.push(eachItem);
+            }
+          }
+          let Products = await ctx.prisma.post.findOne({
+            where: { id },
+            select: {
+              products: { select: { id: true } },
+              mainProductId: true,
+            },
+          });
+
+          if (!Products) return false;
+
+          let disconnect = await ctx.prisma.post.update({
+            where: { id },
+            data: { products: { disconnect: Products.products } },
+          });
+
+          if (Products.mainProductId) {
+            SubProductArray.push({ id: Products.mainProductId });
+          } else {
+            return false;
+          }
+
+          queryResult = await ctx.prisma.post.update({
+            where: { id },
+            data: { products: { connect: SubProductArray } },
+          });
+
+          if (!disconnect || !queryResult) return false;
+        }
+      }
+
       return true;
     } catch (e) {
       console.log(e);
