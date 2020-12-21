@@ -50,7 +50,7 @@ export const createProduct = mutationField("createProduct", {
       });
       if (!queryResult) return null;
       let tagConnectResult: any = true;
-      tagConnectResult = await ctx.prisma.shop.update({
+      tagConnectResult = await ctx.prisma.product.update({
         where: { id: queryResult.id },
         data: { tags: { connect: tagList } },
       });
