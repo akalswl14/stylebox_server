@@ -23,6 +23,30 @@ export const deleteSelectedTags = mutationField("deleteSelectedTags", {
         where: { tagId: { in: TagIds } },
       });
 
+      let productTagResult = await ctx.prisma.product.findMany({
+        where: { tags: { some: { id: { in: TagIds } } } },
+        select: {
+          id: true,
+          onDetailTagId: true,
+        },
+      });
+
+      if (productTagResult) {
+        for (const product of productTagResult) {
+          let saveList = product.onDetailTagId.slice();
+          for (const id of product.onDetailTagId) {
+            if (tagIds.indexOf(id) >= 0) {
+              const idx = saveList.indexOf(id);
+              if (idx > -1) saveList.splice(idx, 1);
+            }
+          }
+          await ctx.prisma.product.update({
+            where: { id: product.id },
+            data: { onDetailTagId: { set: saveList } },
+          });
+        }
+      }
+
       let shopTagResult = await ctx.prisma.shop.findMany({
         where: { tags: { some: { id: { in: TagIds } } } },
         select: {
