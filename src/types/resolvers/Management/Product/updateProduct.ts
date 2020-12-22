@@ -78,17 +78,17 @@ export const updateProduct = mutationField("updateProduct", {
           tagIdDicList.push({ id: eachTag.id });
         }
         let originalTags = await ctx.prisma.tag.findMany({
-          where: { shops: { some: { id: productId } } },
+          where: { products: { some: { id: productId } } },
           select: { id: true },
         });
-        const disconnectResult = await ctx.prisma.shop.update({
+        const disconnectResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: {
             tags: { disconnect: originalTags },
           },
         });
         if (!disconnectResult) return false;
-        const connectResult = await ctx.prisma.shop.update({
+        const connectResult = await ctx.prisma.product.update({
           where: { id: productId },
           data: {
             tags: { connect: tagIdDicList },
