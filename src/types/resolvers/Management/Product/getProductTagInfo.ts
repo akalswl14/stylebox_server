@@ -12,35 +12,40 @@ export const getProductTagInfo = queryField("getProductTagInfo", {
         tagResult,
         classResult,
         tagIdList,
-        tags = [];
+        tags = [],
+        order = 1;
       queryResult = await ctx.prisma.product.findOne({
         where: { id },
         select: {
-          tags: {
-            select: {
-              id: true,
-              classId: true,
-              category: true,
-              names: { where: { lang: "VI" }, select: { word: true } },
-            },
-          },
+          onDetailTagId: true,
         },
       });
       if (!queryResult) return null;
-      tagIdList = queryResult.tags;
-      for (const eachTag of tagIdList) {
+      tagIdList = queryResult.onDetailTagId;
+      for (const eachTagId of tagIdList) {
+        tagResult = await ctx.prisma.tag.findOne({
+          where: { id: eachTagId },
+          select: {
+            category: true,
+            classId: true,
+            names: { where: { lang: "VI" }, select: { word: true } },
+          },
+        });
+        if (!tagResult) continue;
         classResult = await ctx.prisma.className.findMany({
-          where: { classId: eachTag.classId, lang: "VI" },
+          where: { classId: tagResult.classId, lang: "VI" },
           select: { word: true },
         });
         if (!classResult) continue;
         tags.push({
-          tagId: eachTag.id,
-          tagName: eachTag.names[0].word,
-          classId: eachTag.classId,
+          tagId: eachTagId,
+          tagName: tagResult.names[0].word,
+          classId: tagResult.classId,
           className: classResult[0].word,
-          category: eachTag.category,
+          category: tagResult.category,
+          order,
         });
+        order++;
       }
       return tags;
     } catch (e) {
