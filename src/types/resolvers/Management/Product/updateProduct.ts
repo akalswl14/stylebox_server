@@ -1,4 +1,10 @@
-import { booleanArg, intArg, mutationField, stringArg } from "@nexus/schema";
+import {
+  arg,
+  booleanArg,
+  intArg,
+  mutationField,
+  stringArg,
+} from "@nexus/schema";
 
 export const updateProduct = mutationField("updateProduct", {
   type: "Boolean",
@@ -11,7 +17,7 @@ export const updateProduct = mutationField("updateProduct", {
     isDescriptionChange: booleanArg({ required: true }),
     description: stringArg({ nullable: true }),
     externalLink: stringArg({ nullable: true }),
-    tags: intArg({ list: [true], nullable: true }),
+    tags: arg({ type: "IdOrderInputType", list: [true] }),
     branchIds: intArg({ list: [true], nullable: true }),
   },
   nullable: false,
@@ -64,23 +70,32 @@ export const updateProduct = mutationField("updateProduct", {
         if (!queryResult) return false;
       }
       if (tags) {
+        let tagIdList: number[] = [],
+          tagIdDicList: { id: number }[] = [];
+        for (const eachTag of tags) {
+          if (!eachTag.id) continue;
+          tagIdList.push(eachTag.id);
+          tagIdDicList.push({ id: eachTag.id });
+        }
         let originalTags = await ctx.prisma.tag.findMany({
-          where: { products: { some: { id: productId } } },
+          where: { shops: { some: { id: productId } } },
           select: { id: true },
         });
-        let disconnectResult = await ctx.prisma.product.update({
+        const disconnectResult = await ctx.prisma.shop.update({
           where: { id: productId },
-          data: { tags: { disconnect: originalTags } },
+          data: {
+            tags: { disconnect: originalTags },
+          },
         });
-        let tagList = await ctx.prisma.tag.findMany({
-          where: { id: { in: tags } },
-          select: { id: true },
-        });
-        let queryResult = await ctx.prisma.product.update({
+        if (!disconnectResult) return false;
+        const connectResult = await ctx.prisma.shop.update({
           where: { id: productId },
-          data: { tags: { connect: tagList } },
+          data: {
+            tags: { connect: tagIdDicList },
+            onDetailTagId: { set: tagIdList },
+          },
         });
-        if (!disconnectResult || !queryResult) return false;
+        if (!connectResult) return false;
       }
       if (branchIds) {
         let originalBranches = await ctx.prisma.branch.findMany({
