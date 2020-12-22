@@ -1,4 +1,5 @@
-import { intArg, mutationField } from "@nexus/schema";
+import { arg, intArg, mutationField } from "@nexus/schema";
+import { Context } from "vm";
 
 export const getTagsbyShop = mutationField("getTagsbyShop", {
   type: "TagManagementThumbnail",
@@ -11,54 +12,23 @@ export const getTagsbyShop = mutationField("getTagsbyShop", {
   resolve: async (_, args, ctx) => {
     try {
       const { shopId, tags } = args;
-      const rtnTags = [];
-      const shopTagIds: number[] = [];
-      const lang = "VI";
-      let order = 1;
-      const shopTags = await ctx.prisma.tag.findMany({
-        where: {
-          OR: [{ shops: { some: { id: shopId } } }, { id: { in: tags } }],
-          category: { not: "ShopName" },
-        },
-        orderBy: { id: "asc" },
-        select: {
-          id: true,
-          names: { where: { lang }, select: { word: true } },
-          classId: true,
-          category: true,
-        },
+      const tmpTags = tags.map((eachTag, index) => ({
+        id: eachTag,
+        order: index + 1,
+      }));
+      const originalTagInfoList = await getTagInformation(ctx, tmpTags);
+      let rtnTags = [...originalTagInfoList];
+      const shopResult = await ctx.prisma.shop.findOne({
+        where: { id: shopId },
+        select: { onDetailTagId: true },
       });
-      for (const eachData of shopTags) {
-        if (
-          !eachData ||
-          typeof eachData.id !== "number" ||
-          eachData.names.length <= 0 ||
-          !eachData.names[0].word ||
-          typeof eachData.classId !== "number" ||
-          !eachData.category
-        ) {
-          continue;
-        }
-        if (shopTagIds.indexOf(eachData.id) !== -1) {
-          continue;
-        }
-        let classResult = await ctx.prisma.className.findMany({
-          where: { classId: eachData.classId, lang },
-          select: { word: true },
-        });
-        if (!classResult || classResult.length <= 0 || !classResult[0].word) {
-          continue;
-        }
-        rtnTags.push({
-          tagId: eachData.id,
-          tagName: eachData.names[0].word,
-          classId: eachData.classId,
-          className: classResult[0].word,
-          category: eachData.category,
-          order,
-        });
-        shopTagIds.push(eachData.id);
-        order++;
+      if (shopResult) {
+        const shopTags = shopResult.onDetailTagId.map((eachTag, index) => ({
+          id: eachTag,
+          order: rtnTags.length + index + 1,
+        }));
+        const shopTagInfoList = await getTagInformation(ctx, shopTags);
+        rtnTags = [...rtnTags, ...shopTagInfoList];
       }
       return rtnTags;
     } catch (e) {
@@ -67,3 +37,43 @@ export const getTagsbyShop = mutationField("getTagsbyShop", {
     }
   },
 });
+
+const getTagInformation = async (
+  ctx: Context,
+  tags: {
+    id: number;
+    order: number;
+  }[]
+) => {
+  const lang = "VI";
+  const rtnTags = [];
+  for (const eachTag of tags) {
+    if (!eachTag.id) continue;
+    const tagResult = await ctx.prisma.tag.findOne({
+      where: { id: eachTag.id },
+      select: {
+        names: { where: { lang }, select: { word: true } },
+        classId: true,
+        category: true,
+      },
+    });
+    if (!tagResult) continue;
+    if (tagResult.names.length <= 0) continue;
+    const classResult = await ctx.prisma.className.findMany({
+      where: { classId: tagResult.classId, lang },
+      select: { word: true },
+    });
+    if (!classResult || classResult.length <= 0 || !classResult[0].word) {
+      continue;
+    }
+    rtnTags.push({
+      tagId: eachTag.id,
+      tagName: tagResult.names[0].word,
+      classId: tagResult.classId,
+      className: classResult[0].word,
+      category: tagResult.category,
+      order: eachTag.order,
+    });
+  }
+  return rtnTags;
+};
