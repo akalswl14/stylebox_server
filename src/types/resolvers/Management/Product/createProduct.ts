@@ -1,4 +1,4 @@
-import { intArg, mutationField, stringArg } from "@nexus/schema";
+import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
 
 export const createProduct = mutationField("createProduct", {
   type: "ProductIdInfo",
@@ -8,7 +8,7 @@ export const createProduct = mutationField("createProduct", {
     productImage: stringArg({ nullable: true }),
     description: stringArg({ nullable: true }),
     externalLink: stringArg({ required: true }),
-    tags: intArg({ list: [true], nullable: true }),
+    tags: arg({ type: "IdOrderInputType", list: [true] }),
     branchIds: intArg({ list: [true], nullable: true }),
   },
   nullable: true,
@@ -23,10 +23,17 @@ export const createProduct = mutationField("createProduct", {
       } = args;
       const tags = args.tags ?? [];
       const branchIds = args.branchIds ?? [];
-      let tagList = await ctx.prisma.tag.findMany({
-        where: { id: { in: tags } },
-        select: { id: true },
-      });
+      let tagList: { id: number }[] = [],
+        onDetailTagId: number[] = [];
+      for (const eachTag of tags) {
+        if (!eachTag.id) continue;
+        tagList.push({ id: eachTag.id });
+        onDetailTagId.push(eachTag.id);
+      }
+      // let tagList = await ctx.prisma.tag.findMany({
+      //   where: { id: { in: tags } },
+      //   select: { id: true },
+      // });
       let branchList = await ctx.prisma.branch.findMany({
         where: { id: { in: branchIds } },
         select: { id: true },
@@ -36,13 +43,17 @@ export const createProduct = mutationField("createProduct", {
           names: { create: { lang: "VI", word: productName } },
           price,
           description,
-          tags: { connect: tagList },
+          onDetailTagId: { set: onDetailTagId },
           branches: { connect: branchList },
         },
         select: { id: true },
       });
       if (!queryResult) return null;
-
+      let tagConnectResult: any = true;
+      tagConnectResult = await ctx.prisma.product.update({
+        where: { id: queryResult.id },
+        data: { tags: { connect: tagList } },
+      });
       let imageResult: any = true;
       if (productImage) {
         imageResult = await ctx.prisma.productImage.create({
@@ -61,7 +72,7 @@ export const createProduct = mutationField("createProduct", {
           Product: { connect: { id: queryResult.id } },
         },
       });
-      return queryResult && linkResult && imageResult
+      return queryResult && linkResult && imageResult && tagConnectResult
         ? { productId: queryResult.id }
         : null;
     } catch (e) {
