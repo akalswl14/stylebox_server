@@ -25,56 +25,46 @@ export const getSubProductTag = mutationField("getSubProductTag", {
         return null;
       }
 
-      let productTagResult = await ctx.prisma.product.findMany({
-        where: {
-          id: { in: productIdArr },
-        },
-        select: {
-          tags: true,
-        },
-      });
+      for (const productId of productIdArr) {
+        let productTagResult = await ctx.prisma.product.findOne({
+          where: {
+            id: productId,
+          },
+          select: {
+            onDetailTagId: true,
+          },
+        });
 
-      if (!productTagResult) return null;
-      let tagIdArr: number[] = [];
+        if (!productTagResult) return null;
 
-      for (const dataSet of productTagResult) {
-        for (const tag of dataSet.tags) {
-          tagIdArr.push(tag.id);
+        for (const tagId of productTagResult.onDetailTagId) {
+          let tagResult = await ctx.prisma.tag.findOne({
+            where: {
+              id: tagId,
+            },
+            select: {
+              id: true,
+              names: { where: { lang }, select: { word: true } },
+              category: true,
+              classId: true,
+              Class: {
+                select: { names: { where: { lang }, select: { word: true } } },
+              },
+            },
+          });
+
+          if (!tagResult) return null;
+
+          tags.push({
+            tagId: tagResult.id,
+            tagName: tagResult.names[0].word,
+            classId: tagResult.classId,
+            className: tagResult.Class.names[0].word,
+            category: tagResult.category,
+            order: order++,
+          });
         }
       }
-
-      tagIdArr = Array.from(new Set(tagIdArr));
-
-      let tagResult = await ctx.prisma.tag.findMany({
-        where: {
-          id: { in: tagIdArr },
-        },
-        orderBy: { id: "asc" },
-        select: {
-          id: true,
-          names: { where: { lang }, select: { word: true } },
-          category: true,
-          classId: true,
-          Class: {
-            select: { names: { where: { lang }, select: { word: true } } },
-          },
-        },
-      });
-
-      if (!tagResult) return null;
-
-      for (const tag of tagResult) {
-        tags.push({
-          tagId: tag.id,
-          tagName: tag.names[0].word,
-          classId: tag.classId,
-          className: tag.Class.names[0].word,
-          category: tag.category,
-          order,
-        });
-        order++;
-      }
-
       return tags ? tags : null;
     } catch (e) {
       console.log(e);
