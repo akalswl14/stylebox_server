@@ -6,7 +6,6 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
   type: "PostList",
   args: {
     lang: stringArg({ nullable: true }),
-    TagIds: intArg({ list: true, required: true }),
     postId: intArg({ required: true }),
     cursorId: intArg({ nullable: true }),
   },
@@ -18,10 +17,6 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         return null;
       }
 
-      const { TagIds } = args;
-
-      let tagIds: number[] = [];
-
       let { lang, cursorId, postId } = args;
       let similarPostPrismaResult,
         posts = [],
@@ -32,6 +27,7 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
         mainProductName,
         filterArrayOne: any[] = [],
         filterArrayTwo: any[] = [],
+        tagIds: number[] = [],
         skipNum,
         cursorOption,
         result1,
@@ -40,12 +36,17 @@ export const getSimilarPosts = queryField("getSimilarPosts", {
 
       if (!lang) lang = "VI";
 
-      if (TagIds) {
-        for (const tagId of TagIds) {
-          if (tagId) tagIds.push(tagId);
+      let tagIdsResult = await ctx.prisma.post.findOne({
+        where: { id: postId },
+        select: {
+          onDetailTagId: true,
+        },
+      });
+
+      if (tagIdsResult) {
+        for (const id of tagIdsResult.onDetailTagId) {
+          tagIds.push(id);
         }
-      } else {
-        return null;
       }
 
       let productClassTagId = await ctx.prisma.tag.findMany({
