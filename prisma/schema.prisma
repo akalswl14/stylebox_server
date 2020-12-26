@@ -47,13 +47,14 @@ model ProductName {
 }
 
 model ProductImage {
-  id        Int      @id @default(autoincrement())
-  productId Int?
-  Product   Product? @relation(fields: [productId], references: [id])
-  url       String
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  productId  Int?
+  Product    Product? @relation(fields: [productId], references: [id])
+  url        String
+  order      Int
+  searchWord String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model ProductVideo {
@@ -102,13 +103,14 @@ model Shop {
 }
 
 model ShopName {
-  id        Int      @id @default(autoincrement())
-  shopId    Int?
-  Shop      Shop?    @relation(fields: [shopId], references: [id])
-  lang      String
-  word      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  shopId     Int?
+  Shop       Shop?    @relation(fields: [shopId], references: [id])
+  lang       String
+  word       String   @unique
+  searchWord String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model ShopImage {
@@ -162,13 +164,14 @@ model Branch {
 }
 
 model BranchName {
-  id        Int      @id @default(autoincrement())
-  branchId  Int?
-  Branch    Branch?  @relation(fields: [branchId], references: [id])
-  lang      String
-  word      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  branchId   Int?
+  Branch     Branch?  @relation(fields: [branchId], references: [id])
+  lang       String
+  word       String
+  searchWord String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Event {
@@ -183,6 +186,7 @@ model Event {
   views          View[]
   isOnList       Boolean
   title          String
+  searchTitle    String               @default("")
   onDetailTagId  Int[]
   contentsImages EventContentsImage[]
   startDate      DateTime
@@ -254,13 +258,14 @@ model Class {
 }
 
 model ClassName {
-  id        Int      @id @default(autoincrement())
-  classId   Int?
-  Class     Class?   @relation(fields: [classId], references: [id])
-  lang      String
-  word      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  classId    Int?
+  Class      Class?   @relation(fields: [classId], references: [id])
+  lang       String
+  word       String   @unique
+  searchWord String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Tag {
@@ -282,13 +287,14 @@ model Tag {
 }
 
 model TagName {
-  id        Int      @id @default(autoincrement())
-  tagId     Int?
-  Tag       Tag?     @relation(fields: [tagId], references: [id])
-  lang      String
-  word      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  tagId      Int?
+  Tag        Tag?     @relation(fields: [tagId], references: [id])
+  lang       String
+  word       String   @unique
+  searchWord String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Post {
