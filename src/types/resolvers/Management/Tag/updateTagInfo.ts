@@ -42,7 +42,11 @@ export const updateTagInfo = mutationField("updateTagInfo", {
           data: {
             names: {
               delete: { id: originalTag.names[0].id },
-              create: { lang, word: tagName },
+              create: {
+                lang,
+                word: tagName,
+                searchWord: tagName.toLowerCase(),
+              },
             },
           },
         });

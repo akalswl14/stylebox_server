@@ -42,7 +42,13 @@ export const createShop = mutationField("createShop", {
       let branches = args.branches ?? [];
       let branchList = [
         {
-          names: { create: { lang: "VI", word: shopName } },
+          names: {
+            create: {
+              lang: "VI",
+              word: shopName,
+              searchWord: shopName.toLowerCase(),
+            },
+          },
           phoneNumbers: { set: [phoneNumber] },
           address: mainBranchAddress,
           googleMapUrl: mainBranchMapUrl,
@@ -60,7 +66,13 @@ export const createShop = mutationField("createShop", {
       }[] = [];
       for (const eachBranch of branches) {
         branchList.push({
-          names: { create: { lang: "VI", word: eachBranch.branchName } },
+          names: {
+            create: {
+              lang: "VI",
+              word: eachBranch.branchName,
+              searchWord: eachBranch.branchName.toLowerCase(),
+            },
+          },
           phoneNumbers: { set: [eachBranch.branchPhoneNumber] },
           address: eachBranch.branchAddress,
           googleMapUrl: eachBranch.branchGoogleMapUrl,
@@ -151,7 +163,13 @@ export const createShop = mutationField("createShop", {
       let shopNameResult = await ctx.prisma.shop.update({
         where: { id: queryResult.id },
         data: {
-          names: { create: { lang: "VI", word: shopName } },
+          names: {
+            create: {
+              lang: "VI",
+              word: shopName,
+              searchWord: shopName.toLowerCase(),
+            },
+          },
         },
       });
       if (!queryResult) return null;
@@ -162,7 +180,13 @@ export const createShop = mutationField("createShop", {
       let classCreateResult = await ctx.prisma.class.create({
         data: {
           category: "ShopName",
-          names: { create: { word: shopName, lang: "VI" } },
+          names: {
+            create: {
+              word: shopName,
+              lang: "VI",
+              searchWord: shopName.toLowerCase(),
+            },
+          },
         },
         select: { id: true },
       });
@@ -171,7 +195,13 @@ export const createShop = mutationField("createShop", {
         data: {
           Class: { connect: { id: classCreateResult.id } },
           shops: { connect: { id: queryResult.id } },
-          names: { create: { word: shopName, lang: "VI" } },
+          names: {
+            create: {
+              word: shopName,
+              lang: "VI",
+              searchWord: shopName.toLowerCase(),
+            },
+          },
           category: "ShopName",
           isClass: true,
           isRecommendation: 0,
