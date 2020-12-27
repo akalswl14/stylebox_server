@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20201223080526-add-search-word-and-search-title
+20201227144855-delete-search-word-from-product-image-and-add-search-word-to-produt-name
