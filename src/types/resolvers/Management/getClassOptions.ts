@@ -14,11 +14,25 @@ export const getClassOptions = queryField("getClassOptions", {
         where: { category },
         select: {
           id: true,
-          names: { where: { lang: "VI" }, select: { word: true } },
         },
       });
       for (const eachClass of queryResult) {
-        classNames.push({ id: eachClass.id, name: eachClass.names[0].word });
+        const classNameQueryResult = await ctx.prisma.className.findMany({
+          where: { classId: eachClass.id, lang: "VI" },
+          select: { word: true },
+        });
+        if (
+          eachClass.id &&
+          classNameQueryResult.length > 0 &&
+          classNameQueryResult[0]
+        ) {
+          classNames.push({
+            id: eachClass.id,
+            name: classNameQueryResult[0].word,
+          });
+        } else {
+          continue;
+        }
       }
       return classNames;
     } catch (e) {
