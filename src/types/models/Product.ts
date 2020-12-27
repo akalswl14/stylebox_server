@@ -32,6 +32,7 @@ export const ProductName = objectType({
     t.model.Product();
     t.model.lang();
     t.model.word();
+    t.model.searchWord();
     t.model.createdAt();
     t.model.updatedAt();
   },
