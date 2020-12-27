@@ -71,21 +71,10 @@ export const getShopList = queryField("getShopList", {
       }
       if (shopId) whereOption = { id: shopId };
       if (shopName) {
-        const FirstCapital =
-          shopName.length > 1
-            ? shopName.charAt(0).toUpperCase() + shopName.slice(1)
-            : shopName.length === 1
-            ? shopName.toUpperCase()
-            : "";
-        const AllCapital = shopName.length >= 1 ? shopName.toUpperCase() : "";
         whereOption = {
           names: {
             some: {
-              OR: [
-                { word: { startsWith: shopName } },
-                { word: { startsWith: FirstCapital } },
-                { word: { startsWith: AllCapital } },
-              ],
+              searchWord: { contains: shopName.toLowerCase() },
             },
           },
         };
@@ -102,7 +91,13 @@ export const getShopList = queryField("getShopList", {
       }
       if (tagName) {
         whereOption = {
-          tags: { some: { names: { some: { word: { contains: tagName } } } } },
+          tags: {
+            some: {
+              names: {
+                some: { searchWord: { contains: tagName.toLowerCase() } },
+              },
+            },
+          },
         };
       }
       shopResult = await ctx.prisma.shop.findMany({
