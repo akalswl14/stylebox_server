@@ -38,51 +38,23 @@ export const getTagList = queryField("getTagList", {
       let orderByOption = {},
         whereOption = {};
 
-      let FirstCapital, AllCapital;
-
       if (tagId) {
         whereOption = { id: tagId };
       }
       if (tagName) {
-        FirstCapital =
-          tagName.length > 1
-            ? tagName.charAt(0).toUpperCase() + tagName.slice(1)
-            : tagName.length === 1
-            ? tagName.toUpperCase()
-            : "";
-        AllCapital = tagName.length >= 1 ? tagName.toUpperCase() : "";
         whereOption = {
-          names: {
-            some: {
-              OR: [
-                { word: { startsWith: tagName }, lang },
-                { word: { startsWith: FirstCapital }, lang },
-                { word: { startsWith: AllCapital }, lang },
-              ],
-            },
-          },
+          names: { some: { searchWord: { contains: tagName.toLowerCase() } } },
         };
       }
       if (category) {
         whereOption = { category: category };
       }
       if (className) {
-        FirstCapital =
-          className.length > 1
-            ? className.charAt(0).toUpperCase() + className.slice(1)
-            : className.length === 1
-            ? className.toUpperCase()
-            : "";
-        AllCapital = className.length >= 1 ? className.toUpperCase() : "";
         whereOption = {
           Class: {
             names: {
               some: {
-                OR: [
-                  { word: { startsWith: className }, lang },
-                  { word: { startsWith: FirstCapital }, lang },
-                  { word: { startsWith: AllCapital }, lang },
-                ],
+                searchWord: { contains: className.toLowerCase() },
               },
             },
           },
@@ -146,8 +118,6 @@ export const getTagList = queryField("getTagList", {
           });
 
           if (!tagResult) return null;
-
-          console.log(tagResult);
 
           let shopNum = await ctx.prisma.shop.count({
             where: { tags: { some: { id: tagResult.id } } },
