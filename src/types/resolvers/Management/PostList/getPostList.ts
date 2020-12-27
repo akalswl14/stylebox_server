@@ -30,8 +30,6 @@ export const getPostList = queryField("getPostList", {
       let { pageNum } = args;
       if (!pageNum) pageNum = 1;
 
-      let FirstCapital, AllCapital;
-
       const take = 13;
       const skip = (pageNum - 1) * take;
       let selectOption = {
