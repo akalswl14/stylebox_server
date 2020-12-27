@@ -336,6 +336,13 @@
     {
       "tag": "CreateField",
       "model": "Product",
+      "field": "onDetailTagId",
+      "type": "Int",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Product",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -710,6 +717,38 @@
       "field": "order",
       "type": "Int",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ProductImage",
+      "field": "searchWord",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ProductImage",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ProductImage",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
     },
     {
       "tag": "CreateField",
@@ -1543,6 +1582,38 @@
         },
         "directive": "unique"
       }
+    },
+    {
+      "tag": "CreateField",
+      "model": "ShopName",
+      "field": "searchWord",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ShopName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ShopName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
     },
     {
       "tag": "CreateField",
@@ -2562,6 +2633,38 @@
     {
       "tag": "CreateField",
       "model": "BranchName",
+      "field": "searchWord",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "BranchName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "BranchName",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -2750,6 +2853,38 @@
       "field": "title",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Event",
+      "field": "searchTitle",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Event",
+          "field": "searchTitle"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Event",
+          "field": "searchTitle"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
     },
     {
       "tag": "CreateField",
@@ -3692,6 +3827,38 @@
     {
       "tag": "CreateField",
       "model": "ClassName",
+      "field": "searchWord",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ClassName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "ClassName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "ClassName",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
@@ -4133,6 +4300,38 @@
         },
         "directive": "unique"
       }
+    },
+    {
+      "tag": "CreateField",
+      "model": "TagName",
+      "field": "searchWord",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "TagName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "TagName",
+          "field": "searchWord"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "\"\""
     },
     {
       "tag": "CreateField",

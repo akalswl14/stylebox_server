@@ -130,6 +130,7 @@ export const updateEvent = mutationField("updateEvent", {
         where: { id: eventId },
         data: {
           title: title ?? undefined,
+          searchTitle: title ? title.toLowerCase() : undefined,
           startDate: startDate ?? undefined,
           dueDate: endDate ?? undefined,
           url: url ?? undefined,

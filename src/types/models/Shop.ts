@@ -34,6 +34,7 @@ export const ShopName = objectType({
     t.model.Shop();
     t.model.lang();
     t.model.word();
+    t.model.searchWord();
     t.model.createdAt();
     t.model.updatedAt();
   },

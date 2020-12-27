@@ -20,6 +20,7 @@ export const ClassName = objectType({
     t.model.Class();
     t.model.lang();
     t.model.word();
+    t.model.searchWord();
     t.model.createdAt();
     t.model.updatedAt();
   },

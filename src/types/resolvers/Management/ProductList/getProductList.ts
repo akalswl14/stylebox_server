@@ -34,27 +34,14 @@ export const getProductList = queryField("getProductList", {
       let orderByOption = {},
         whereOption = {};
 
-      let FirstCapital, AllCapital;
-
       if (productId) {
         whereOption = { id: productId };
       }
       if (productName) {
-        FirstCapital =
-          productName.length > 1
-            ? productName.charAt(0).toUpperCase() + productName.slice(1)
-            : productName.length === 1
-            ? productName.toUpperCase()
-            : "";
-        AllCapital = productName.length >= 1 ? productName.toUpperCase() : "";
         whereOption = {
           names: {
             some: {
-              OR: [
-                { word: { startsWith: productName }, lang },
-                { word: { startsWith: FirstCapital }, lang },
-                { word: { startsWith: AllCapital }, lang },
-              ],
+              searchWord: { contains: productName.toLowerCase() },
             },
           },
         };
