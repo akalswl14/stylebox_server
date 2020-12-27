@@ -42,7 +42,7 @@ export const updateProduct = mutationField("updateProduct", {
         });
         let queryResult = await ctx.prisma.productName.update({
           where: { id: nameResult[0].id },
-          data: { word: productName },
+          data: { word: productName, searchWord: productName.toLowerCase() },
         });
         if (!queryResult) return false;
       }
