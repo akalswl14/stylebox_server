@@ -39,7 +39,9 @@ export const createTagInfo = mutationField("createTagInfo", {
           isClass,
           isRecommendation: 0,
           Class: { connect: { id: classId } },
-          names: { create: { lang, word: tagName } },
+          names: {
+            create: { lang, word: tagName, searchWord: tagName.toLowerCase() },
+          },
         },
         select: {
           id: true,

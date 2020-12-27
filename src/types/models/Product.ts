@@ -1,8 +1,8 @@
-import { objectType } from '@nexus/schema';
-import { tmpdir } from 'os';
+import { objectType } from "@nexus/schema";
+import { tmpdir } from "os";
 
 export const Product = objectType({
-  name: 'Product',
+  name: "Product",
   definition(t) {
     t.model.id();
     t.model.names();
@@ -18,26 +18,28 @@ export const Product = objectType({
     t.model.videos();
     t.model.views();
     t.model.priority();
+    t.model.onDetailTagId();
     t.model.createdAt();
     t.model.updatedAt();
   },
 });
 
 export const ProductName = objectType({
-  name: 'ProductName',
+  name: "ProductName",
   definition(t) {
     t.model.id();
     t.model.productId();
     t.model.Product();
     t.model.lang();
     t.model.word();
+    t.model.searchWord();
     t.model.createdAt();
     t.model.updatedAt();
   },
 });
 
 export const ProductImage = objectType({
-  name: 'ProductImage',
+  name: "ProductImage",
   definition(t) {
     t.model.id();
     t.model.productId();
@@ -50,7 +52,7 @@ export const ProductImage = objectType({
 });
 
 export const ProductVideo = objectType({
-  name: 'ProductVideo',
+  name: "ProductVideo",
   definition(t) {
     t.model.id();
     t.model.productId();
@@ -64,7 +66,7 @@ export const ProductVideo = objectType({
 });
 
 export const ProductExternalLink = objectType({
-  name: 'ProductExternalLink',
+  name: "ProductExternalLink",
   definition(t) {
     t.model.id();
     t.model.url();

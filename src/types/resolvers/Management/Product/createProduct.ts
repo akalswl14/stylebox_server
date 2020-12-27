@@ -30,17 +30,19 @@ export const createProduct = mutationField("createProduct", {
         tagList.push({ id: eachTag.id });
         onDetailTagId.push(eachTag.id);
       }
-      // let tagList = await ctx.prisma.tag.findMany({
-      //   where: { id: { in: tags } },
-      //   select: { id: true },
-      // });
       let branchList = await ctx.prisma.branch.findMany({
         where: { id: { in: branchIds } },
         select: { id: true },
       });
       let queryResult = await ctx.prisma.product.create({
         data: {
-          names: { create: { lang: "VI", word: productName } },
+          names: {
+            create: {
+              lang: "VI",
+              word: productName,
+              searchWord: productName.toLowerCase(),
+            },
+          },
           price,
           description,
           onDetailTagId: { set: onDetailTagId },

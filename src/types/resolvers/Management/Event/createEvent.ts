@@ -59,6 +59,7 @@ export const createEvent = mutationField("createEvent", {
       let queryResult = await ctx.prisma.event.create({
         data: {
           title,
+          searchTitle: title.toLowerCase(),
           startDate,
           dueDate: endDate,
           url,
