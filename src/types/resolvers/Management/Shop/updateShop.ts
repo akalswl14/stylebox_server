@@ -71,6 +71,7 @@ export const updateShop = mutationField("updateShop", {
             where: { id: nameResult[0].id },
             data: {
               word: shopName,
+              searchWord: shopName.toLowerCase(),
             },
           });
           if (!queryResult) return false;
@@ -85,6 +86,7 @@ export const updateShop = mutationField("updateShop", {
             where: { id: tagResult[0].names[0].id },
             data: {
               word: shopName,
+              searchWord: shopName.toLowerCase(),
             },
           });
           if (!queryResult) return false;
@@ -101,6 +103,7 @@ export const updateShop = mutationField("updateShop", {
             where: { id: classResult[0].names[0].id },
             data: {
               word: shopName,
+              searchWord: shopName.toLowerCase(),
             },
           });
           if (!queryResult) return false;
@@ -112,6 +115,7 @@ export const updateShop = mutationField("updateShop", {
             where: { id: branchResult[0].names[0].id },
             data: {
               word: shopName,
+              searchWord: shopName.toLowerCase(),
             },
           });
           if (!queryResult) return false;
@@ -158,6 +162,7 @@ export const updateShop = mutationField("updateShop", {
                   where: { branchId: eachOriginalBranch.id },
                   data: {
                     word: inputBranch.branchName,
+                    searchWord: inputBranch.branchName.toLowerCase(),
                   },
                 });
                 if (!queryResult) return false;
@@ -195,7 +200,13 @@ export const updateShop = mutationField("updateShop", {
             continue;
           queryResult = await ctx.prisma.branch.create({
             data: {
-              names: { create: { word: eachBranch.branchName, lang: "VI" } },
+              names: {
+                create: {
+                  word: eachBranch.branchName,
+                  lang: "VI",
+                  searchWord: eachBranch.branchName.toLowerCase(),
+                },
+              },
               phoneNumbers: { set: [eachBranch.branchPhoneNumber] },
               address: eachBranch.branchAddress,
               googleMapUrl: eachBranch.branchGoogleMapUrl,
