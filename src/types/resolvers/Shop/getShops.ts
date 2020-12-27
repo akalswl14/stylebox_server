@@ -17,194 +17,134 @@ export const getShops = queryField("getShops", {
     try {
       const { locationId, tagId, classId, isClass, cursorId } = args;
       const lang = args.lang ?? "VI";
-      let shopResults,
-        queryResult,
-        loadingPostNum,
-        totalShopNum = 0,
-        shops = [],
-        classTags: {
-          id: number;
-        }[] = [],
-        tags = [];
-      let countQueryOption:
-        | {
-            tags: {
-              some: {
-                AND: {
-                  id: number;
-                }[];
-                OR: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | {
-            tags: {
-              some: {
-                AND: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | {
-            tags: {
-              some: {
-                OR: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | undefined;
-      let queryWhereOption:
-        | {
-            tags: {
-              some: {
-                AND: {
-                  id: number;
-                }[];
-                OR: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | {
-            tags: {
-              some: {
-                AND: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | {
-            tags: {
-              some: {
-                OR: {
-                  id: number;
-                }[];
-              };
-            };
-          }
-        | undefined;
-      try {
-        const userId = Number(getUserId(ctx));
-        if (!userId) return null;
+      const shops = [];
+      const userId = Number(getUserId(ctx));
+      if (!userId) return null;
+      let classTags: any[], inputTags: any;
+      let whereOption;
+      let totalShopNum: number;
 
-        queryResult = await ctx.prisma.setting.findOne({
+      if (tagId && isClass) {
+        // none
+        whereOption = undefined;
+      } else if (locationId) {
+        if (tagId) {
+          // location & tag
+          whereOption = {
+            AND: [
+              {
+                tags: { some: { id: locationId } },
+              },
+              { tags: { some: { id: tagId } } },
+            ],
+          };
+        } else if (isClass && classId) {
+          // location & class
+          classTags = await ctx.prisma.tag.findMany({
+            where: { classId },
+            select: { id: true },
+          });
+          inputTags = classTags.map((tag: any) => ({ tags: { some: tag } }));
+          whereOption = {
+            tags: { some: { id: locationId } },
+            OR: inputTags,
+          };
+        } else {
+          // only location
+          whereOption = { tags: { some: { id: locationId } } };
+        }
+      } else {
+        if (tagId) {
+          // only tag
+          whereOption = { tags: { some: { id: tagId } } };
+        } else if (isClass && classId) {
+          //only class
+          classTags = await ctx.prisma.tag.findMany({
+            where: { classId },
+            select: { id: true },
+          });
+          inputTags = classTags.map((tag: any) => ({ tags: { some: tag } }));
+          whereOption = {
+            OR: inputTags,
+          };
+        } else {
+          //none
+          whereOption = undefined;
+        }
+      }
+      if (!whereOption) {
+        totalShopNum = await ctx.prisma.shop.count({});
+      } else {
+        totalShopNum = await ctx.prisma.shop.count({
+          where: whereOption,
+        });
+      }
+
+      const queryResult = await ctx.prisma.setting.findOne({
+        where: {
+          id: 1,
+        },
+        select: { loadingPostNum: true },
+      });
+      const loadingPostNum = queryResult?.loadingPostNum
+        ? queryResult?.loadingPostNum
+        : 4;
+      const shopResults = await ctx.prisma.shop.findMany({
+        orderBy: [{ monthlyRankScore: "desc" }, { id: "asc" }],
+        select: {
+          id: true,
+          logoUrl: true,
+          names: {
+            select: { word: true },
+            where: { lang },
+          },
+          onDetailTagId: true,
+        },
+        cursor: typeof cursorId === "number" ? { id: cursorId } : undefined,
+        skip: typeof cursorId === "number" ? 1 : undefined,
+        where: whereOption,
+        take: loadingPostNum,
+      });
+      for (const eachShop of shopResults) {
+        let isLikeShop,
+          queryResult,
+          tmp: {
+            shopId: number;
+            shopName: string;
+            logoUrl: string | null;
+            isLikeShop: boolean;
+            tagNames: string[];
+          } = {
+            shopId: eachShop.id,
+            shopName: eachShop.names[0].word,
+            logoUrl: eachShop.logoUrl ? S3_URL + eachShop.logoUrl : null,
+            isLikeShop: false,
+            tagNames: [],
+          };
+        queryResult = await ctx.prisma.like.count({
           where: {
-            id: 1,
+            userId,
+            shopId: eachShop.id,
           },
-          select: { loadingPostNum: true },
         });
-        loadingPostNum = queryResult?.loadingPostNum
-          ? queryResult?.loadingPostNum
-          : 4;
-        if (isClass) {
-          if (classId) {
-            classTags = await ctx.prisma.tag.findMany({
-              where: {
-                classId,
-              },
-              select: {
-                id: true,
-              },
-            });
-          }
-        } else if (tagId) {
-          tags.push({ id: tagId });
-        }
-        if (locationId) {
-          tags.push({ id: locationId });
-        }
-
-        if (tags.length > 0) {
-          if (classTags.length > 0) {
-            queryWhereOption = {
-              tags: { some: { AND: tags, OR: classTags } },
-            };
-            countQueryOption = {
-              tags: { some: { AND: tags, OR: classTags } },
-            };
-          } else {
-            queryWhereOption = { tags: { some: { AND: tags } } };
-            countQueryOption = { tags: { some: { AND: tags } } };
-          }
-        } else {
-          if (classTags.length > 0) {
-            queryWhereOption = { tags: { some: { OR: classTags } } };
-            countQueryOption = { tags: { some: { OR: classTags } } };
-          }
-        }
-        shopResults = await ctx.prisma.shop.findMany({
-          orderBy: [{ monthlyRankScore: "desc" }, { id: "asc" }],
-          take: loadingPostNum,
-          select: {
-            id: true,
-            logoUrl: true,
-            names: {
-              select: { word: true },
-              where: { lang },
-            },
-            onDetailTagId: true,
-          },
-          where: queryWhereOption,
-          cursor: typeof cursorId === "number" ? { id: cursorId } : undefined,
-          skip: typeof cursorId === "number" ? 1 : undefined,
-        });
-        for (const eachShop of shopResults) {
-          let isLikeShop,
-            queryResult,
-            tmp: {
-              shopId: number;
-              shopName: string;
-              logoUrl: string | null;
-              isLikeShop: boolean;
-              tagNames: string[];
-            } = {
-              shopId: eachShop.id,
-              shopName: eachShop.names[0].word,
-              logoUrl: eachShop.logoUrl ? S3_URL + eachShop.logoUrl : null,
-              isLikeShop: false,
-              tagNames: [],
-            };
-          queryResult = await ctx.prisma.like.count({
-            where: {
-              userId,
-              shopId: eachShop.id,
+        isLikeShop = queryResult > 0 ? true : false;
+        tmp.isLikeShop = isLikeShop;
+        let order = 0;
+        for (const eachId of eachShop.onDetailTagId) {
+          if (order >= 3) break;
+          queryResult = await ctx.prisma.tag.findOne({
+            where: { id: eachId },
+            select: {
+              names: { where: { lang }, select: { word: true } },
             },
           });
-          isLikeShop = queryResult > 0 ? true : false;
-          tmp.isLikeShop = isLikeShop;
-          let order = 0;
-          for (const eachId of eachShop.onDetailTagId) {
-            if (order >= 3) break;
-            queryResult = await ctx.prisma.tag.findOne({
-              where: { id: eachId },
-              select: {
-                names: { where: { lang }, select: { word: true } },
-              },
-            });
-            if (!queryResult) continue;
-            if (queryResult) {
-              tmp.tagNames.push(queryResult.names[0].word);
-              order++;
-            }
+          if (!queryResult) continue;
+          if (queryResult) {
+            tmp.tagNames.push(queryResult.names[0].word);
+            order++;
           }
-          shops.push(tmp);
         }
-        if (tags.length == 0 && classTags.length == 0) {
-          totalShopNum = await ctx.prisma.shop.count({});
-        } else {
-          totalShopNum = await ctx.prisma.shop.count({
-            where: countQueryOption,
-          });
-        }
-      } catch (e) {
-        console.log(e);
+        shops.push(tmp);
       }
       return {
         totalShopNum,
