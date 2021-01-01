@@ -150,9 +150,33 @@ export const getProductList = queryField("getProductList", {
             where: { products: { some: { id: productResult.id } } },
           });
 
+          let branchQuery = await ctx.prisma.product.findOne({
+            where: { id: productResult.id },
+            select: {
+              branches: {
+                select: {
+                  shopId: true,
+                },
+              },
+            },
+          });
+          if (!branchQuery) return null;
+          if (!branchQuery.branches[0].shopId) return null;
+
+          let shopQuery = await ctx.prisma.shop.findOne({
+            where: { id: branchQuery.branches[0].shopId },
+            select: {
+              names: {
+                where: { lang },
+                select: { word: true },
+              },
+            },
+          });
+
           products.push({
             productId: productResult.id,
             productName: productResult.names[0].word,
+            shopName: shopQuery ? shopQuery.names[0].word : "",
             price: productResult.price,
             postNum,
             link: productResult.externalLink.url,
@@ -180,9 +204,33 @@ export const getProductList = queryField("getProductList", {
             where: { products: { some: { id: product.id } } },
           });
 
+          let branchQuery = await ctx.prisma.product.findOne({
+            where: { id: product.id },
+            select: {
+              branches: {
+                select: {
+                  shopId: true,
+                },
+              },
+            },
+          });
+          if (!branchQuery) return null;
+          if (!branchQuery.branches[0].shopId) return null;
+
+          let shopQuery = await ctx.prisma.shop.findOne({
+            where: { id: branchQuery.branches[0].shopId },
+            select: {
+              names: {
+                where: { lang },
+                select: { word: true },
+              },
+            },
+          });
+
           products.push({
             productId: product.id,
             productName: product.names[0].word,
+            shopName: shopQuery ? shopQuery.names[0].word : "",
             price: product.price,
             postNum,
             link: product.externalLink.url,
