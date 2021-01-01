@@ -6,6 +6,7 @@ export const getProductList = queryField("getProductList", {
     pageNum: intArg({ nullable: true }),
     productId: intArg({ nullable: true }),
     productName: stringArg({ nullable: true }),
+    shopName: stringArg({ nullable: true }),
     productIdAsc: booleanArg({ nullable: true }),
     productNameAsc: booleanArg({ nullable: true }),
     priceAsc: booleanArg({ nullable: true }),
@@ -16,6 +17,7 @@ export const getProductList = queryField("getProductList", {
       const {
         productId,
         productName,
+        shopName,
         productIdAsc,
         productNameAsc,
         priceAsc,
@@ -46,7 +48,50 @@ export const getProductList = queryField("getProductList", {
           },
         };
       }
-
+      if (shopName) {
+        let prodIdByShop = [];
+        let shopResult = await ctx.prisma.shopName.findMany({
+          where: {
+            searchWord: { contains: shopName.toLowerCase() },
+          },
+          select: { shopId: true },
+        });
+        if (!shopResult) return null;
+        for (const eachShop of shopResult) {
+          if (!eachShop.shopId) return null;
+          let shopQueryResult = await ctx.prisma.shop.findOne({
+            where: { id: eachShop.shopId },
+            select: {
+              branches: { select: { id: true } },
+            },
+          });
+          if (!shopQueryResult) return null;
+          for (const eachBranch of shopQueryResult.branches) {
+            let branchQueryResult = await ctx.prisma.branch.findMany({
+              where: {
+                id: eachBranch.id,
+              },
+              select: {
+                products: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            });
+            if (!branchQueryResult) return null;
+            for (const branch of branchQueryResult) {
+              for (const eachProduct of branch.products) {
+                prodIdByShop.push(eachProduct.id);
+              }
+            }
+          }
+        }
+        const productIdByShop = Array.from(new Set(prodIdByShop));
+        whereOption = {
+          id: { in: productIdByShop },
+        };
+      }
       if (typeof productIdAsc === "boolean") {
         orderByOption = productIdAsc ? { id: "asc" } : { id: "desc" };
       } else if (typeof priceAsc === "boolean") {
