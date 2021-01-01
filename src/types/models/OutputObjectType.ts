@@ -599,6 +599,7 @@ export const ProductList = objectType({
   definition(t) {
     t.int("productId");
     t.string("productName");
+    t.string("shopName");
     t.int("price");
     t.int("postNum");
     t.string("link");
