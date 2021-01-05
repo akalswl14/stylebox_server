@@ -1,4 +1,5 @@
 import { arg, intArg, mutationField, stringArg } from "@nexus/schema";
+import { vietnamese } from "vietnamese-js";
 
 export const createTagInfo = mutationField("createTagInfo", {
   type: "TagIdInfo",
@@ -40,7 +41,11 @@ export const createTagInfo = mutationField("createTagInfo", {
           isRecommendation: 0,
           Class: { connect: { id: classId } },
           names: {
-            create: { lang, word: tagName, searchWord: tagName.toLowerCase() },
+            create: {
+              lang,
+              word: tagName,
+              searchWord: vietnamese(tagName).toLowerCase(),
+            },
           },
         },
         select: {

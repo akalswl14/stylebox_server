@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "prestart":"npm -s run clean && npm -s run generate && tsc",
+    "prestart": "npm -s run clean && npm -s run generate && tsc",
     "start": "node dist/server",
     "clean": "rm -rf dist",
     "build": "npm -s run clean && npm -s run generate && tsc",
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@nexus/schema": "^0.16.0",
+    "@prisma/cli": "2.7.0",
     "@prisma/client": "2.7.0",
     "@types/morgan": "^1.9.2",
     "@types/nodemailer": "^6.4.0",
@@ -37,7 +38,7 @@
     "nexus-plugin-prisma": "^0.20.0",
     "nexus-prisma": "0.13.0",
     "nodemailer": "^6.4.15",
-    "@prisma/cli": "2.7.0"
+    "vietnamese-js": "^1.0.0"
   },
   "devDependencies": {
     "@prisma/cli": "2.7.0",
