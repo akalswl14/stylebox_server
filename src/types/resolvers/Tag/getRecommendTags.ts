@@ -1,4 +1,5 @@
 import { queryField, stringArg } from "@nexus/schema";
+import { vietnamese } from "vietnamese-js";
 
 export const getRecommendTags = queryField("getRecommendTags", {
   type: "RecommendTagThumbnail",
@@ -14,22 +15,13 @@ export const getRecommendTags = queryField("getRecommendTags", {
       const lang = args.lang ?? "VI";
       const take = 20;
       let tags = [];
-      const FirstCapital =
-        word.length > 1
-          ? word.charAt(0).toUpperCase() + word.slice(1)
-          : word.length === 1
-          ? word.toUpperCase()
-          : "";
-      const AllCapital = word.length >= 1 ? word.toUpperCase() : "";
+      const convertWord = vietnamese(word).toLowerCase();
       let queryResult = await ctx.prisma.tag.findMany({
         where: {
           names: {
             some: {
-              OR: [
-                { word: { startsWith: word }, lang },
-                { word: { startsWith: FirstCapital }, lang },
-                { word: { startsWith: AllCapital }, lang },
-              ],
+              searchWord: { startsWith: convertWord },
+              lang,
             },
           },
           category: { in: ["Style", "ProductClass", "Feature", "Location"] },

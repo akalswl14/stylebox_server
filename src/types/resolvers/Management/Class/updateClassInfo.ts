@@ -53,7 +53,11 @@ export const updateClassInfo = mutationField("updateClassInfo", {
             data: {
               names: {
                 delete: { id: originalClass.tags[0].names[0].id },
-                create: { lang, word: className },
+                create: {
+                  lang,
+                  word: className,
+                  searchWord: className.toLowerCase(),
+                },
               },
             },
           });
