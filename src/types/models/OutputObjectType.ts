@@ -444,6 +444,7 @@ export const TagList = objectType({
     t.int("postNum");
     t.int("shopNum");
     t.int("productNum");
+    t.boolean("isClass");
   },
 });
 

@@ -114,6 +114,7 @@ export const getTagList = queryField("getTagList", {
               Class: {
                 select: { names: { where: { lang }, select: { word: true } } },
               },
+              isClass: true,
             },
           });
 
@@ -137,6 +138,7 @@ export const getTagList = queryField("getTagList", {
             postNum,
             shopNum,
             productNum,
+            isClass: tagResult.isClass,
           });
         }
       } else {
@@ -155,6 +157,7 @@ export const getTagList = queryField("getTagList", {
             Class: {
               select: { names: { where: { lang }, select: { word: true } } },
             },
+            isClass: true,
           },
         });
 
@@ -177,6 +180,7 @@ export const getTagList = queryField("getTagList", {
             postNum,
             shopNum,
             productNum,
+            isClass: tag.isClass,
           });
         }
       }
