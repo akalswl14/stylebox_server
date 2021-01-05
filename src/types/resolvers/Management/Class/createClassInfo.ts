@@ -24,7 +24,31 @@ export const createClassInfo = mutationField("createClassInfo", {
           },
           category,
         },
+        select: { id: true },
       });
+
+      if (
+        category === "Location" ||
+        category === "ProductClass" ||
+        queryResult
+      ) {
+        let tagResult = await ctx.prisma.tag.create({
+          data: {
+            category,
+            isClass: true,
+            isRecommendation: 0,
+            Class: { connect: { id: queryResult.id } },
+            names: {
+              create: {
+                lang,
+                word: className,
+                searchWord: className.toLowerCase(),
+              },
+            },
+          },
+        });
+        if (!tagResult) return false;
+      }
 
       return queryResult ? true : false;
     } catch (e) {
