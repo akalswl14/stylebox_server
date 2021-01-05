@@ -23,6 +23,7 @@ export const getTagInfo = queryField("getTagInfo", {
           createdAt: true,
           updatedAt: true,
           tagImage: true,
+          isClass: true,
         },
       });
 
@@ -47,6 +48,7 @@ export const getTagInfo = queryField("getTagInfo", {
         tagImage: tagResult.tagImage,
         className: tagResult.Class.names[0].word,
         classId: tagResult.classId,
+        isClass: tagResult.isClass,
         postNum,
         shopNum,
         productNum,

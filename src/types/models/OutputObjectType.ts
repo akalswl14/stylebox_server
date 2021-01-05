@@ -464,6 +464,7 @@ export const TagInfo = objectType({
     t.string("tagImage", { nullable: true });
     t.string("className");
     t.int("classId");
+    t.boolean("isClass");
     t.int("postNum");
     t.int("shopNum");
     t.int("productNum");
