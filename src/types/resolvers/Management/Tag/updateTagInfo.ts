@@ -5,6 +5,7 @@ import {
   mutationField,
   stringArg,
 } from "@nexus/schema";
+import { vietnamese } from "vietnamese-js";
 
 export const updateTagInfo = mutationField("updateTagInfo", {
   type: "Boolean",
@@ -45,7 +46,7 @@ export const updateTagInfo = mutationField("updateTagInfo", {
               create: {
                 lang,
                 word: tagName,
-                searchWord: tagName.toLowerCase(),
+                searchWord: vietnamese(tagName).toLowerCase(),
               },
             },
           },
