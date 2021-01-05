@@ -28,8 +28,7 @@ export const createClassInfo = mutationField("createClassInfo", {
       });
 
       if (
-        category === "Location" ||
-        category === "ProductClass" ||
+        (category === "Location" || category === "ProductClass") &&
         queryResult
       ) {
         let tagResult = await ctx.prisma.tag.create({
