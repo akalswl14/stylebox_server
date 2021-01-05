@@ -13,31 +13,13 @@ export const createTagInfo = mutationField("createTagInfo", {
   resolve: async (_, args, ctx) => {
     try {
       const { tagName, tagCategory, tagImage, classId } = args;
-      let lang,
-        isClass = false;
+      let lang;
       if (!lang) lang = "VI";
-
-      if (
-        tagCategory === "Style" ||
-        tagCategory === "Feature" ||
-        tagCategory === "Price"
-      ) {
-        isClass = true;
-      } else {
-        let classNameResult = await ctx.prisma.class.findMany({
-          where: { id: classId, category: tagCategory },
-          select: { names: { where: { lang }, select: { word: true } } },
-        });
-        if (!classNameResult) return null;
-        if (classNameResult[0].names[0].word === tagName) {
-          isClass = true;
-        }
-      }
 
       let queryResult = await ctx.prisma.tag.create({
         data: {
           category: tagCategory,
-          isClass,
+          isClass: false,
           isRecommendation: 0,
           Class: { connect: { id: classId } },
           names: {
