@@ -1,4 +1,4 @@
-import { queryField, stringArg, intArg } from "@nexus/schema";
+import { queryField, stringArg, intArg, booleanArg } from "@nexus/schema";
 import { getUserId } from "../../../utils";
 import { S3_URL } from "../AWS_IAM";
 
@@ -8,6 +8,8 @@ export const getEvents = queryField("getEvents", {
     lang: stringArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
     filter: intArg({ nullable: true }),
+    locationTagId: intArg({ nullable: true }),
+    isClass: booleanArg({ nullable: true }),
   },
   nullable: true,
   description: "filter is sorting standard(0 :(recent), 1 :(Dday))",
@@ -17,7 +19,7 @@ export const getEvents = queryField("getEvents", {
       if (!userId) {
         return null;
       }
-      const { cursorId } = args;
+      const { cursorId, locationTagId, isClass } = args;
       let { filter, lang } = args;
       let totalEventNum,
         isLikeEvent,
@@ -32,17 +34,11 @@ export const getEvents = queryField("getEvents", {
         myCursor,
         check,
         ChechkCursorId,
+        tags,
         DdayEventCheck = false;
 
       if (!filter) filter = 0;
       if (!lang) lang = "VI";
-
-      totalEventNum = await ctx.prisma.event.count({
-        where: {
-          tags: { some: { names: { some: { lang } } } },
-          isOnList: true,
-        },
-      });
 
       settingQueryResult = await ctx.prisma.setting.findOne({
         where: { id: 1 },
@@ -53,13 +49,39 @@ export const getEvents = queryField("getEvents", {
         ? settingQueryResult.loadingPostNum
         : 20;
 
+      if (locationTagId) {
+        if (isClass) {
+          let classIdResult = await ctx.prisma.tag.findOne({
+            where: { id: locationTagId },
+            select: { classId: true },
+          });
+          if (!classIdResult) return null;
+          let tagResult = await ctx.prisma.tag.findMany({
+            where: { classId: classIdResult.classId },
+            select: { id: true },
+          });
+          tags = { some: { names: { some: { lang } }, OR: tagResult } };
+        } else {
+          tags = { some: { names: { some: { lang } }, id: locationTagId } };
+        }
+      } else {
+        tags = { some: { names: { some: { lang } } } };
+      }
+
+      totalEventNum = await ctx.prisma.event.count({
+        where: {
+          tags,
+          isOnList: true,
+        },
+      });
+
       if (filter === 0) {
         if (!cursorId) {
           prismaQueryResults = await ctx.prisma.event.findMany({
             orderBy: { createdAt: "desc" },
             take: loadingPostNum,
             where: {
-              tags: { some: { names: { some: { lang } } } },
+              tags,
               isOnList: true,
             },
           });
@@ -70,7 +92,7 @@ export const getEvents = queryField("getEvents", {
             skip: 1,
             cursor: { id: cursorId },
             where: {
-              tags: { some: { names: { some: { lang } } } },
+              tags,
               isOnList: true,
             },
           });
@@ -79,7 +101,7 @@ export const getEvents = queryField("getEvents", {
         checkEventIdResult = await ctx.prisma.event.findMany({
           orderBy: { dueDate: "asc" },
           where: {
-            tags: { some: { names: { some: { lang } } } },
+            tags,
             dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
             isOnList: true,
           },
@@ -93,7 +115,7 @@ export const getEvents = queryField("getEvents", {
             orderBy: { dueDate: "asc" },
             take: loadingPostNum,
             where: {
-              tags: { some: { names: { some: { lang } } } },
+              tags,
               dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
               isOnList: true,
             },
@@ -111,7 +133,7 @@ export const getEvents = queryField("getEvents", {
               orderBy: { dueDate: "desc" },
               take: loadingEventNum,
               where: {
-                tags: { some: { names: { some: { lang } } } },
+                tags,
                 dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                 isOnList: true,
               },
@@ -134,7 +156,7 @@ export const getEvents = queryField("getEvents", {
               skip: 1,
               cursor: { id: cursorId },
               where: {
-                tags: { some: { names: { some: { lang } } } },
+                tags,
                 dueDate: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                 isOnList: true,
               },
@@ -157,7 +179,7 @@ export const getEvents = queryField("getEvents", {
                 orderBy: { dueDate: "desc" },
                 take: loadingEventNum,
                 where: {
-                  tags: { some: { names: { some: { lang } } } },
+                  tags,
                   dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                   isOnList: true,
                 },
@@ -170,7 +192,7 @@ export const getEvents = queryField("getEvents", {
               skip: 1,
               cursor: { id: cursorId },
               where: {
-                tags: { some: { names: { some: { lang } } } },
+                tags,
                 dueDate: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
                 isOnList: true,
               },
