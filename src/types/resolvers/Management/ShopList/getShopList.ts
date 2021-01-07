@@ -1,4 +1,5 @@
 import { booleanArg, intArg, queryField, stringArg } from "@nexus/schema";
+import { vietnamese } from "vietnamese-js";
 
 export const getShopList = queryField("getShopList", {
   type: "ShopManagementThumbnail",
@@ -90,11 +91,12 @@ export const getShopList = queryField("getShopList", {
         };
       }
       if (tagName) {
+        const convertTagName = vietnamese(tagName).toLowerCase();
         whereOption = {
           tags: {
             some: {
               names: {
-                some: { searchWord: { contains: tagName.toLowerCase() } },
+                some: { searchWord: { contains: convertTagName } },
               },
             },
           },
