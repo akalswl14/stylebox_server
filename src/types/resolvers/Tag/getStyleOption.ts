@@ -21,13 +21,18 @@ export const getStyleOption = queryField("getStyleOption", {
       let order = 0;
       for (const eachName of nameResult) {
         if (eachName.tagId) {
-          tags.push({
-            id: eachName.tagId,
-            tagName: eachName.word,
-            isClass: true,
-            order,
+          let postNum = await ctx.prisma.post.count({
+            where: { tags: { some: { id: eachName.tagId } } },
           });
-          order++;
+          if (postNum > 0) {
+            tags.push({
+              id: eachName.tagId,
+              tagName: eachName.word,
+              isClass: false,
+              order,
+            });
+            order++;
+          }
         }
       }
       return tags ? tags : null;
