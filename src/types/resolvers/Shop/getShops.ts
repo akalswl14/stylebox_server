@@ -28,12 +28,22 @@ export const getShops = queryField("getShops", {
         // none
         whereOption = undefined;
       } else if (locationId) {
+        let tags;
+        if (locationId === 35) {
+          let othersTagInfo = await ctx.prisma.tag.findMany({
+            where: { classId: 15 },
+            select: { id: true },
+          });
+          tags = { some: { OR: othersTagInfo } };
+        } else {
+          tags = { some: { id: locationId } };
+        }
         if (tagId) {
           // location & tag
           whereOption = {
             AND: [
               {
-                tags: { some: { id: locationId } },
+                tags,
               },
               { tags: { some: { id: tagId } } },
             ],
@@ -46,12 +56,12 @@ export const getShops = queryField("getShops", {
           });
           inputTags = classTags.map((tag: any) => ({ tags: { some: tag } }));
           whereOption = {
-            tags: { some: { id: locationId } },
+            tags,
             OR: inputTags,
           };
         } else {
           // only location
-          whereOption = { tags: { some: { id: locationId } } };
+          whereOption = { tags };
         }
       } else {
         if (tagId) {
