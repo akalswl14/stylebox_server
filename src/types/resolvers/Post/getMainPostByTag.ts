@@ -48,7 +48,17 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
       queryPriority = lastPostPriority ? lastPostPriority : 5;
 
       for (const eachTag of tags) {
-        tagIdList.push({ tags: { some: { id: eachTag.id } } });
+        if (eachTag.id === 35) {
+          let othersTagInfo = await ctx.prisma.tag.findMany({
+            where: { classId: 15 },
+            select: { id: true },
+          });
+          for (const eachSubTag of othersTagInfo) {
+            tagIdList.push({ tags: { some: { id: eachSubTag.id } } });
+          }
+        } else {
+          tagIdList.push({ tags: { some: { id: eachTag.id } } });
+        }
       }
 
       while (postResult.length < loadingPostNum && queryPriority >= 0) {
