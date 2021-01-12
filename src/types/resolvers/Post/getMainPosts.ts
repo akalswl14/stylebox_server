@@ -118,16 +118,30 @@ const getfindManyResult = async (
   postIds: number[] = [],
   locationTagId?: number | null | undefined
 ) => {
-  let queryResult = await ctx.prisma.post.findMany({
+  let queryResult;
+  let tags;
+  if (locationTagId === 35) {
+    let othersTagInfo = await ctx.prisma.tag.findMany({
+      where: { classId: 15 },
+      select: { id: true },
+    });
+    tags = { some: { OR: othersTagInfo } };
+  } else {
+    if (locationTagId) tags = { some: { id: locationTagId } };
+    else tags = undefined;
+  }
+  queryResult = await ctx.prisma.post.findMany({
     where: {
       priority,
       id: { notIn: postIds },
       createdAt: { gte: queryDate },
-      tags: locationTagId ? { some: { id: locationTagId } } : undefined,
+      tags,
     },
     select: {
       id: true,
-      Shop: { select: { names: { where: { lang }, select: { word: true } } } },
+      Shop: {
+        select: { names: { where: { lang }, select: { word: true } } },
+      },
       mainProductId: true,
       mainProductPrice: true,
       images: { select: { url: true }, orderBy: { order: "asc" }, take: 1 },
