@@ -2,7 +2,7 @@ import { intArg, queryField } from "@nexus/schema";
 import { LinkType } from "@prisma/client";
 
 export const getPostExternalLink = queryField("getPostExternalLink", {
-  type: "PostExternalLink",
+  type: "ManagementPostExternalLink",
   args: { id: intArg({ required: true }) },
   nullable: true,
   list: true,
