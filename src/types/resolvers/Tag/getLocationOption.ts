@@ -1,7 +1,7 @@
 import { queryField, stringArg } from "@nexus/schema";
 
 export const getLocationOption = queryField("getLocationOption", {
-  type: "TagThumbnail",
+  type: "levelLocationOption",
   args: {
     lang: stringArg({ nullable: true }),
   },
@@ -10,54 +10,60 @@ export const getLocationOption = queryField("getLocationOption", {
   resolve: async (_, args, ctx) => {
     try {
       const lang = args.lang ?? "VI";
-      // let nameResult,
-      //   tagResult,
-      //   tags = [];
-      // nameResult = await ctx.prisma.tagName.findMany({
-      //   where: { lang, Tag: { category: "Location" } },
-      //   select: { word: true, tagId: true },
-      //   orderBy: { word: "asc" },
-      // });
-      // if (!nameResult) return null;
-      // for (const eachName of nameResult) {
-      //   if (eachName.tagId) {
-      //     tagResult = await ctx.prisma.tag.findOne({
-      //       where: { id: eachName.tagId },
-      //       select: {
-      //         isClass: true,
-      //       },
-      //     });
-      //     if (tagResult) {
-      //       tags.push({
-      //         id: eachName.tagId,
-      //         tagName: eachName.word,
-      //         isClass: tagResult.isClass,
-      //       });
-      //     }
-      //   }
-      // }
-      let nameResult,
-        tags = [];
-      nameResult = await ctx.prisma.tagName.findMany({
-        where: { lang, Tag: { category: "Location" } },
-        select: { word: true, tagId: true, Tag: { select: { isClass: true } } },
-        orderBy: { word: "asc" },
-      });
-      if (!nameResult) return null;
-      let order = 0;
-      for (const eachName of nameResult) {
-        if (!eachName.Tag) continue;
-        if (eachName.tagId) {
-          tags.push({
-            id: eachName.tagId,
-            tagName: eachName.word,
-            isClass: eachName.Tag.isClass,
-            order,
-          });
-          order++;
+      let tagIds: number[] = [14, 1, 33, 35];
+      let options = [];
+
+      for (const eachTagId of tagIds) {
+        let subTags = [];
+        let order = 1;
+        let tagInfoResult = await ctx.prisma.tagName.findMany({
+          where: {
+            lang,
+            Tag: { id: eachTagId },
+          },
+          select: {
+            word: true,
+            Tag: { select: { classId: true } },
+          },
+        });
+        if (!tagInfoResult) return null;
+
+        let subTagInfoResults = await ctx.prisma.tagName.findMany({
+          where: {
+            Tag: { classId: tagInfoResult[0].Tag?.classId },
+          },
+          select: {
+            tagId: true,
+            word: true,
+            Tag: { select: { isClass: true } },
+          },
+          orderBy: { word: "asc" },
+        });
+
+        if (!subTagInfoResults) return null;
+
+        for (const eachTag of subTagInfoResults) {
+          if (eachTag.tagId) {
+            let postNum = await ctx.prisma.post.count({
+              where: { tags: { some: { id: eachTag.tagId } } },
+            });
+            if (postNum > 0) {
+              subTags.push({
+                id: eachTag.tagId,
+                tagName: eachTag.tagId === 35 ? "OTHERS" : eachTag.word,
+                order: order++,
+                isClass: eachTag.Tag?.isClass,
+              });
+            }
+          }
         }
+        options.push({
+          classId: tagInfoResult[0].Tag?.classId,
+          className: eachTagId === 35 ? "OTHERS" : tagInfoResult[0].word,
+          subTags,
+        });
       }
-      return tags ? tags : null;
+      return options ? options : null;
     } catch (e) {
       console.log(e);
       return null;

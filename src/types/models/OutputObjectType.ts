@@ -182,6 +182,15 @@ export const levelCategoryOption = objectType({
   },
 });
 
+export const levelLocationOption = objectType({
+  name: "levelLocationOption",
+  definition(t) {
+    t.int("classId");
+    t.string("className");
+    t.field("subTags", { type: "TagThumbnail", list: true });
+  },
+});
+
 export const EventDetail = objectType({
   name: "EventDetail",
   definition(t) {
