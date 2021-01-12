@@ -5,6 +5,7 @@ import { S3_URL } from "../AWS_IAM";
 export const getShops = queryField("getShops", {
   type: "ShopList",
   args: {
+    lang: stringArg({ nullable: true }),
     locationId: intArg({ nullable: true }),
     tagId: intArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
@@ -13,7 +14,7 @@ export const getShops = queryField("getShops", {
   resolve: async (_, args, ctx) => {
     try {
       const { locationId, tagId, cursorId } = args;
-      const lang = "VI";
+      const lang = args.lang ?? "VI";
       const shops = [];
       const userId = Number(getUserId(ctx));
       if (!userId) return null;
