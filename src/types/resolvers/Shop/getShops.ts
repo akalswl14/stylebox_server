@@ -26,12 +26,19 @@ export const getShops = queryField("getShops", {
             select: { isClass: true, classId: true },
           })
         : null;
-      if (!tagQueryResult) return null;
-      const isClass = tagId ? tagQueryResult.isClass : false;
-
+      let isClass = false,
+        classId = undefined;
+      if (tagQueryResult) {
+        isClass = tagQueryResult.isClass;
+        classId = tagQueryResult.classId;
+      } else {
+        if (tagId) {
+          return null;
+        }
+      }
       if (isClass) {
         const classTags = await ctx.prisma.tag.findMany({
-          where: { classId: tagQueryResult.classId },
+          where: { classId },
           select: { id: true },
         });
         const inputTags = classTags.map((tag: any) => ({
