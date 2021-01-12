@@ -106,16 +106,26 @@ export const getBestPosts = queryField("getBestPosts", {
       });
       if (locationTagId) {
         let prePostIds = postResult.map((eachPost) => ({ id: eachPost.id }));
+        let tags;
+        if (locationTagId === 35) {
+          let othersTagInfo = await ctx.prisma.tag.findMany({
+            where: { classId: 15 },
+            select: { id: true },
+          });
+          tags = { some: { OR: othersTagInfo } };
+        } else {
+          tags = { some: { id: locationTagId } };
+        }
         totalPostNum = await ctx.prisma.post.count({
           where: {
             OR: prePostIds,
-            tags: { some: { id: locationTagId } },
+            tags,
           },
         });
         postResult = await ctx.prisma.post.findMany({
           where: {
             OR: prePostIds,
-            tags: { some: { id: locationTagId } },
+            tags,
           },
           select: {
             id: true,
