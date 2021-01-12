@@ -50,7 +50,7 @@ export const getLocationOption = queryField("getLocationOption", {
             if (postNum > 0) {
               subTags.push({
                 id: eachTag.tagId,
-                tagName: eachTag.tagId === 35 ? "OTHERS" : eachTag.word,
+                tagName: eachTag.word,
                 order: order++,
                 isClass: eachTag.Tag?.isClass,
               });
