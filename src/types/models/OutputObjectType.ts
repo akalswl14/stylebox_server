@@ -829,3 +829,11 @@ export const PostTagDetail = objectType({
     t.field("Category", { type: "Category", nullable: true });
   },
 });
+
+export const LocationTagInfo = objectType({
+  name : "LocationTagInfo",
+  definition(t) {
+    t.int("id");
+    t.string("tagName");
+  }
+})
