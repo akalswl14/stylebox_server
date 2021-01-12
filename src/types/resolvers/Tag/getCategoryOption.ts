@@ -36,20 +36,27 @@ export const getCategoryOption = queryField("getCategoryOption", {
           for (const eachtagName of tagResult) {
             if (!eachtagName.Tag) continue;
             if (eachtagName.tagId) {
-              subTags.push({
-                id: eachtagName.tagId,
-                tagName: eachtagName.word,
-                isClass: eachtagName.Tag.isClass,
-                order: eachtagName.Tag.isClass ? 0 : order,
+              let postNum = await ctx.prisma.post.count({
+                where: { tags: { some: { id: eachtagName.tagId } } },
               });
-              if (!eachtagName.Tag.isClass) order++;
+              if (postNum > 0) {
+                subTags.push({
+                  id: eachtagName.tagId,
+                  tagName: eachtagName.word,
+                  isClass: eachtagName.Tag.isClass,
+                  order: eachtagName.Tag.isClass ? 0 : order,
+                });
+                if (!eachtagName.Tag.isClass) order++;
+              }
             }
           }
-          options.push({
-            classId: eachclassName.classId,
-            className: eachclassName.word,
-            subTags,
-          });
+          if (subTags.length > 0) {
+            options.push({
+              classId: eachclassName.classId,
+              className: eachclassName.word,
+              subTags,
+            });
+          }
         }
       }
       return options ? options : null;
