@@ -717,8 +717,8 @@ export const PostBasicStatus = objectType({
   },
 });
 
-const PostExternalLink = objectType({
-  name: "PostExternalLink",
+export const ManagementPostExternalLink = objectType({
+  name: "ManagementPostExternalLink",
   definition(t) {
     t.field("linkType", { type: "LinkType" });
     t.string("url");

@@ -1,5 +1,4 @@
 import { objectType } from "@nexus/schema";
-import { tmpdir } from "os";
 
 export const Product = objectType({
   name: "Product",
