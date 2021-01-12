@@ -9,7 +9,6 @@ export const getEvents = queryField("getEvents", {
     cursorId: intArg({ nullable: true }),
     filter: intArg({ nullable: true }),
     locationTagId: intArg({ nullable: true }),
-    isClass: booleanArg({ nullable: true }),
   },
   nullable: true,
   description: "filter is sorting standard(0 :(recent), 1 :(Dday))",
@@ -19,7 +18,7 @@ export const getEvents = queryField("getEvents", {
       if (!userId) {
         return null;
       }
-      const { cursorId, locationTagId, isClass } = args;
+      const { cursorId, locationTagId } = args;
       let { filter, lang } = args;
       let totalEventNum,
         isLikeEvent,
@@ -50,17 +49,12 @@ export const getEvents = queryField("getEvents", {
         : 20;
 
       if (locationTagId) {
-        if (isClass) {
-          let classIdResult = await ctx.prisma.tag.findOne({
-            where: { id: locationTagId },
-            select: { classId: true },
-          });
-          if (!classIdResult) return null;
-          let tagResult = await ctx.prisma.tag.findMany({
-            where: { classId: classIdResult.classId },
+        if (locationTagId === 35) {
+          let othersTagInfo = await ctx.prisma.tag.findMany({
+            where: { classId: 15 },
             select: { id: true },
           });
-          tags = { some: { names: { some: { lang } }, OR: tagResult } };
+          tags = { some: { names: { some: { lang } }, OR: othersTagInfo } };
         } else {
           tags = { some: { names: { some: { lang } }, id: locationTagId } };
         }
