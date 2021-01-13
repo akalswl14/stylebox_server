@@ -28,7 +28,8 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
         rtnLastPostPriority = 5,
         posts = [],
         rtnPostNum: number = 0,
-        tagIdList: { tags: { some: { id: number } } }[] = [];
+        styleTagId: number = 0,
+        locationTagIds: { id: number }[] = [];
       const userId = Number(getUserId(ctx));
       if (!userId) {
         return null;
@@ -48,16 +49,26 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
       queryPriority = lastPostPriority ? lastPostPriority : 5;
 
       for (const eachTag of tags) {
-        if (eachTag.id === 35) {
-          let othersTagInfo = await ctx.prisma.tag.findMany({
-            where: { classId: 15 },
-            select: { id: true },
-          });
-          for (const eachSubTag of othersTagInfo) {
-            tagIdList.push({ tags: { some: { id: eachSubTag.id } } });
+        let tagResult = await ctx.prisma.tag.findOne({
+          where: { id: eachTag.id },
+          select: { category: true },
+        });
+        if (!tagResult) return null;
+        if (tagResult.category === "Style") {
+          styleTagId = eachTag.id;
+        }
+        if (tagResult.category === "Location") {
+          if (eachTag.id === 35) {
+            let othersTagInfo = await ctx.prisma.tag.findMany({
+              where: { classId: 15 },
+              select: { id: true },
+            });
+            for (const eachSubTag of othersTagInfo) {
+              locationTagIds.push({ id: eachSubTag.id });
+            }
+          } else {
+            locationTagIds.push({ id: eachTag.id });
           }
-        } else {
-          tagIdList.push({ tags: { some: { id: eachTag.id } } });
         }
       }
 
@@ -68,7 +79,8 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
           lang,
           queryPriority,
           postIds,
-          tagIdList
+          locationTagIds,
+          styleTagId
         );
         let randomPostResult: {
           Shop: {
@@ -121,9 +133,48 @@ export const getMainPostByTag = queryField("getMainPostByTag", {
           });
         }
       }
+
+      let whereOption = {};
+      if (locationTagIds.length > 0 && styleTagId !== 0) {
+        whereOption = {
+          createdAt: { gte: TodaysStylesDate },
+          AND: [
+            {
+              tags: { some: { id: styleTagId } },
+            },
+            {
+              tags: { some: { OR: locationTagIds } },
+            },
+          ],
+        };
+      } else if (locationTagIds.length > 0) {
+        whereOption = {
+          createdAt: { gte: TodaysStylesDate },
+          AND: [
+            {
+              tags: { some: { OR: locationTagIds } },
+            },
+          ],
+        };
+      } else if (styleTagId !== 0) {
+        whereOption = {
+          createdAt: { gte: TodaysStylesDate },
+          AND: [
+            {
+              tags: { some: { id: styleTagId } },
+            },
+          ],
+        };
+      } else {
+        whereOption = {
+          createdAt: { gte: TodaysStylesDate },
+        };
+      }
+
       rtnPostNum = await ctx.prisma.post.count({
-        where: { AND: tagIdList },
+        where: whereOption,
       });
+
       let rtn = {
         lastPostPriority: rtnLastPostPriority,
         postNum: rtnPostNum,
@@ -144,15 +195,56 @@ const getfindManyResult = async (
   lang: string,
   priority: number,
   postIds: number[] = [],
-  tagIdList: { tags: { some: { id: number } } }[] = []
+  locationTagIds: { id: number }[] = [],
+  styleTagId: number
 ) => {
-  let queryResult = await ctx.prisma.post.findMany({
-    where: {
+  let whereOption = {};
+  if (locationTagIds.length > 0 && styleTagId !== 0) {
+    whereOption = {
       priority,
       id: { notIn: postIds },
       createdAt: { gte: queryDate },
-      AND: tagIdList,
-    },
+      AND: [
+        {
+          tags: { some: { id: styleTagId } },
+        },
+        {
+          tags: { some: { OR: locationTagIds } },
+        },
+      ],
+    };
+  } else if (locationTagIds.length > 0) {
+    whereOption = {
+      priority,
+      id: { notIn: postIds },
+      createdAt: { gte: queryDate },
+      AND: [
+        {
+          tags: { some: { OR: locationTagIds } },
+        },
+      ],
+    };
+  } else if (styleTagId !== 0) {
+    whereOption = {
+      priority,
+      id: { notIn: postIds },
+      createdAt: { gte: queryDate },
+      AND: [
+        {
+          tags: { some: { id: styleTagId } },
+        },
+      ],
+    };
+  } else {
+    whereOption = {
+      priority,
+      id: { notIn: postIds },
+      createdAt: { gte: queryDate },
+    };
+  }
+
+  let queryResult = await ctx.prisma.post.findMany({
+    where: whereOption,
     select: {
       id: true,
       Shop: { select: { names: { where: { lang }, select: { word: true } } } },
