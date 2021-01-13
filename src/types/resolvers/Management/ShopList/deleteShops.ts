@@ -95,10 +95,13 @@ export const deleteShops = mutationField("deleteShops", {
         let productResult = await ctx.prisma.product.delete({
           where: { id: eachProduct.id },
         });
-        let productLinkResult = await ctx.prisma.productExternalLink.delete({
-          where: { id: productInfo.externalLink.id },
-        });
-        if (!productLinkResult && !productUpdateResult && !productResult) {
+        if (productInfo.externalLink) {
+          let productLinkResult = await ctx.prisma.productExternalLink.delete({
+            where: { id: productInfo.externalLink.id },
+          });
+          if (!productLinkResult) continue;
+        }
+        if (!productUpdateResult && !productResult) {
           continue;
         }
       }
