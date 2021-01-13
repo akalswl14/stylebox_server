@@ -55,7 +55,7 @@ export const getProductByName = queryField("getProductByName", {
           productId: product.id,
           productName: product.names[0].word,
           price: product.price,
-          link: product.externalLink.url,
+          link: product.externalLink ? product.externalLink.url : "",
         });
       }
 

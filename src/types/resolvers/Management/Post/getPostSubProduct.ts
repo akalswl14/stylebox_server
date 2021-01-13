@@ -43,7 +43,7 @@ export const getPostSubProduct = queryField("getPostSubProduct", {
             productId: subProduct.id,
             productName: subProduct.names[0].word,
             price: subProduct.price,
-            link: subProduct.externalLink.url,
+            link: subProduct.externalLink ? subProduct.externalLink.url : "",
             order,
           });
           order++;
