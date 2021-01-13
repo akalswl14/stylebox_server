@@ -179,7 +179,9 @@ export const getProductList = queryField("getProductList", {
             shopName: shopQuery ? shopQuery.names[0].word : "",
             price: productResult.price,
             postNum,
-            link: productResult.externalLink.url,
+            link: productResult.externalLink
+              ? productResult.externalLink.url
+              : "",
           });
         }
       } else {
@@ -233,7 +235,7 @@ export const getProductList = queryField("getProductList", {
             shopName: shopQuery ? shopQuery.names[0].word : "",
             price: product.price,
             postNum,
-            link: product.externalLink.url,
+            link: product.externalLink ? product.externalLink.url : "",
           });
         }
       }
