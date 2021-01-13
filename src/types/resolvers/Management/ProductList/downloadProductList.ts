@@ -1,7 +1,7 @@
-import { queryField } from '@nexus/schema';
+import { queryField } from "@nexus/schema";
 
-export const downloadProductList = queryField('downloadProductList', {
-  type: 'ProductList',
+export const downloadProductList = queryField("downloadProductList", {
+  type: "ProductList",
   list: true,
   nullable: true,
   resolve: async (_, args, ctx) => {
@@ -9,7 +9,7 @@ export const downloadProductList = queryField('downloadProductList', {
       let products = [],
         lang;
 
-      if (!lang) lang = 'VI';
+      if (!lang) lang = "VI";
 
       let productResult = await ctx.prisma.product.findMany({
         select: {
@@ -30,7 +30,7 @@ export const downloadProductList = queryField('downloadProductList', {
           productName: product.names[0].word,
           price: product.price,
           postNum,
-          link: product.externalLink.url,
+          link: product.externalLink ? product.externalLink.url : "",
         });
       }
 
