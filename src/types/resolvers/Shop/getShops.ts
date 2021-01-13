@@ -8,68 +8,72 @@ export const getShops = queryField("getShops", {
     lang: stringArg({ nullable: true }),
     locationId: intArg({ nullable: true }),
     tagId: intArg({ nullable: true }),
-    classId: intArg({ nullable: true }),
-    isClass: booleanArg({ nullable: true }),
     cursorId: intArg({ nullable: true }),
   },
   nullable: true,
   resolve: async (_, args, ctx) => {
     try {
-      const { locationId, tagId, classId, isClass, cursorId } = args;
+      const { locationId, tagId, cursorId } = args;
       const lang = args.lang ?? "VI";
       const shops = [];
       const userId = Number(getUserId(ctx));
       if (!userId) return null;
-      let classTags: any[], inputTags: any;
       let whereOption;
       let totalShopNum: number;
-
-      if (tagId && isClass) {
-        // none
-        whereOption = undefined;
-      } else if (locationId) {
+      const tagQueryResult = tagId
+        ? await ctx.prisma.tag.findOne({
+            where: { id: tagId },
+            select: { isClass: true, classId: true },
+          })
+        : null;
+      let isClass = false,
+        classId = undefined;
+      if (tagQueryResult) {
+        isClass = tagQueryResult.isClass;
+        classId = tagQueryResult.classId;
+      } else {
         if (tagId) {
-          // location & tag
-          whereOption = {
-            AND: [
-              {
-                tags: { some: { id: locationId } },
-              },
-              { tags: { some: { id: tagId } } },
-            ],
-          };
-        } else if (isClass && classId) {
-          // location & class
-          classTags = await ctx.prisma.tag.findMany({
-            where: { classId },
-            select: { id: true },
-          });
-          inputTags = classTags.map((tag: any) => ({ tags: { some: tag } }));
+          return null;
+        }
+      }
+      if (isClass) {
+        const classTags = await ctx.prisma.tag.findMany({
+          where: { classId },
+          select: { id: true },
+        });
+        const inputTags = classTags.map((tag: any) => ({
+          tags: { some: tag },
+        }));
+        if (locationId) {
           whereOption = {
             tags: { some: { id: locationId } },
             OR: inputTags,
           };
         } else {
-          // only location
-          whereOption = { tags: { some: { id: locationId } } };
-        }
-      } else {
-        if (tagId) {
-          // only tag
-          whereOption = { tags: { some: { id: tagId } } };
-        } else if (isClass && classId) {
-          //only class
-          classTags = await ctx.prisma.tag.findMany({
-            where: { classId },
-            select: { id: true },
-          });
-          inputTags = classTags.map((tag: any) => ({ tags: { some: tag } }));
           whereOption = {
             OR: inputTags,
           };
+        }
+      } else {
+        if (tagId) {
+          if (locationId) {
+            whereOption = {
+              AND: [
+                {
+                  tags: { some: { id: locationId } },
+                },
+                { tags: { some: { id: tagId } } },
+              ],
+            };
+          } else {
+            whereOption = { tags: { some: { id: tagId } } };
+          }
         } else {
-          //none
-          whereOption = undefined;
+          if (locationId) {
+            whereOption = { tags: { some: { id: locationId } } };
+          } else {
+            whereOption = undefined;
+          }
         }
       }
       if (!whereOption) {
